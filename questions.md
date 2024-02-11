@@ -1,0 +1,2 @@
+- risk level and story points, halfway checkpoint
+- 
