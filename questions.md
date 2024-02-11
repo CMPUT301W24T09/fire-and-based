@@ -1,2 +1,2 @@
 - risk level and story points, halfway checkpoint
-- 
+- How much of UI (if any) to put on CRC
