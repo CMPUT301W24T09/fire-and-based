@@ -5,3 +5,4 @@
   - Or do users scan a QR code to start and a temporary profile (which the user can manually edit) is created for the event
  
 - does an admin have the abilities of both an organizer/admin?
+- login page? how else to do...
