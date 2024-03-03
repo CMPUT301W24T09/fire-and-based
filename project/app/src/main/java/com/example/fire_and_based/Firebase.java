@@ -33,6 +33,7 @@ public class Firebase extends AppCompatActivity {
     private EditText addEventDescriptionEditText;
     private FirebaseFirestore db;
     private CollectionReference eventsRef;
+    private CollectionReference imagesRef;
     private int lastClickedIndex = -1;
 
     @Override
@@ -49,6 +50,7 @@ public class Firebase extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         eventsRef = db.collection("events");
+        imagesRef = db.collection("images");
         eventDataList = new ArrayList<>();
         eventArrayAdapter = new EventArrayAdapter(this, eventDataList);
         eventList.setAdapter(eventArrayAdapter);
@@ -138,5 +140,8 @@ public class Firebase extends AppCompatActivity {
         db.collection("events").document(event.getEventName())
                 .update("eventBanner", "NewEventBanner");
     }
+
+
+
 
 }
