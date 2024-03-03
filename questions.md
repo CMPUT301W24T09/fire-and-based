@@ -10,3 +10,5 @@
  
 - risk level
   - do QR code thing first --> learn ourselves
+
+- Storing items --> Should we store EVERYTHING in the Database? Any local storage allowed? What do you recommend?
