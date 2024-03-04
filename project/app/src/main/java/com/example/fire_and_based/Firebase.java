@@ -23,7 +23,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
-public class Firebase extends AppCompatActivity {
+public classFirebase extends AppCompatActivity {
     ListView eventList;
     ArrayList<Event> eventDataList;
     EventArrayAdapter eventArrayAdapter;
