@@ -3,6 +3,7 @@ package com.example.fire_and_based;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,8 +20,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Firebase extends AppCompatActivity {
     ListView eventList;
@@ -50,10 +49,12 @@ public class Firebase extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         eventsRef = db.collection("events");
-        imagesRef = db.collection("images");
+//        imagesRef = db.collections ("images");
         eventDataList = new ArrayList<>();
         eventArrayAdapter = new EventArrayAdapter(this, eventDataList);
         eventList.setAdapter(eventArrayAdapter);
+
+
 
         addEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +76,11 @@ public class Firebase extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 lastClickedIndex = position;
                 Event clickedEvent = eventDataList.get(lastClickedIndex);
-                updateEventBanner(clickedEvent);
+//                updateEventBanner(clickedEvent);
+                Intent intent = new Intent(Firebase.this, ViewEvent.class);
+                intent.putExtra("event",  clickedEvent);
+                startActivity(intent);
+
             }
         });
 
@@ -113,11 +118,10 @@ public class Firebase extends AppCompatActivity {
                 }
             }
         });
+
     }
 
-    /**
-     * Adds the initial city objects to the ArrayList
-     */
+
 
 
     private void addNewEvent(Event event) {
@@ -140,8 +144,5 @@ public class Firebase extends AppCompatActivity {
         db.collection("events").document(event.getEventName())
                 .update("eventBanner", "NewEventBanner");
     }
-
-
-
 
 }

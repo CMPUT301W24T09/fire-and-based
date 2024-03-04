@@ -36,10 +36,10 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         Event event = events.get(position);
 
         TextView eventName = view.findViewById(R.id.event_name_text);
-        TextView eventDescription = view.findViewById(R.id.event_description_text);
+//        TextView eventDescription = view.findViewById(R.id.event_description_text);
 
         eventName.setText(event.getEventName());
-        eventDescription.setText(event.getEventDescription());
+//        eventDescription.setText(event.getEventDescription());
 
         return view;
     }

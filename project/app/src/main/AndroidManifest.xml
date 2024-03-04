@@ -24,6 +24,10 @@
         <activity android:name=".Firebase">
 
         </activity>
+        <activity android:name=".ViewEvent">
+
+
+        </activity>
 
 
     </application>
