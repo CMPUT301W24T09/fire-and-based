@@ -17,6 +17,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,10 +33,13 @@ public class Firebase extends AppCompatActivity {
     private Button deleteEventButton;
     private EditText addEventEditText;
     private EditText addEventDescriptionEditText;
-    private FirebaseFirestore db;
+    protected FirebaseFirestore db;
     private CollectionReference eventsRef;
     private CollectionReference imagesRef;
     private int lastClickedIndex = -1;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
