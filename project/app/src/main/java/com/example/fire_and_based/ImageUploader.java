@@ -126,7 +126,7 @@ public class ImageUploader extends Firebase
 
                 StorageReference selectionRef = fireRef.child("images/"+imageName);
 
-                db.collection("events").document("froggy").set(imageData);
+                //b.collection("events").document("froggy").set(imageData);
 
                 selectionRef.putFile(imageData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
