@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="266dp"
+        android:layout_height="62dp"
+        android:backgroundTint="@color/pastel_blue"
+        android:fontFamily="@font/abeezee"
+        android:paddingVertical="15dp"
+        android:text="Event View"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        tools:layout_editor_absoluteX="72dp"
+        tools:layout_editor_absoluteY="616dp" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event Milestones"
+        android:textSize="30sp"
+        tools:layout_editor_absoluteX="91dp"
+        tools:layout_editor_absoluteY="100dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
