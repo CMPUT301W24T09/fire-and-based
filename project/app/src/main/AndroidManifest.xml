@@ -22,6 +22,34 @@
             </intent-filter>
         </activity>
         <activity android:name=".EventCheckIn" />
-    </application>
+        <activity
+            android:name=".OrganizerActivity"
+            android:exported="true">
+        </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
+        <activity
+            android:name=".Firebase">
+        </activity>
+
+        <activity
+            android:name=".ViewEvent">
+        </activity>
+
+        <activity
+            android:name=".ImageUploader"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PICK" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
+</application>
 
 </manifest>
