@@ -22,13 +22,6 @@
             </intent-filter>
         </activity>
 
-
-
-
-
-
-
-
         <activity
             android:name=".OrganizerActivity"
             android:exported="true">
@@ -37,21 +30,14 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-    </application>
-        <activity android:name=".Firebase">
 
+        <activity
+            android:name=".Firebase">
         </activity>
 
-        <activity android:name=".ViewEvent">
-
-
+        <activity
+            android:name=".ViewEvent">
         </activity>
-        <activity android:name=".ViewEvent">
-
-
-        </activity>
-
-
 
         <activity
             android:name=".ImageUploader"
