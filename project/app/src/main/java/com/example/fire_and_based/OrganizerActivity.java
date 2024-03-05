@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 
 public class OrganizerActivity extends AppCompatActivity {
-    private ArrayList<String> dataList;
+    private ArrayList<Event> dataList;
     private ListView eventList;
     private EventArrayAdapter eventAdapter;
 
@@ -21,9 +21,10 @@ public class OrganizerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.events_list);
 
-        dataList = new ArrayList<>();
-        dataList.add("Event 1");
-        dataList.add("Event 2");
+        dataList = new ArrayList<Event>();
+        dataList.add(new Event("Event 1", "1"));
+        dataList.add(new Event("Event 2", "2"));
+        dataList.add(new Event("Event 3", "3"));
         eventList = findViewById(R.id.event_list);
         eventAdapter = new EventArrayAdapter(this, dataList);
         eventList.setAdapter(eventAdapter);

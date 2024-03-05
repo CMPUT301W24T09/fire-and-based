@@ -10,3 +10,10 @@
  
 - risk level
   - do QR code thing first --> learn ourselves
+
+Tyler Database Questions
+- Storing items --> Should we store EVERYTHING in the Database? Any local storage allowed? What do you recommend? ( Think the answer to this is all in db ) 
+- Does it make sense to have a single controller for all database related things? Or should I have several points that access db
+  - Pros: Everything is in one place for the database
+  - Cons: might be a long file + need connect it at several points ( maybe not that bad of an idea )
+  
