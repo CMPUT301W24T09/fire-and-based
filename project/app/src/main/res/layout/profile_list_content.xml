@@ -15,21 +15,13 @@
         android:layout_weight="1" />
 
     <TextView
-        android:id="@+id/event_title"
-        android:layout_width="wrap_content"
+        android:id="@+id/profile_titlw"
+        android:layout_width="153dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:layout_weight="1"
         android:fontFamily="@font/crete_round"
         android:text="TextView"
-        android:textSize="40dp"
-        android:textStyle="bold" />
-
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:src="@drawable/baseline_arrow_forward_24" />
+        android:textSize="30dp" />
 
 </LinearLayout>
