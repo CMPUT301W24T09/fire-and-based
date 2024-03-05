@@ -50,7 +50,13 @@
             android:id="@+id/QRScanTest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="QRScanTest" />
+            android:text="Scan QR Code" />
+
+        <Button
+            android:id="@+id/QRGenTest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Generate QR Code" />
 
     </LinearLayout>
 

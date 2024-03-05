@@ -52,5 +52,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button QRGenTest = findViewById(R.id.QRGenTest);
+
+        QRGenTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, QRCodeGeneratorIUTemp.class);
+                startActivity(intent);
+            }
+        });
     }
 }
