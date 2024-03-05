@@ -25,4 +25,5 @@
 - Does it make sense to have a single controller for all database related things? Or should I have several points that access db
   - Pros: Everything is in one place for the database
   - Cons: might be a long file + need connect it at several points ( maybe not that bad of an idea )
-  
+
+## 
