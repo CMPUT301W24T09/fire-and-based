@@ -21,7 +21,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:backgroundTint="@color/pastel_blue"
-        android:fontFamily="@font/roboto_slab"
+        android:fontFamily="@font/abeezee"
         android:paddingVertical="15dp"
         android:text="Create new event"
         android:textColor="@color/black"
