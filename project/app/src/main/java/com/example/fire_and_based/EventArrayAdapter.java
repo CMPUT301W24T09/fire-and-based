@@ -10,29 +10,36 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.material.bottomappbar.BottomAppBar;
-
 import java.util.ArrayList;
 
-public class EventArrayAdapter extends ArrayAdapter<String> {
+public class EventArrayAdapter extends ArrayAdapter<Event> {
+    private ArrayList<Event> events;
+    private Context context;
 
-    public EventArrayAdapter(Context context, ArrayList<String> events) {
-        super(context, 0, events);
+    public EventArrayAdapter(Context context, ArrayList<Event> events){
+        super(context,0, events);
+        this.events = events;
+        this.context = context;
     }
+
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        View view;
-        if (convertView == null) {
-            view = LayoutInflater.from(getContext()).inflate(R.layout.event_content, parent, false);
-        } else {
-            view = convertView;
+//        return super.getView(position, convertView, parent);
+        View view = convertView;
+
+        if(view == null){
+            view = LayoutInflater.from(context).inflate(R.layout.content, parent,false);
         }
 
-        String string = getItem(position);
-        TextView eventTitle = view.findViewById(R.id.event_title);
+        Event event = events.get(position);
 
-        eventTitle.setText(string);
+        TextView eventName = view.findViewById(R.id.event_name_text);
+//        TextView eventDescription = view.findViewById(R.id.event_description_text);
+
+        eventName.setText(event.getEventName());
+//        eventDescription.setText(event.getEventDescription());
 
         return view;
     }

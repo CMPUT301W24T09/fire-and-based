@@ -21,6 +21,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+
+
+
+
+
+
         <activity
             android:name=".OrganizerActivity"
             android:exported="true">
@@ -30,5 +38,32 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
     </application>
+        <activity android:name=".Firebase">
+
+        </activity>
+
+        <activity android:name=".ViewEvent">
+
+
+        </activity>
+        <activity android:name=".ViewEvent">
+
+
+        </activity>
+
+
+
+        <activity
+            android:name=".ImageUploader"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PICK" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
+</application>
 
 </manifest>
