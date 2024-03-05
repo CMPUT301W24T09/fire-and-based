@@ -2,7 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/pastel_purple"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:title="Events"
+        app:titleTextColor="@color/white" />
 
     <ListView
         android:id="@+id/event_list"
@@ -10,12 +22,12 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:divider="@drawable/divider"
-        android:dividerHeight="15dp">
+        android:dividerHeight="17dp">
 
     </ListView>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/create_event_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
