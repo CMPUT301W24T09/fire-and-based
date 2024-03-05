@@ -20,11 +20,11 @@ public class QRCodeGeneratorIUTemp extends AppCompatActivity {
         findViewById(R.id.generate_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String content = ((EditText)findViewById(R.id.qr_content)).getText().toString();
+                String qrCodeString = ((EditText)findViewById(R.id.qr_content)).getText().toString();
 
                 Bitmap bitmap;
                 try {
-                    bitmap = QRCodeInterface.createQR(content, 400, 400);
+                    bitmap = QRCodeGenerator.QRImageFromString(qrCodeString, 400, 400);
                 } catch (WriterException e){
                     Log.println(Log.ERROR, "QRCodeGenerator", "Failed to generate QR Code bitmap:" + e);
                     return;

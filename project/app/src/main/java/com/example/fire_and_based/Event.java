@@ -12,6 +12,8 @@ public class Event implements Parcelable {
     public String eventDescription;
     public String eventBanner;
 
+    public String QRCodeString;
+
 
     // constructor
     Event(String eventName, String eventDescription){
