@@ -1,10 +1,12 @@
 package com.example.fire_and_based;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -30,7 +32,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         View view = convertView;
 
         if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.content, parent,false);
+            view = LayoutInflater.from(context).inflate(R.layout.event_content, parent,false);
         }
 
         Event event = events.get(position);
@@ -40,6 +42,16 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 
         eventName.setText(event.getEventName());
 //        eventDescription.setText(event.getEventDescription());
+
+        ImageButton arrow = view.findViewById(R.id.arrow_button);
+        arrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = parent.getContext();
+                Intent intent = new Intent(context, EventInfoActivity.class);
+                context.startActivity(intent);
+            }
+        });
 
         return view;
     }

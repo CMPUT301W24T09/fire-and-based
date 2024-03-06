@@ -12,6 +12,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.Firebase;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.zxing.qrcode.encoder.QRCode;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Random;
 
 public class EventCreation extends AppCompatActivity {
     private Button createEventSubmit;
@@ -32,23 +37,30 @@ public class EventCreation extends AppCompatActivity {
             public void onClick(View v) {
                 String eventTitleString = eventTitle.getText().toString();
                 String eventDescriptionString = eventDescription.getText().toString();
-                Event newEvent = new Event(eventTitleString, eventDescriptionString, null, null);
+
+                byte[] array = new byte[7]; // length is bounded by 7
+                new Random().nextBytes(array);
+                String qrCode = new String(array, StandardCharsets.UTF_8);
+
+                Event newEvent = new Event(eventTitleString, eventDescriptionString, null, qrCode);
+
                 addNewEvent(newEvent);
 
-
-                // PROBABLY NEED TO GO TO QR CODE HERE ILYA W NEW INTENT STUFF (?)
-                Intent intent = new Intent(EventCreation.this, Firebase.class);
-                startActivity(intent);
-                // PROBABLY NEED TO GO TO QR CODE HERE ILYA W NEW INTENT STUFF (?)
-                // check event class it has a QR code param - feel free to change the typing to what you need
-                // its currently just a string :salute:
+                displayQR(qrCode, eventTitleString);
 
             }
 
         });
 
+    }
 
-
+    private void displayQR(String content, String name){
+        Intent intent = new Intent(this, QRCodeViewer.class);
+        Bundle extras = new Bundle();
+        extras.putString("name", name);
+        extras.putString("code", content);
+        intent.putExtras(extras);
+        startActivity(intent);
     }
 
     // ADD EVENT TO DATABASE HERE

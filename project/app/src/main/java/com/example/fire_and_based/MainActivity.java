@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.view.View;
-import android.widget.Button;
+
 
 import java.util.UUID;
 
@@ -29,9 +29,9 @@ public class MainActivity extends AppCompatActivity {
             editor.commit();
         }
 
-        Button button = findViewById(R.id.button2);
+        Button button = findViewById(R.id.eventlistButton);
         button.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, OrganizerActivity.class);
+            Intent intent = new Intent(MainActivity.this, EventListActivity.class);
             startActivity(intent);
         });
 
@@ -52,6 +52,26 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ImageUploader.class);
+                startActivity(intent);
+            }
+        });
+
+        Button QRScanTest = findViewById(R.id.QRScanTest);
+
+        QRScanTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, EventCheckIn.class);
+                startActivity(intent);
+            }
+        });
+
+        Button QRGenTest = findViewById(R.id.QRGenTest);
+
+        QRGenTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, TestQRCodeGenerator.class);
                 startActivity(intent);
             }
         });
