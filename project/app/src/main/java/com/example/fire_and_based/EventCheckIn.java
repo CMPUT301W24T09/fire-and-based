@@ -1,12 +1,14 @@
 package com.example.fire_and_based;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import com.journeyapps.barcodescanner.ScanOptions;
 import com.journeyapps.barcodescanner.ScanContract;
@@ -71,7 +73,7 @@ public class EventCheckIn extends AppCompatActivity {
                             Toast.makeText(EventCheckIn.this, "Joined event " + event.getEventName(), Toast.LENGTH_LONG).show();
                             user.addEvent(event);
                             //TODO add user to event as well
-                            //TODO direct to event screen
+                            goToEvent(event);
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -84,7 +86,13 @@ public class EventCheckIn extends AppCompatActivity {
             alert.show();
         } else {
             Toast.makeText(EventCheckIn.this, "You are already in event " + event.getEventName(), Toast.LENGTH_LONG).show();
-            //TODO direct to event screen
+            goToEvent(event);
         }
+    }
+
+    public void goToEvent(Event event){
+        Intent intent = new Intent(this, EventInfoActivity.class);
+        intent.putExtra("event", event);
+        startActivity(intent);
     }
 }
