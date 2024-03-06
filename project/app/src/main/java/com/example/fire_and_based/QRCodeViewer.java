@@ -1,9 +1,11 @@
 package com.example.fire_and_based;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,6 +29,20 @@ public class QRCodeViewer extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_qr); // Assuming you have an XML layout file named "activity_my"
+
+
+        Button okButton = findViewById(R.id.view_qr_ok);
+
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(QRCodeViewer.this, EventListActivity.class);
+                startActivity(intent);
+            }
+
+        });
+
+
 
         // Retrieve the extras from the Intent
         Bundle receivedExtras = getIntent().getExtras();

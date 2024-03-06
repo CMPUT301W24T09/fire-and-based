@@ -1,7 +1,10 @@
 package com.example.fire_and_based;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import androidx.appcompat.widget.Toolbar;
 
@@ -12,7 +15,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class EventListActivity extends AppCompatActivity {
     private ArrayList<Event> dataList;
@@ -27,9 +32,9 @@ public class EventListActivity extends AppCompatActivity {
         setContentView(R.layout.events_list);
 
         dataList = new ArrayList<Event>();
-        dataList.add(new Event("Event 1", "1"));
-        dataList.add(new Event("Event 2", "2"));
-        dataList.add(new Event("Event 3", "3"));
+        dataList.add(new Event("Event 1", "1", null, "fjhdjka"));
+        dataList.add(new Event("Event 2", "2", null, "sahdajk"));
+        dataList.add(new Event("Event 3", "3", null, "xdhjdhg"));
         eventList = findViewById(R.id.event_list);
         eventAdapter = new EventArrayAdapter(this, dataList);
         eventList.setAdapter(eventAdapter);
@@ -45,6 +50,17 @@ public class EventListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_menu_24);
+
+        Button createEvent = findViewById(R.id.create_event_button);
+        createEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(EventListActivity.this, EventCreation.class);
+                startActivity(intent);
+            }
+
+        });
+
     }
 
     @Override

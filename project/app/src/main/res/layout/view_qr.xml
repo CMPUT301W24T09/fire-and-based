@@ -26,5 +26,11 @@
             android:layout_height="496dp"
             tools:srcCompat="@android:drawable/ic_menu_report_image" />
 
+        <Button
+            android:id="@+id/view_qr_ok"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ok" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
