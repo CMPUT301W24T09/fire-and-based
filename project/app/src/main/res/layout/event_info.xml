@@ -9,7 +9,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/pastel_purple"
+        android:background="#C1A0FE"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:title="Events"
@@ -20,7 +20,7 @@
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/pastel_purple"
+        android:background="#C1A0FE"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
         app:title="Overview"
@@ -37,3 +37,4 @@
         android:layout_weight="1" />
 
 </LinearLayout>
+
