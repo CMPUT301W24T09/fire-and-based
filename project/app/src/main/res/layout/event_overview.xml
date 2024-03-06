@@ -11,4 +11,11 @@
         android:layout_height="wrap_content"
         android:text="hi!" />
 
+    <TextView
+        android:id="@+id/overview_event_title"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:textColor="@color/black"
+        android:textSize="20dp" />
+
 </LinearLayout>

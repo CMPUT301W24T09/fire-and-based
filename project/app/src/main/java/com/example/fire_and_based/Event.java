@@ -14,7 +14,7 @@ public class Event implements Parcelable {
 
 
     // constructor
-    Event(String eventName, String eventDescription){
+    Event(String eventName, String eventDescription, String eventBanner, String QRcode){
         this.eventName = eventName;
         this.eventDescription = eventDescription;
     }
