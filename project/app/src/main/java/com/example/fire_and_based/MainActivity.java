@@ -34,13 +34,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+
+        sharedPref.edit().remove("uuid_key").commit();
+
         String uuid = sharedPref.getString("uuid_key", "");
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         if (TextUtils.isEmpty(uuid)) {
             uuid = UUID.randomUUID().toString();
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("uuid_key", uuid);
-            User hello;
             currentUser = new User(uuid, "", new ArrayList<Event>(), "");
             FirebaseUtil.addUserToDB(db, currentUser);
             editor.commit();
