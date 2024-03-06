@@ -7,18 +7,18 @@
     tools:context=".MainActivity">
 
 
-
-
     <ListView
         android:id="@+id/event_list"
         android:layout_width="match_parent"
-        android:layout_height="657dp" />
-
+        android:layout_height="655dp" />
 
     <Button
         android:id="@+id/create_event_button"
         android:layout_width="match_parent"
         android:layout_height="75dp"
-        android:text="Create New Event" />
+        android:text="Create New Event"
+        />
+
 
 </LinearLayout>
+
