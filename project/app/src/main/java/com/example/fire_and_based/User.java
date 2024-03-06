@@ -47,4 +47,7 @@ public class User {
     public void setProfilePicture(String profilePicture){
         this.profilePicture = profilePicture;
     }
+    public void setUserRegisteredEvents(ArrayList<Event> eventList){
+        this.userRegisteredEvents = eventList;
+    }
 }
