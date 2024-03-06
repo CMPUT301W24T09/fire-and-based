@@ -2,6 +2,8 @@ package com.example.fire_and_based;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
+
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.fragment.app.FragmentActivity;
@@ -15,11 +17,21 @@ public class EventInfoActivity extends FragmentActivity {
 
     private ViewPager2 viewPager;
     private FragmentStateAdapter pagerAdapter;
+    public Event clickedEvent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_info_activity);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            clickedEvent = getIntent().getParcelableExtra("event");
+        }
+
+
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -30,7 +42,8 @@ public class EventInfoActivity extends FragmentActivity {
         });
 
         viewPager = findViewById(R.id.event_view_pager);
-        pagerAdapter = new EventPagerAdapter(this);
+        Event fake = new Event(null, null, null, null);
+        pagerAdapter = new EventPagerAdapter(this, clickedEvent);
         viewPager.setAdapter(pagerAdapter);
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
@@ -47,5 +60,8 @@ public class EventInfoActivity extends FragmentActivity {
                     break;
             }
         }).attach();
+
+
+
     }
 }
