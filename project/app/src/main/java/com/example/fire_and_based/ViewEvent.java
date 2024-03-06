@@ -21,7 +21,7 @@ public class ViewEvent extends AppCompatActivity {
             clickedEvent = getIntent().getParcelableExtra("event");
         }
 
-        Button testButton = findViewById(R.id.testButton);
+        Button testButton = findViewById(R.id.create_event_button);
         String eventName = clickedEvent.getEventName();
         testButton.setText(eventName);
 
