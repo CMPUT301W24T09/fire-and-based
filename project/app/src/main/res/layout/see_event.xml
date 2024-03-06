@@ -14,14 +14,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Button
+        <ImageButton
             android:id="@+id/back_button"
-            android:layout_gravity="center"
-            android:layout_marginRight="12dp"
-            android:layout_marginLeft="12dp"
-            android:layout_width="80dp"
-            android:text="Back"
-            android:layout_height="50dp" />
+            android:layout_width="110dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@drawable/baseline_arrow_back_24" />
 
         <TextView
             android:id="@+id/event_name_text"
@@ -30,6 +29,15 @@
             android:gravity="center"
             android:text="Event title again..?"
             android:textSize="30sp" />
+
+
+        <ImageButton
+            android:id="@+id/menu_button"
+            android:layout_width="110dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@drawable/baseline_menu_24" />
 
     </LinearLayout>
 
