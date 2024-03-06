@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button button = findViewById(R.id.button2);
         button.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, OrganizerActivity.class);
+            Intent intent = new Intent(MainActivity.this, EventListActivity.class);
             startActivity(intent);
         });
 
@@ -62,4 +62,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 }

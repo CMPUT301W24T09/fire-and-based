@@ -25,7 +25,7 @@ public class ViewEvent extends AppCompatActivity {
         String eventName = clickedEvent.getEventName();
         testButton.setText(eventName);
 
-        TextView titleText = findViewById(R.id.event_title);
+        TextView titleText = findViewById(R.id.event_name_text);
         titleText.setText(clickedEvent.getEventName());
 
         Button backButton = findViewById(R.id.back_button);

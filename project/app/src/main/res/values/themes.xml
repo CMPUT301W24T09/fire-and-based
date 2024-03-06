@@ -6,4 +6,17 @@
     </style>
 
     <style name="Theme.Fireandbased" parent="Base.Theme.Fireandbased" />
+
+    <style name="Theme.Fireandbased.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.Fireandbased.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.Fireandbased.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="TabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
 </resources>
