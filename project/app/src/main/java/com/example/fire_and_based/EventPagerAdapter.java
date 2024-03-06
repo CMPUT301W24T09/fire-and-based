@@ -1,12 +1,13 @@
 package com.example.fire_and_based;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
+
+import org.jetbrains.annotations.NotNull;
 
 public class EventPagerAdapter extends FragmentStateAdapter {
 
@@ -14,7 +15,7 @@ public class EventPagerAdapter extends FragmentStateAdapter {
         super(fragmentActivity);
     }
 
-    @NonNull
+    @NotNull
     @Override
     public Fragment createFragment(int position) {
         switch (position) {
