@@ -33,7 +33,7 @@ public class EventMapFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
 
-        View view = inflater.inflate(R.layout.event_map, container, false);
+        View view = inflater.inflate(R.layout.event_map_fragment, container, false);
         if (getArguments() != null) {
             Event event = getArguments().getParcelable(ARG_EVENT);
             if (event != null) {

@@ -32,7 +32,7 @@ public class EventOverviewFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.event_overview, container, false);
+        View view = inflater.inflate(R.layout.event_overview_fragment, container, false);
 
         // Extract the Event object from arguments
         if (getArguments() != null) {

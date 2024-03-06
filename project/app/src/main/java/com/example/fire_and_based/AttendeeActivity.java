@@ -58,6 +58,11 @@ public class AttendeeActivity extends AppCompatActivity {
                             .replace(R.id.fragment_container_view, new EditProfileFragment())
                             .commit();
                 }
+                if (item.getItemId() == R.id.scan_qrcode_button) {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container_view, new ScanQRCodeFragment())
+                            .commit();
+                }
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             }

@@ -39,7 +39,7 @@ public class EventListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.events_list);
+        setContentView(R.layout.event_list_fragment);
 
         dataList = new ArrayList<>();
 
