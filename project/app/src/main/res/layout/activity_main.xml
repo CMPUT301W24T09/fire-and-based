@@ -46,14 +46,24 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:layout_editor_absoluteY="475dp" />
 
-    </LinearLayout>
+        <Button
+            android:id="@+id/QRScanTest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Scan QR Code" />
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        tools:layout_editor_absoluteX="173dp"
-        tools:layout_editor_absoluteY="476dp" />
+        <Button
+            android:id="@+id/QRGenTest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Generate QR Code" />
+
+        <Button
+            android:id="@+id/eventlistButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event List" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
