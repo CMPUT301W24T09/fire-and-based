@@ -10,8 +10,12 @@ import android.widget.TextView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+
 public class ViewEvent extends AppCompatActivity {
     public Event clickedEvent;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +40,14 @@ public class ViewEvent extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ViewEvent.this, Firebase.class);
+                Intent intent = new Intent(ViewEvent.this, EventInfoActivity.class);
                 startActivity(intent);
             }
         });
 
         Button deleteEventButton = findViewById(R.id.deleteEventButton);
+
+
         deleteEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
