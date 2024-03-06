@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 
@@ -43,8 +44,7 @@ public class ImageUploader extends Firebase
 
     private ProgressBar uploadProgress;
 
-
-
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private final ActivityResultLauncher<Intent> customActivityResultLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>()
@@ -126,7 +126,11 @@ public class ImageUploader extends Firebase
 
                 StorageReference selectionRef = fireRef.child("images/"+imageName);
 
-                //b.collection("events").document("froggy").set(imageData);
+                // i just made a fake user to test updating the URL
+                User fakeUser = new User("123", "TestingUser", null, null);
+                FirebaseUtil.addUserToDB(db, fakeUser);
+                String newURL = "images/"+imageName;
+                FirebaseUtil.updateUserProfileImageUrl(db, fakeUser, newURL);
 
                 selectionRef.putFile(imageData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override

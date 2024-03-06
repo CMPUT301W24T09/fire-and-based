@@ -5,12 +5,15 @@ import java.util.ArrayList;
 public class User {
     private String deviceID;
     private String userName;
+    private String profilePicture;
     private ArrayList<Event> userRegisteredEvents;
 
-    User(String deviceID, String userName, ArrayList<Event> userRegisteredEvents){
+    User(String deviceID, String userName, ArrayList<Event> userRegisteredEvents, String profilePicture){
         this.deviceID = deviceID;
+        this.profilePicture = profilePicture;
         this.userName = userName;
         this.userRegisteredEvents = userRegisteredEvents;
+
     }
 
     public String getDeviceID(){
@@ -37,4 +40,11 @@ public class User {
         this.userRegisteredEvents.add(event);
     }
 
+    public ArrayList<Event> getEvents(){
+        return this.userRegisteredEvents;
+    }
+
+    public void setProfilePicture(String profilePicture){
+        this.profilePicture = profilePicture;
+    }
 }

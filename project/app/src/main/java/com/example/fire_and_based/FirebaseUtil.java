@@ -36,9 +36,14 @@ public class FirebaseUtil {
                 .update("eventBanner", newEventBanner);
     }
 
-    public static void updateEventDescription(FirebaseFirestore db, Event event){
+    public static void updateEventDescription(FirebaseFirestore db, Event event, String eventBanner){
         db.collection("events").document(event.getEventName())
-                .update("eventBanner", "NewEventBanner");
+                .update("eventBanner", eventBanner);
+    }
+
+    public static void updateUserProfileImageUrl(FirebaseFirestore db, User user, String profilePictureURL){
+        db.collection("users").document(user.getDeviceID())
+                .update("profilePicture", profilePictureURL);
     }
 
 
