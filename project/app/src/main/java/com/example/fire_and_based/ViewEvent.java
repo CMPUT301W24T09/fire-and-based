@@ -40,7 +40,7 @@ public class ViewEvent extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ViewEvent.this, Firebase.class);
+                Intent intent = new Intent(ViewEvent.this, EventInfoActivity.class);
                 startActivity(intent);
             }
         });
