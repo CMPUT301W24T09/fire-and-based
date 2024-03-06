@@ -16,12 +16,14 @@
 
     <TextView
         android:id="@+id/profile_titlw"
-        android:layout_width="153dp"
+        android:layout_width="78dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:layout_weight="1"
-        android:fontFamily="@font/crete_round"
-        android:text="TextView"
+        android:fontFamily="@font/abeezee"
+        android:text="Profile #"
         android:textSize="30dp" />
+
+
 
 </LinearLayout>

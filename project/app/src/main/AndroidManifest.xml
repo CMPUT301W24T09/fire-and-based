@@ -30,7 +30,7 @@
         <activity android:name=".TestQRCodeGenerator" />
         <activity android:name=".QRCodeViewer" />
         <activity
-            android:name=".EventListActivity"
+            android:name=".AttendeeActivity"
             android:exported="true" />
 
         <meta-data

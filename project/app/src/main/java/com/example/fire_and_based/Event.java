@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import java.io.Serializable;
-
 public class Event implements Parcelable {
     public String eventName;
     public String eventDescription;

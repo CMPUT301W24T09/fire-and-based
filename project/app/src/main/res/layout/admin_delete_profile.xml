@@ -5,6 +5,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#C1A0FE"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#C1A0FE"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:title="Events"
+            app:titleTextColor="@color/white"
+            app:navigationIcon="@drawable/baseline_arrow_back_24" />
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/button"
         android:layout_width="266dp"
@@ -24,8 +46,8 @@
         android:layout_height="wrap_content"
         android:text="Number of times signed in: "
         android:textSize="24dp"
-        tools:layout_editor_absoluteX="44dp"
-        tools:layout_editor_absoluteY="507dp" />
+        tools:layout_editor_absoluteX="72dp"
+        tools:layout_editor_absoluteY="408dp" />
 
     <TextView
         android:id="@+id/textView5"
