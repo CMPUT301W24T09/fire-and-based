@@ -6,8 +6,8 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import java.io.Serializable;
-
- public String eventName;
+public class Event implements Parcelable {
+    public String eventName;
     public String eventDescription;
     public String eventBanner;
     public String QRcode;
