@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 public class ViewEvent extends AppCompatActivity {
     public Event clickedEvent;
 
@@ -21,17 +23,32 @@ public class ViewEvent extends AppCompatActivity {
             clickedEvent = getIntent().getParcelableExtra("event");
         }
 
-        Button testButton = findViewById(R.id.testButton);
-        String eventName = clickedEvent.getEventName();
-        testButton.setText(eventName);
+//        TextView titleText = findViewById(R.id.event_title);
+//        titleText.setText(clickedEvent.getEventName());
 
-        TextView titleText = findViewById(R.id.event_title);
-        titleText.setText(clickedEvent.getEventName());
+        TextView titleText2 = findViewById(R.id.event_title2);
+        titleText2.setText(clickedEvent.getEventName());
+
+        TextView eventDescription = findViewById(R.id.event_description);
+        eventDescription.setText(clickedEvent.getEventDescription());
 
         Button backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(ViewEvent.this, Firebase.class);
+                startActivity(intent);
+            }
+        });
+
+        Button deleteEventButton = findViewById(R.id.deleteEventButton);
+        deleteEventButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                FirebaseUtil.deleteEvent(db, clickedEvent);
+
                 Intent intent = new Intent(ViewEvent.this, Firebase.class);
                 startActivity(intent);
             }
