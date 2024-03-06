@@ -19,6 +19,7 @@
 - is it okay to have the scan QR code in our navigation drawer (is it not accessible enough??)
 - should we have the filtering already done? --> is filtering of events okay?
 - switching to organizer mode??
+- in our UML, do we need to put all classes or just the classesd we currently have?
 
 ## Tyler Database Questions
 - Storing items --> Should we store EVERYTHING in the Database? Any local storage allowed? What do you recommend? ( Think the answer to this is all in db ) 
