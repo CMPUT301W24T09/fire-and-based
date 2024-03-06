@@ -28,7 +28,7 @@
         </activity>
 
         <activity
-            android:name=".EventListActivity"
+            android:name=".AttendeeActivity"
             android:exported="true" />
 
         <meta-data
