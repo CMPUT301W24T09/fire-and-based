@@ -104,34 +104,4 @@ public class Firebase extends AppCompatActivity {
 
     }
 
-
-
-
-    private void addNewEvent(Event event) {
-
-//        event.setEventBanner("Event banner test");
-        eventsRef.document(event.getEventName())
-                .set(event);
-    }
-
-    private void deleteEvent(Event event){
-        eventsRef.document(event.getEventName())
-                .delete();
-    }
-
-    private void updateEventBanner(Event event){
-//        event.setEventBanner("New event banner");
-//        db.collection("events").document(event.getEventName())
-//                .set(event);
-        // OR bottom is way less fucked for top one we have to set all params again
-        eventsRef.document(event.getEventName())
-                .update("eventBanner", "NewEventBanner");
-    }
-
-
-    private void addUsertoDB(User user){
-        usersRef.document(user.getDeviceID())
-                .set(user);
-        // user has userName, deviceID and list of events
-    }
 }
