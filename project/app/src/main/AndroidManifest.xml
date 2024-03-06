@@ -22,7 +22,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".EventCheckIn" />
-        <activity android:name=".QRCodeGeneratorIUTemp" />
+        <activity android:name=".TestQRCodeGenerator" />
+        <activity android:name=".QRCodeViewer" />
         <activity
             android:name=".OrganizerActivity"
             android:exported="true">

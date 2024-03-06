@@ -20,12 +20,6 @@
             android:inputType="text"
             android:text="testContent" />
 
-        <ImageView
-            android:id="@+id/qr_image_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/baseline_add_circle_outline_24" />
-
         <Button
             android:id="@+id/generate_button"
             android:layout_width="wrap_content"
