@@ -11,14 +11,14 @@ public class Event implements Parcelable {
     public String eventName;
     public String eventDescription;
     public String eventBanner;
-
-    public String QRCodeString;
-
+    public String QRcode;
 
     // constructor
-    Event(String eventName, String eventDescription){
+    Event(String eventName, String eventDescription, String eventBanner, String QRcode){
         this.eventName = eventName;
         this.eventDescription = eventDescription;
+        this.eventBanner = eventBanner;
+        this.QRcode = QRcode;
     }
 
 

@@ -46,6 +46,10 @@
         </activity>
 
         <activity
+            android:name=".EventCreation">
+        </activity>
+
+        <activity
             android:name=".ImageUploader"
             android:exported="true">
             <intent-filter>
