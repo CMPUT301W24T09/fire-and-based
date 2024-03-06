@@ -47,4 +47,9 @@ dependencies {
 
     implementation("com.github.bumptech.glide:glide:4.15.1")
     implementation("com.squareup.picasso:picasso:2.71828")
+
+    implementation("androidx.activity:activity:1.8.2")
+    implementation("androidx.fragment:fragment:1.6.2")
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation("com.google.zxing:core:3.4.1")
 }
