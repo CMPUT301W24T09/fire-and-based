@@ -1,4 +1,4 @@
-## Project part 1 questions
+## Project part 2 questions
 
 - How much of UI (if any) to put on CRC
     - none
@@ -13,7 +13,7 @@
 - risk level
   - do QR code thing first --> learn ourselves
  
-## Project part 2 questions
+## Project part 3 questions
 
 - does our home page make sense?
 - is it okay to have the scan QR code in our navigation drawer (is it not accessible enough??)
