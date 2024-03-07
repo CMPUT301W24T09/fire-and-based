@@ -82,7 +82,7 @@ public class OrganizingEventsFragment extends Fragment {
                 lastClickedIndex = position;
                 Event clickedEvent = dataList.get(lastClickedIndex);
 //                updateEventBanner(clickedEvent);
-                Intent intent = new Intent(requireActivity(), EventInfoActivity.class);   // need to change this to the arrow idk how
+                Intent intent = new Intent(requireActivity(), EventInfoForOrganizerActivity.class);   // need to change this to the arrow idk how
                 intent.putExtra("event",  clickedEvent);
                 startActivity(intent);
 
