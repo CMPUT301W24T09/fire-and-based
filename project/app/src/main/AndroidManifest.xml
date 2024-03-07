@@ -54,6 +54,10 @@
         </activity>
 
         <activity
+            android:name=".EventInfoForOrganizerActivity">
+        </activity>
+
+        <activity
             android:name=".ImageUploader"
             android:exported="true">
             <intent-filter>
