@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -151,5 +152,32 @@ public class FirebaseUtil {
 //            // DEAL WITH ERROrS
 //        }
 //    });
+
+    public static void getUserObject(FirebaseFirestore db, String userID, final UserObjectCallback callback) {
+        db.collection("users").document(userID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    String username = documentSnapshot.getString("userName");
+                    String profilePicture = documentSnapshot.getString("profilePicture");
+                    ArrayList<Event> userEvents = (ArrayList<Event>) documentSnapshot.get("userEvents");
+                    callback.onUserFetched(new User(userID, username, userEvents, profilePicture));
+                }
+                else {
+                    callback.onError(new Exception("User document does not exist."));
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                callback.onError(e);
+            }
+        });
+    }
+
+    public interface UserObjectCallback {
+        void onUserFetched(User user);
+        void onError(Exception e);
+    }
 
 }

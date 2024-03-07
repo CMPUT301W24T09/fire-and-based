@@ -22,6 +22,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -35,10 +37,9 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
 
-        sharedPref.edit().remove("uuid_key").commit();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         String uuid = sharedPref.getString("uuid_key", "");
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
         if (TextUtils.isEmpty(uuid)) {
             uuid = UUID.randomUUID().toString();
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -48,23 +49,15 @@ public class MainActivity extends AppCompatActivity {
             editor.commit();
         }
         else {
-            // Queries for document with matching uuid
-            Query q = db.collection("users").whereEqualTo(FieldPath.documentId(), uuid);
-
-            //  Whenever query successful, creates new User based on values within document, not sure if saving userEvents works like that
-            q.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            FirebaseUtil.getUserObject(db, uuid, new FirebaseUtil.UserObjectCallback() {
                 @Override
-                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                    String userID = queryDocumentSnapshots.getDocuments().get(0).getString("device_id");
-                    String username = queryDocumentSnapshots.getDocuments().get(0).getString("userName");
-                    String profilePicture = queryDocumentSnapshots.getDocuments().get(0).getString("profiePicture");
-                    ArrayList<Event> userEvents = (ArrayList<Event>) queryDocumentSnapshots.getDocuments().get(0).get("userEvents");
-                    currentUser = new User(userID, username, userEvents, profilePicture);
+                public void onUserFetched(User user) {
+                    currentUser = user;
+                    Log.d(TAG, String.format("Username: %s UserID: %s", currentUser.getUserName(), currentUser.getDeviceID()));
                 }
-            }).addOnFailureListener(new OnFailureListener() {
                 @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d(TAG, "User not added");
+                public void onError(Exception e) {
+                    Log.d(TAG, e.toString());
                 }
             });
         }
@@ -74,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, EventListActivity.class);
             startActivity(intent);
         });
-
 
         Button firebaseTest = findViewById(R.id.firebaseButton);
 
