@@ -90,20 +90,49 @@ public class FirebaseUtil {
 
     }
 
-//    FirebaseUtil.getEventBannerUrl(db, clickedEvent, new EventBannerCallback()
-//    {
-//        @Override
-//        public void onBannerUrlFetched(String bannerUrl)
-//        {
-//
-//        }
-//
-//        @Override
-//        public void onError(Exception e)
-//        {
-//
-//        }
-//    });
+
+
+    public static void getUserProfileUrl(FirebaseFirestore db, User user, final UserPictureCallback callback) {
+        db.collection("users").document(user.getProfilePicture()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    String profileUrl = documentSnapshot.getString("profilePicture");
+                    if (profileUrl != null) {
+                        callback.onProfilePictureUrlFetched(profileUrl);
+                    } else {
+                        // Handle the case where the eventBanner field is missing
+                        callback.onError(new Exception("Profile picture URL not found in the document"));
+                    }
+                } else {
+                    // Handle the case where the document does not exist
+                    callback.onError(new Exception("user document not found"));
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // Handle any errors that occur while fetching the document
+                callback.onError(e);
+            }
+        });
+    }
+
+    public interface UserPictureCallback {
+        void onProfilePictureUrlFetched(String profileUrl);
+        void onError(Exception e);
+
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 
