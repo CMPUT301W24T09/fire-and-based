@@ -45,6 +45,12 @@
             android:id="@+id/event_description_input"
             android:hint="Enter Event Description" />
 
+        <Button
+            android:id="@+id/craete_evet_reuseQR_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Use an existing QR Code?" />
+
 
     </LinearLayout>
 

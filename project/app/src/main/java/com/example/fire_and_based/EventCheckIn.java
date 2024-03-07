@@ -55,7 +55,7 @@ public class EventCheckIn extends AppCompatActivity {
     }
 
     /**
-     * Launches the QR Code scanner
+     * Prepares the QR Code scanner
      */
     private void launchQRScanner() {
         ScanOptions options = new ScanOptions();

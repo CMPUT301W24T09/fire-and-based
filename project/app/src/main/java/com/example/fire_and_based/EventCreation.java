@@ -6,13 +6,17 @@ import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.Firebase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.qrcode.encoder.QRCode;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -24,10 +28,42 @@ import java.util.Random;
  */
 public class EventCreation extends AppCompatActivity {
     private Button createEventSubmit;
+
+    private Button reuseQRCode;
     private EditText eventTitle;
     private EditText eventDescription;
 
-    private String qrCode;
+    private String qrCode = null;
+
+    /**
+     * Launches the QR Code scanner and sets the QR code to be used for the next event
+     */
+    private final ActivityResultLauncher<ScanOptions> qrLauncher = registerForActivityResult(
+            new ScanContract(),
+            result -> {
+                if (result.getContents() == null) {
+                    Toast.makeText(EventCreation.this, "Cancelled scan", Toast.LENGTH_LONG).show();
+                    qrCode = null;
+                } else {
+                    // TODO remove debug confirmation maybe
+                    Toast.makeText(EventCreation.this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                    qrCode = result.getContents();
+                }
+            }
+    );
+
+    /**
+     * Prepares the QR Code scanner
+     */
+    private void launchQRScanner() {
+        ScanOptions options = new ScanOptions();
+        options.setPrompt("Scan a QR Code");
+        options.setBeepEnabled(false);
+        options.setOrientationLocked(false);
+
+        // Launch the barcode scanner
+        qrLauncher.launch(options);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,20 +80,31 @@ public class EventCreation extends AppCompatActivity {
                 String eventTitleString = eventTitle.getText().toString();
                 String eventDescriptionString = eventDescription.getText().toString();
 
-
-                byte[] array = new byte[7]; // length is bounded by 7
-                new Random().nextBytes(array);
-                String qrCode = new String(array, StandardCharsets.UTF_8);
+                if (qrCode == null) {
+                    byte[] array = new byte[7]; // length is bounded by 7
+                    new Random().nextBytes(array);
+                    qrCode = "fire_and_based_event:" + new String(array, StandardCharsets.UTF_8);
+                }
 
                 Event newEvent = new Event(eventTitleString, eventDescriptionString, null, qrCode);
 
                 addNewEvent(newEvent);
 
                 displayQR(qrCode, eventTitleString);
+                qrCode = null;
 
             }
 
         });
+
+        reuseQRCode = findViewById(R.id.craete_evet_reuseQR_button);
+        reuseQRCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchQRScanner();
+            }
+        });
+
 
     }
     /**
