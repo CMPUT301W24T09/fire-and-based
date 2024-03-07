@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+
         String uuid = sharedPref.getString("uuid_key", "");
         if (TextUtils.isEmpty(uuid)) {
             uuid = UUID.randomUUID().toString();
