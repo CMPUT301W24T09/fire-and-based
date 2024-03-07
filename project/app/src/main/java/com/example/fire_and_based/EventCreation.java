@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Random;
 /**
  * GUI logic for Creating a new event
+ * Current issues: no db access?
  * @author   Tyler Beach, Ilya Nalivaiko
  */
 public class EventCreation extends AppCompatActivity {
@@ -26,6 +27,7 @@ public class EventCreation extends AppCompatActivity {
     private EditText eventTitle;
     private EditText eventDescription;
 
+    private String qrCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +37,13 @@ public class EventCreation extends AppCompatActivity {
         createEventSubmit = findViewById(R.id.create_new_event_submit);
         eventTitle = findViewById(R.id.event_title_input);
         eventDescription = findViewById(R.id.event_description_input);
+
         createEventSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String eventTitleString = eventTitle.getText().toString();
                 String eventDescriptionString = eventDescription.getText().toString();
+
 
                 byte[] array = new byte[7]; // length is bounded by 7
                 new Random().nextBytes(array);

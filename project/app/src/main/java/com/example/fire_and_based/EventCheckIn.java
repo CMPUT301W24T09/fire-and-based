@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 /**
  * GUI logic for checking in to an event by scanning a QR Code
+ * Current issues: Cant access real events or users
  * @author   Ilya Nalivaiko
  */
 public class EventCheckIn extends AppCompatActivity {
