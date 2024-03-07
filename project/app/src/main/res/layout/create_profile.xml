@@ -139,7 +139,7 @@
         tools:layout_editor_absoluteY="583dp" />
 
     <Button
-        android:id="@+id/create_event_button"
+        android:id="@+id/create_profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/pastel_blue"
