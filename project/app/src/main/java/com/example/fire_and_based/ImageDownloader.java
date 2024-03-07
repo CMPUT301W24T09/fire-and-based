@@ -26,7 +26,7 @@ public class ImageDownloader
             {
                 //url of banner has been retrieved, find the storageRef
                 StorageReference uriRef = fireRef.child(bannerUrl);
-                uriRef.getBytes(10000000).addOnSuccessListener(new OnSuccessListener<byte[]>()
+                uriRef.getBytes(1000000).addOnSuccessListener(new OnSuccessListener<byte[]>()
                 {
                     @Override
                     public void onSuccess(byte[] bytes)

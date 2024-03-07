@@ -1,8 +1,11 @@
 package com.example.fire_and_based;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -31,6 +34,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class ImageUploader extends Firebase
 {
@@ -69,11 +75,9 @@ public class ImageUploader extends Firebase
             });
 
 
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.image_uploader);
-
 
 
         imagePreview = findViewById(R.id.image_preview);
@@ -84,8 +88,7 @@ public class ImageUploader extends Firebase
 
         buttonSelect.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Intent imageIntent = new Intent(Intent.ACTION_PICK);
                 imageIntent.setType("image/*");
                 customActivityResultLauncher.launch(imageIntent);
@@ -94,28 +97,23 @@ public class ImageUploader extends Firebase
 
         buttonUpload.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 String imageName = editImageId.getText().toString();
-                StorageReference selectionRef = fireRef.child("images/"+imageName);
+                StorageReference selectionRef = fireRef.child("images/" + imageName);
 
 //                // i just made a fake user to test updating the URL
 //                User fakeUser = new User("123", "TestingUser", null, null);
 //                FirebaseUtil.addUserToDB(db, fakeUser);
 //                String newURL = "images/"+imageName;
 //                FirebaseUtil.updateUserProfileImageUrl(db, fakeUser, newURL);
-                selectionRef.putFile(imageData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
-                {
+                selectionRef.putFile(imageData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
-                    {
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Toast.makeText(ImageUploader.this, "Image Uploaded To Cloud Successfully", Toast.LENGTH_SHORT).show();
                     }
-                }).addOnFailureListener(new OnFailureListener()
-                {
+                }).addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onFailure(@NonNull Exception e)
-                    {
+                    public void onFailure(@NonNull Exception e) {
                         Toast.makeText(ImageUploader.this, "Image Upload Error", Toast.LENGTH_SHORT).show();
                     }
                 });
