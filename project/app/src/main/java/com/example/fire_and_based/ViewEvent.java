@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -69,6 +70,7 @@ public class ViewEvent extends AppCompatActivity {
         {
             public void onBannerUrlFetched(String bannerUrl)
             {
+                Toast.makeText(ViewEvent.this, bannerUrl, Toast.LENGTH_LONG).show();
                 imageUri = getBannerUri(bannerUrl);
                 Glide.with(getApplicationContext()).load(imageUri).into(imagePreview);
 
