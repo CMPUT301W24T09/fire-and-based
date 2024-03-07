@@ -81,7 +81,7 @@ public class EventCheckIn extends AppCompatActivity {
         //TODO add database call and user id
         Event event = new Event("testName", "test description", null, "testQRC");
         ArrayList<Event> testUserRegisteredEvents = new ArrayList<Event>();
-        User user = new User("testID", "testUserName", testUserRegisteredEvents);
+        User user = new User("testID", "testUserName", testUserRegisteredEvents, null);
 
         //end fake test
 
