@@ -1,6 +1,5 @@
 package com.example.fire_and_based;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -44,10 +43,12 @@ public class EventCreation extends AppCompatActivity {
                 if (result.getContents() == null) {
                     Toast.makeText(EventCreation.this, "Cancelled scan", Toast.LENGTH_LONG).show();
                     qrCode = null;
+                    showQRString.setText(getString(R.string.qr_code_display).replace("%s", "ERROR: No QR Code"));
                 } else {
                     // TODO remove debug confirmation maybe
                     Toast.makeText(EventCreation.this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
                     qrCode = result.getContents();
+                    showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
                 }
             }
     );
@@ -75,15 +76,15 @@ public class EventCreation extends AppCompatActivity {
         eventDescription = findViewById(R.id.event_description_input);
         showQRString = findViewById(R.id.create_event_show_qr_string);
 
+        if (qrCode == null){
+            showQRString.setText(getString(R.string.qr_code_display).replace("%s", "ERROR: No QR Code"));
+        }
+
         createEventSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String eventTitleString = eventTitle.getText().toString();
                 String eventDescriptionString = eventDescription.getText().toString();
-
-                if (qrCode == null){
-                    showQRString.setText("No QR Code");
-                }
 
                 if (false){ //TODO add checks for invalid entries, code not generated, etc
                     //TODO error popup
@@ -99,23 +100,22 @@ public class EventCreation extends AppCompatActivity {
 
         });
 
-        reuseQRCode = findViewById(R.id.create_evet_reuseQR_button);
+        reuseQRCode = findViewById(R.id.create_event_reuseQR_button);
         reuseQRCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 launchQRScanner();
-                showQRString.setText(qrCode);
             }
         });
 
-        reuseQRCode = findViewById(R.id.create_evet_reuseQR_button);
-        reuseQRCode.setOnClickListener(new View.OnClickListener() {
+        generateQRCode = findViewById(R.id.create_event_generateQR_button);
+        generateQRCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 byte[] array = new byte[7]; // length is bounded by 7
                 new Random().nextBytes(array);
                 qrCode = "fire_and_based_event:" + new String(array, StandardCharsets.UTF_8);
-                showQRString.setText(qrCode);
+                showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
             }
         });
 
