@@ -63,6 +63,12 @@
             android:layout_height="wrap_content"
             android:text="Your QR Code will be: ERROR QR NOT GENERATED" />
 
+        <Button
+            android:id="@+id/create_event_preview_qr_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Preview QR Image" />
+
 
     </LinearLayout>
 

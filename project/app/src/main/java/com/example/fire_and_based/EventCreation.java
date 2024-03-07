@@ -29,6 +29,7 @@ public class EventCreation extends AppCompatActivity {
     private Button reuseQRCode;
     private Button generateQRCode;
     private TextView showQRString;
+    private Button previewQRImage;
     private EditText eventTitle;
     private EditText eventDescription;
 
@@ -40,13 +41,9 @@ public class EventCreation extends AppCompatActivity {
     private final ActivityResultLauncher<ScanOptions> qrLauncher = registerForActivityResult(
             new ScanContract(),
             result -> {
-                if (result.getContents() == null) {
-                    Toast.makeText(EventCreation.this, "Cancelled scan", Toast.LENGTH_LONG).show();
-                    qrCode = null;
-                    showQRString.setText(getString(R.string.qr_code_display).replace("%s", "ERROR: No QR Code"));
-                } else {
+                if (result.getContents() != null) {
                     // TODO remove debug confirmation maybe
-                    Toast.makeText(EventCreation.this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                    toast("Scanned: " + result.getContents());
                     qrCode = result.getContents();
                     showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
                 }
@@ -86,15 +83,16 @@ public class EventCreation extends AppCompatActivity {
                 String eventTitleString = eventTitle.getText().toString();
                 String eventDescriptionString = eventDescription.getText().toString();
 
-                if (false){ //TODO add checks for invalid entries, code not generated, etc
-                    //TODO error popup
+                if (eventTitleString.isEmpty() || eventDescriptionString.isEmpty() || qrCode == null){ //TODO add separate checks for invalid entries, code not generated, etc
+                    toast("ERROR: Do not leave any entries blank");
                     return;
                 }
 
                 Event newEvent = new Event(eventTitleString, eventDescriptionString, null, qrCode);
                 addNewEvent(newEvent);
 
-                displayQR(qrCode, eventTitleString);
+                toast("Event created!");
+                onBackPressed();
 
             }
 
@@ -116,6 +114,18 @@ public class EventCreation extends AppCompatActivity {
                 new Random().nextBytes(array);
                 qrCode = "fire_and_based_event:" + new String(array, StandardCharsets.UTF_8);
                 showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
+            }
+        });
+
+        previewQRImage = findViewById(R.id.create_event_preview_qr_image);
+        previewQRImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (qrCode != null){
+                    displayQR(qrCode, eventTitle.getText().toString());
+                } else {
+                    toast("ERROR: QR Code not set");
+                }
             }
         });
 
@@ -142,5 +152,13 @@ public class EventCreation extends AppCompatActivity {
     private void addNewEvent(Event event) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUtil.addEventToDB(db, event);
+    }
+
+    /**
+     * Makes a toast popup
+     * @param text the text in the toast
+     */
+    private void toast(String text){
+        Toast.makeText(EventCreation.this, text, Toast.LENGTH_LONG).show();
     }
 }
