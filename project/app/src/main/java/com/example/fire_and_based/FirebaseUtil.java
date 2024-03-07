@@ -1,11 +1,15 @@
 package com.example.fire_and_based;
 
+import android.net.Uri;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,19 +87,27 @@ public class FirebaseUtil {
     public interface EventBannerCallback {
         void onBannerUrlFetched(String bannerUrl);
         void onError(Exception e);
+
     }
 
-//    FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        FirebaseUtil.getEventBannerUrl(db, clickedEvent, new FirebaseUtil.EventBannerCallback() {
+//    FirebaseUtil.getEventBannerUrl(db, clickedEvent, new EventBannerCallback()
+//    {
 //        @Override
-//        public void onBannerUrlFetched(String bannerUrl) {
-//            // DO WHAT U NEED TO IN HERE TO DISPLAY STUFF
+//        public void onBannerUrlFetched(String bannerUrl)
+//        {
+//
 //        }
+//
 //        @Override
-//        public void onError(Exception e) {
-//           // HANDLE THE ERROR
+//        public void onError(Exception e)
+//        {
+//
 //        }
 //    });
+
+
+
+
 
 
 
@@ -138,8 +150,8 @@ public class FirebaseUtil {
         void onError(Exception e);
     }
 
-    // HERES HOW TO USE IT
-//     FirebaseUtil.getUserEvents(db, userId, new FirebaseUtil.UserEventsCallback() {
+    // HERES HOW TO USE IT IN ANOTHER CLASS
+//    FirebaseUtil.getUserEvents(db, userId, new FirebaseUtil.UserEventsCallback() {
 //
 //        @Override
 //        public void onEventNamesFetched(ArrayList<String> eventNames) {

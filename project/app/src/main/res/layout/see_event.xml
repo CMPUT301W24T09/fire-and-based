@@ -58,6 +58,7 @@
             android:textSize="36dp" />
 
         <ImageView
+            android:id="@+id/imagePreview"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:layout_margin="16dp"

@@ -63,7 +63,7 @@ public class ImageUploader extends Firebase
                     }
                     else
                     {
-                        Toast.makeText(ImageUploader.this, "Select Image You Bastard (sorry im bipolar)", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ImageUploader.this, "Please Select An Image", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
