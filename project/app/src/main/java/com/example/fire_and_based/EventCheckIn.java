@@ -60,7 +60,7 @@ public class EventCheckIn extends AppCompatActivity {
         ScanOptions options = new ScanOptions();
         options.setPrompt("Scan a QR Code");
         options.setBeepEnabled(false);
-        options.setOrientationLocked(true);
+        options.setOrientationLocked(false);
 
         // Launch the barcode scanner
         qrLauncher.launch(options);
