@@ -13,7 +13,7 @@
 - risk level
   - do QR code thing first --> learn ourselves
  
-## Project part 3 questions
+## Project part 3 questions - answered in Mar 6 meeting
 
 - does our home page make sense?
     - no, reference some app (Rogers place)
