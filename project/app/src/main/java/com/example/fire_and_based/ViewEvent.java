@@ -3,6 +3,8 @@ package com.example.fire_and_based;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -14,9 +16,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class ViewEvent extends AppCompatActivity {
@@ -25,23 +29,37 @@ public class ViewEvent extends AppCompatActivity {
 
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference fireRef = storage.getReference();
 
-
-    StorageReference fireRef = FirebaseStorage.getInstance().getReference();
     public Uri imageUri;
-    public Uri getBannerUri(String bannerUrl)
+    public void getBannerUri(String bannerUrl)
     {
-        StorageReference uriRef = fireRef.child("events/"+bannerUrl);
-        uriRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri)
-            {
-                imageUri = uri;
-            }
-        });
+        Toast.makeText(ViewEvent.this, "I've atually been called", Toast.LENGTH_LONG).show();
 
-        return imageUri;
-    }
+        StorageReference uriRef = fireRef.child(bannerUrl);
+        uriRef.getBytes(10000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Toast.makeText(ViewEvent.this, "Image Grabbed From Cloud Successfully", Toast.LENGTH_SHORT).show();
+
+                Bitmap imageMap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                imagePreview.setImageBitmap(imageMap);
+            }
+        });}
+       // System.out.println(uriRef.toString());
+//        uriRef.getFile(imageUri).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>()
+//        {
+//            @Override
+//            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot)
+//            {
+//                //imageUri = Uri.fromFile(new File(imageUri.getPath()));
+//
+//            }
+//        });
+//        System.out.println("WE REUTNRING");
+//        return imageUri;
+//    }
 
 
 
@@ -61,18 +79,18 @@ public class ViewEvent extends AppCompatActivity {
             clickedEvent = getIntent().getParcelableExtra("event");
         }
 
-//        TextView titleText = findViewById(R.id.event_title);
-//        titleText.setText(clickedEvent.getEventName());
-
 
         imagePreview = findViewById(R.id.imagePreview);
+
+
+
         FirebaseUtil.getEventBannerUrl(db, clickedEvent, new FirebaseUtil.EventBannerCallback()
         {
             public void onBannerUrlFetched(String bannerUrl)
             {
                 Toast.makeText(ViewEvent.this, bannerUrl, Toast.LENGTH_LONG).show();
-                imageUri = getBannerUri(bannerUrl);
-                Glide.with(getApplicationContext()).load(imageUri).into(imagePreview);
+                getBannerUri(bannerUrl);
+                //Glide.with(getApplicationContext()).load(imageUri).into(imagePreview);
 
             }
             public void onError(Exception e)
