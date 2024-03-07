@@ -73,6 +73,7 @@ public class EventCreation extends AppCompatActivity {
         eventDescription = findViewById(R.id.event_description_input);
         showQRString = findViewById(R.id.create_event_show_qr_string);
 
+        //Should always be the case on view creation
         if (qrCode == null){
             showQRString.setText(getString(R.string.qr_code_display).replace("%s", "ERROR: No QR Code"));
         }
@@ -83,8 +84,16 @@ public class EventCreation extends AppCompatActivity {
                 String eventTitleString = eventTitle.getText().toString();
                 String eventDescriptionString = eventDescription.getText().toString();
 
-                if (eventTitleString.isEmpty() || eventDescriptionString.isEmpty() || qrCode == null){ //TODO add separate checks for invalid entries, code not generated, etc
-                    toast("ERROR: Do not leave any entries blank");
+                if (eventTitleString.isEmpty()){
+                    toast("ERROR: Must enter an event name");
+                    return;
+                }
+                if (eventDescriptionString.isEmpty()){
+                    toast("ERROR: Must enter an event description");
+                    return;
+                }
+                if (qrCode == null){
+                    toast("ERROR: Please generate or scan a QR Code to use");
                     return;
                 }
 
