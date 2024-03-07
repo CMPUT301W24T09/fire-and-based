@@ -3,20 +3,17 @@ package com.example.fire_and_based;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
-import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -24,55 +21,39 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Random;
 
-public class EventListActivity extends AppCompatActivity {
-    private ArrayList<Event> dataList;
+public class OrganizingEventsFragment extends Fragment {
     private ListView eventList;
     private EventArrayAdapter eventAdapter;
-    private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private ArrayList<Event> dataList;
     private int lastClickedIndex;
 
+    @Nullable
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.event_list_fragment);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.event_list_fragment, container, false);
 
         dataList = new ArrayList<>();
+        eventList = view.findViewById(R.id.event_list);
 
-        eventList = findViewById(R.id.event_list);
-        eventAdapter = new EventArrayAdapter(this, dataList);
+        eventAdapter = new EventArrayAdapter(requireContext(), dataList);
         eventList.setAdapter(eventAdapter);
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
-
-
-        drawerLayout.addDrawerListener(actionBarDrawerToggle);
-        actionBarDrawerToggle.syncState();
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_menu_24);
-
-        Button createEvent = findViewById(R.id.create_event_button);
-        createEvent.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton create_event_button = view.findViewById(R.id.create_event_button);
+        create_event_button.setVisibility(View.VISIBLE);
+        create_event_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(EventListActivity.this, EventCreation.class);
+                Intent intent = new Intent(requireContext(), EventCreation.class);
                 startActivity(intent);
             }
-
         });
-
 
         // this updates the data list that displays
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference  eventsRef = db.collection("events");
+        CollectionReference eventsRef = db.collection("events");
         eventsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot querySnapshots,
@@ -95,28 +76,19 @@ public class EventListActivity extends AppCompatActivity {
             }
         });
 
-//         event list on click handler
         eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 lastClickedIndex = position;
                 Event clickedEvent = dataList.get(lastClickedIndex);
 //                updateEventBanner(clickedEvent);
-                Intent intent = new Intent(EventListActivity.this, EventInfoActivity.class);   // need to change this to the arrow idk how
+                Intent intent = new Intent(requireActivity(), EventInfoActivity.class);   // need to change this to the arrow idk how
                 intent.putExtra("event",  clickedEvent);
                 startActivity(intent);
 
             }
         });
 
-
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return view;
     }
 }

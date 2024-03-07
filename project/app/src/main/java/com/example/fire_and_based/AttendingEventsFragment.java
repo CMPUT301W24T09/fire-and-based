@@ -23,7 +23,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class BrowseEventsFragment extends Fragment {
+public class AttendingEventsFragment extends Fragment {
     private ListView eventList;
     private EventArrayAdapter eventAdapter;
     private ArrayList<Event> dataList;
@@ -58,7 +58,7 @@ public class BrowseEventsFragment extends Fragment {
                 }
                 if (querySnapshots != null) {
                     dataList.clear();
-                    for (QueryDocumentSnapshot doc: querySnapshots) {
+                    for (QueryDocumentSnapshot doc : querySnapshots) {
                         String event = doc.getId();
                         String eventDescription = doc.getString("eventDescription");
                         Log.d("Firestore", String.format("Event(%s, %s) fetched", event,
@@ -78,7 +78,7 @@ public class BrowseEventsFragment extends Fragment {
                 Event clickedEvent = dataList.get(lastClickedIndex);
 //                updateEventBanner(clickedEvent);
                 Intent intent = new Intent(requireActivity(), EventInfoActivity.class);   // need to change this to the arrow idk how
-                intent.putExtra("event",  clickedEvent);
+                intent.putExtra("event", clickedEvent);
                 startActivity(intent);
 
             }

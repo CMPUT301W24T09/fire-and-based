@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button button = findViewById(R.id.eventlistButton);
         button.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AttendeeActivity.class);
+            Intent intent = new Intent(MainActivity.this, UserActivity.class);
             startActivity(intent);
         });
 

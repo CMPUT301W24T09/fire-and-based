@@ -43,16 +43,6 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         eventName.setText(event.getEventName());
 //        eventDescription.setText(event.getEventDescription());
 
-//        ImageButton arrow = view.findViewById(R.id.arrow_button);
-//        eventName.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Context context = parent.getContext();
-//                Intent intent = new Intent(context, EventInfoActivity.class);
-//                context.startActivity(intent);
-//            }
-//        });
-
         return view;
     }
 }

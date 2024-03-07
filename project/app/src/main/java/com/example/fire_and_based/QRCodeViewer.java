@@ -36,7 +36,7 @@ public class QRCodeViewer extends AppCompatActivity {
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(QRCodeViewer.this, EventListActivity.class);
+                Intent intent = new Intent(QRCodeViewer.this, UserActivity.class);
                 startActivity(intent);
             }
 

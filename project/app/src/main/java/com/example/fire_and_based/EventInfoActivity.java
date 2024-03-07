@@ -1,22 +1,26 @@
 package com.example.fire_and_based;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-public class EventInfoActivity extends FragmentActivity {
-
-    private ViewPager2 viewPager;
-    private FragmentStateAdapter pagerAdapter;
+public class EventInfoActivity extends AppCompatActivity {
     public Event clickedEvent;
 
 
@@ -30,10 +34,9 @@ public class EventInfoActivity extends FragmentActivity {
             clickedEvent = getIntent().getParcelableExtra("event");
         }
 
-
-
-
         Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle(clickedEvent.getEventName());
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,27 +44,50 @@ public class EventInfoActivity extends FragmentActivity {
             }
         });
 
-        viewPager = findViewById(R.id.event_view_pager);
-        Event fake = new Event(null, null, null, null);
-        pagerAdapter = new EventPagerAdapter(this, clickedEvent);
-        viewPager.setAdapter(pagerAdapter);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .add(R.id.fragment_container_view, EventOverviewFragment.newInstance(clickedEvent))
+                    .commit();
+        }
 
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
-        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            switch (position) {
-                case 0:
-                    tab.setText("Overview");
-                    break;
-                case 1:
-                    tab.setText("Announcements");
-                    break;
-                case 2:
-                    tab.setText("Map");
-                    break;
+        NavigationBarView bottomNavigationView = findViewById(R.id.bottom_nav);
+        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.overview_item) {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container_view, EventOverviewFragment.newInstance(clickedEvent))
+                            .commit();
+                }
+                if (item.getItemId() == R.id.announcements_item) {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container_view, EventAnnouncementsFragment.newInstance(clickedEvent))
+                            .commit();
+                }
+                if (item.getItemId() == R.id.map_item) {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container_view, EventMapFragment.newInstance(clickedEvent))
+                            .commit();
+                }
+                return true;
             }
-        }).attach();
+        });
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.scanner, menu);
+        return true;
+    }
 
-
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.scanner_item) {
+            Intent intent = new Intent(EventInfoActivity.this, EventCheckIn.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
