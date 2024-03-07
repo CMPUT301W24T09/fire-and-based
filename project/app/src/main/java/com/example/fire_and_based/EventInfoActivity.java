@@ -22,7 +22,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 public class EventInfoActivity extends AppCompatActivity {
     public Event clickedEvent;
-
+    private boolean signedUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +32,7 @@ public class EventInfoActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             clickedEvent = getIntent().getParcelableExtra("event");
+            signedUp = getIntent().getBooleanExtra("signed up", false);
         }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -73,12 +74,23 @@ public class EventInfoActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        if (!signedUp) {
+            Menu menu = bottomNavigationView.getMenu();
+            MenuItem announcementsItem = menu.findItem(R.id.announcements_item);
+            announcementsItem.setVisible(false);
+            MenuItem mapItem = menu.findItem(R.id.map_item);
+            mapItem.setVisible(false);
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.scanner, menu);
-        return true;
+        if (signedUp) {
+            getMenuInflater().inflate(R.menu.scanner, menu);
+            return true;
+        }
+        return false;
     }
 
     @Override

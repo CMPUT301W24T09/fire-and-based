@@ -79,6 +79,7 @@ public class AttendingEventsFragment extends Fragment {
 //                updateEventBanner(clickedEvent);
                 Intent intent = new Intent(requireActivity(), EventInfoActivity.class);   // need to change this to the arrow idk how
                 intent.putExtra("event", clickedEvent);
+                intent.putExtra("signed up", true);
                 startActivity(intent);
 
             }
