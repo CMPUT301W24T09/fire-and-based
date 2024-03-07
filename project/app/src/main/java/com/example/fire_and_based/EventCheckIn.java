@@ -15,8 +15,14 @@ import com.journeyapps.barcodescanner.ScanContract;
 
 import java.util.ArrayList;
 
+/**
+ * GUI logic for checking in to an event by scanning a QR Code
+ * @author   Ilya Nalivaiko
+ */
 public class EventCheckIn extends AppCompatActivity {
-
+    /**
+     * Launches the QR Code scanner
+     */
     private final ActivityResultLauncher<ScanOptions> qrLauncher = registerForActivityResult(
             new ScanContract(),
             result -> {
@@ -30,6 +36,9 @@ public class EventCheckIn extends AppCompatActivity {
             }
     );
 
+    /**
+     * Creates activity object
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +53,9 @@ public class EventCheckIn extends AppCompatActivity {
         });
     }
 
-    // Method to launch the barcode scanner
+    /**
+     * Launches the QR Code scanner
+     */
     private void launchQRScanner() {
         ScanOptions options = new ScanOptions();
         options.setPrompt("Scan a QR Code");
@@ -54,6 +65,15 @@ public class EventCheckIn extends AppCompatActivity {
         // Launch the barcode scanner
         qrLauncher.launch(options);
     }
+
+    /**
+     * Logic for after a QR Code is scanned successfully
+     *
+     * <p>If the user is registered for the event already, direct them to the event screen.
+     * If the user is not registered, ask for confirmation (Can decline joining)</p>
+     *
+     * @param  qrCode the QR Code ID string of an event
+     */
 
     private void offerEvent(String qrCode){
 
@@ -90,6 +110,11 @@ public class EventCheckIn extends AppCompatActivity {
         }
     }
 
+    /**
+     * Directs the user to the homepage of a given event
+     *
+     * @param  event the event the user should be directed to
+     */
     public void goToEvent(Event event){
         Intent intent = new Intent(this, EventInfoActivity.class);
         intent.putExtra("event", event);

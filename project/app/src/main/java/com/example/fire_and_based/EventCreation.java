@@ -17,7 +17,10 @@ import com.google.zxing.qrcode.encoder.QRCode;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
-
+/**
+ * GUI logic for Creating a new event
+ * @author   Tyler Beach, Ilya Nalivaiko
+ */
 public class EventCreation extends AppCompatActivity {
     private Button createEventSubmit;
     private EditText eventTitle;
@@ -53,7 +56,12 @@ public class EventCreation extends AppCompatActivity {
         });
 
     }
-
+    /**
+     * Brings up a screen with the event name and a scannable QR code to join it
+     *
+     * @param  content the QR Code ID string of an event
+     * @param  name the name of the event
+     */
     private void displayQR(String content, String name){
         Intent intent = new Intent(this, QRCodeViewer.class);
         Bundle extras = new Bundle();
