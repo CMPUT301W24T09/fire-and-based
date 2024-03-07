@@ -46,7 +46,7 @@ public class Firebase extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.firestone_test);
 
-        createEventButton = findViewById(R.id.create_event_button);
+        createEventButton = findViewById(R.id.create_profile);
         eventList = findViewById(R.id.event_list);
 
         db = FirebaseFirestore.getInstance();

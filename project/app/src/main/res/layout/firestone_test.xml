@@ -18,7 +18,7 @@
             android:layout_gravity="top" />
 
         <Button
-            android:id="@+id/create_event_button"
+            android:id="@+id/create_profile"
             android:layout_width="match_parent"
             android:layout_height="75dp"
             android:layout_gravity="bottom"

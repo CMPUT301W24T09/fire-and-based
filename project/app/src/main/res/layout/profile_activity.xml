@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/pastel_purple"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:title="Profile"
+        app:titleTextColor="@color/white"
+        app:navigationIcon="@drawable/baseline_arrow_back_24" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="First Name"
+            android:textColor="#808080"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/first_name_text"
+            android:layout_width="350dp"
+            android:layout_height="44dp"
+            android:ems="10" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Last Name"
+            android:textColor="#808080"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/last_name_text"
+            android:layout_width="350dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="8dp"
+            android:ems="10" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Email"
+            android:textColor="#808080"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/email_text"
+            android:layout_width="350dp"
+            android:layout_height="44dp"
+            android:ems="10" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Phone Number"
+            android:textColor="#808080"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/phone_number_text"
+            android:layout_width="350dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="8dp"
+            android:ems="10" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Profile Picture"
+            android:textColor="#808080"
+            android:textSize="24sp" />
+
+        <ImageButton
+            android:id="@+id/delete_button"
+            android:layout_width="62dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@drawable/baseline_delete_circle_outline" />
+
+        <Button
+            android:id="@+id/create_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/pastel_blue"
+            android:fontFamily="@font/abeezee"
+            android:paddingVertical="15dp"
+            android:text="Save"
+            android:textColor="@color/black"
+            android:textSize="20dp" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

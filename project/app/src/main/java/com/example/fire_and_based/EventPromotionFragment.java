@@ -9,15 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import java.io.FileReader;
-
-public class EditProfileFragment extends Fragment {
+public class EventPromotionFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.profile_list_content, container, false);
-
+        View view = inflater.inflate(R.layout.event_promotion_fragment, container, false);
         return view;
     }
 }
