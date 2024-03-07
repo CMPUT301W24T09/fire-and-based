@@ -46,10 +46,22 @@
             android:hint="Enter Event Description" />
 
         <Button
-            android:id="@+id/craete_evet_reuseQR_button"
+            android:id="@+id/create_evet_reuseQR_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Use an existing QR Code?" />
+            android:text="Use an existing QR Code" />
+
+        <Button
+            android:id="@+id/create_evet_generateQR_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Genrate Random QR Code" />
+
+        <TextView
+            android:id="@+id/create_event_show_qr_string"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Your QR Code will be: ERROR QR NOT GENERATED" />
 
 
     </LinearLayout>
