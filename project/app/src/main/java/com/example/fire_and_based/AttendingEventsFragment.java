@@ -47,14 +47,11 @@ public class AttendingEventsFragment extends Fragment {
 
         // this updates the data list that displays
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseUtil.getAllEvents(db, list -> {
-            dataList.clear();
-            eventAdapter.notifyDataSetChanged();
-            for (Event event : list) {
-                dataList.add(event);
-                eventAdapter.notifyDataSetChanged();
-            }
-        });
+        User currentUser = MainActivity.getCurrentUser();
+        dataList.clear();
+        eventAdapter.notifyDataSetChanged();
+        dataList.addAll(currentUser.getUserEvents());
+        eventAdapter.notifyDataSetChanged();
 
 //         event list on click handler
         eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
