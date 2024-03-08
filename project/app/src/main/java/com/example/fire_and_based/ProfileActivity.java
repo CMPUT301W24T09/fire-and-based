@@ -52,6 +52,10 @@ public class ProfileActivity extends AppCompatActivity {
     ImageDownloader imageDownloader = new ImageDownloader();
 
     //LAUNCHES DEVICE IMAGE GALLERY (i will put this in its own class later sowwy)
+
+    /**
+     * Used to launch device photo gallery and display the preview of the image in an imageview
+     */
     ActivityResultLauncher<Intent> customActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result)
@@ -123,6 +127,9 @@ public class ProfileActivity extends AppCompatActivity {
         profilePic = findViewById(R.id.profile_pic);
         if (currentUser !=null )
         {
+            /**
+             * Downloads profile pic if available
+             */
             imageDownloader.getProfilePicBitmap(currentUser,profilePic);
         }
 
@@ -131,6 +138,9 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
+                /**
+                 * links to customActivityResultLauncher to display the image in imageview
+                 */
                 Intent imageIntent = new Intent(Intent.ACTION_PICK);
                 imageIntent.setType("image/*");
                 customActivityResultLauncher.launch(imageIntent);
@@ -145,8 +155,8 @@ public class ProfileActivity extends AppCompatActivity {
                 currentUser.setEmail(emailEdit.getText().toString());
                 currentUser.setPhoneNumber(phoneNumberEdit.getText().toString());
 
+                //setup profile url
                 profileUrl = "profiles/"+currentUser.getDeviceID();
-
                 //prep image for storage
                 StorageReference selectionRef = fireRef.child(profileUrl);
                 //store image
