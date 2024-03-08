@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,7 +16,6 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -57,6 +55,7 @@ public class EventCreation extends AppCompatActivity {
 
     StorageReference fireRef = FirebaseStorage.getInstance().getReference();
 
+    //LAUNCHES DEVICE IMAGE GALLERY
     ActivityResultLauncher<Intent> customActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result)
