@@ -379,6 +379,8 @@ public class FirebaseUtil {
 
         db.runTransaction((Transaction.Function<Void>) transaction -> {
                     DocumentSnapshot eventSnapshot = transaction.get(eventDoc);
+                    DocumentSnapshot userSnapshot = transaction.get(userDoc);
+
                     List<String> attendees = (List<String>) eventSnapshot.get("attendees");
                     if (attendees == null) {
                         attendees = new ArrayList<>();
@@ -386,7 +388,7 @@ public class FirebaseUtil {
                     attendees.add(attendee);
                     transaction.update(eventDoc, "attendees", attendees);
 
-                    DocumentSnapshot userSnapshot = transaction.get(userDoc);
+
                     List<String> attendeeEvents = (List<String>) userSnapshot.get("attendeeEvents");
                     if (attendeeEvents == null) {
                         attendeeEvents = new ArrayList<>();
