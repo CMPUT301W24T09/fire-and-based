@@ -2,13 +2,9 @@ package com.example.fire_and_based;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -40,7 +36,7 @@ public class FirebaseUtil {
      * Asynchronously get all events in the database
      * @param db the database reference
      * @param callback the callback function
-     * @see FirestoreCallback
+     * @see getAllEventsCallback
      * @see Event
      */
     public static void getAllEvents(FirebaseFirestore db, getAllEventsCallback callback){
@@ -84,6 +80,7 @@ public class FirebaseUtil {
 
     /**
      * This interface defines the callback methods for the addEventToDB operation.
+     * @see Event
      */
     interface AddEventCallback {
         /**
@@ -108,6 +105,8 @@ public class FirebaseUtil {
      * @param db The Firestore database instance.
      * @param event The event to add.
      * @param callback The callback to handle the different outcomes of the operation.
+     * @see AddEventCallback
+     * @see Event
      */
     public static void addEventToDB(FirebaseFirestore db, Event event, AddEventCallback callback) {
         String docID = cleanDocumentId(event.getQRcode());
@@ -126,40 +125,62 @@ public class FirebaseUtil {
         });
     }
 
-
-
-    public static void eventExists(FirebaseFirestore db, Event event){
-
-    }
+    //TODO change these to be async like add event
+    /**
+     * Add a user to the database
+     * @param db the database
+     * @param user the user
+     * @see User
+     */
     public static void addUserToDB (FirebaseFirestore db, User user){
         db.collection("users").document(user.getDeviceID()).set(user);
     }
-
+    /**
+     * Delete event from database
+     * @param db the database
+     * @param event the user
+     * @see Event
+     */
     public static void deleteEvent(FirebaseFirestore db, Event event){
         String docID = cleanDocumentId(event.getQRcode());
         db.collection("events").document(docID).delete();
     }
+
+    //TODO add more update classes?
+    /**
+     * Update an event's banner
+     * @param db the database
+     * @param event the user
+     * @param newEventBanner the url to a new banner
+     * @see Event
+     */
     public static void updateEventBanner(FirebaseFirestore db, Event event, String newEventBanner){
         String docID = cleanDocumentId(event.getQRcode());
         db.collection("events").document(docID)
                 .update("eventBanner", newEventBanner);
     }
-
-    public static void updateEventDescription(FirebaseFirestore db, Event event, String eventBanner){
-        String docID = cleanDocumentId(event.getQRcode());
-        db.collection("events").document(docID)
-                .update("eventBanner", eventBanner);
-    }
-
+    /**
+     * Update an event's banner
+     * @param db the database
+     * @param user the user
+     * @param profilePictureURL the url to a new pfp
+     * @see Event
+     */
     public static void updateUserProfileImageUrl(FirebaseFirestore db, User user, String profilePictureURL){
         db.collection("users").document(user.getDeviceID())
                 .update("profilePicture", profilePictureURL);
     }
 
-
-
     // get an event object from Firebase by QR Code
-    public static void getEvent(FirebaseFirestore db, String QRCode, final EventCallback callback) {
+    /**
+     *
+     * @param db the database
+     * @param QRCode the QR Code of an event to get
+     * @param callback the callback function
+     * @see GetEventCallback
+     * @see Event
+     */
+    public static void getEvent(FirebaseFirestore db, String QRCode, final GetEventCallback callback) {
         String docID = cleanDocumentId(QRCode);
         // Handle any errors that occur while fetching the document
         db.collection("events").document(docID).get().addOnSuccessListener(doc -> {
@@ -177,7 +198,11 @@ public class FirebaseUtil {
             }
         }).addOnFailureListener(callback::onError);
     }
-    public interface EventCallback {
+
+    /**
+     * Callback function for getting an event from the database
+     */
+    public interface GetEventCallback {
         void onEventFetched(Event event);
         void onError(Exception e);
     }
@@ -248,6 +273,11 @@ public class FirebaseUtil {
         }).addOnFailureListener(callback::onError);
     }
 
+    /**
+     * Callback for getting a user's registered events
+     * @see User
+     * @see Event
+     */
     public interface UserEventsAndFetchCallback {
         void onEventsFetched(ArrayList<Event> events);
         void onError(Exception e);
@@ -275,12 +305,27 @@ public class FirebaseUtil {
 
 
 // Check if a user is in a given event
+
+    /**
+     * Callback for checking if a given user is in a given event
+     * @see User
+     * @see Event
+     */
     public interface UserEventQRCodeCallback {
         void onEventFound(Event event);
         void onEventNotFound(Event event);
         void onError(Exception e);
     }
 
+    /**
+     * Async checking if a given user is in a given event
+     * @param db the database reference
+     * @param userID the user ID
+     * @param eventQRCode the event ID
+     * @param callback the callback
+     * @see User
+     * @see Event
+     */
     public static void checkUserInEventByQRCode(FirebaseFirestore db, String userID, String eventQRCode, final UserEventQRCodeCallback callback) {
         db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
