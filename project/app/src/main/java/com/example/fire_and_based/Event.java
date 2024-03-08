@@ -49,6 +49,7 @@ public class Event implements Parcelable {
         return this.eventDescription;
     }
     String getEventBanner(){return this.eventBanner; }
+    String getQRcode(){return this.QRcode;}
     void setEventBanner(String banner){this.eventBanner = banner;}
 
 

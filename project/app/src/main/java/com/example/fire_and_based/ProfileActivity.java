@@ -12,6 +12,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 public class ProfileActivity extends AppCompatActivity {
+
+
+
+
+
+
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,11 +34,21 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         ImageView profilePic = findViewById(R.id.profile_pic);
-        profilePic.setOnClickListener(new View.OnClickListener() {
+        profilePic.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProfileActivity.this, ImageUploader.class);
-                startActivity(intent);
+            public void onClick(View v)
+            {
+//                Intent intent = new Intent(ProfileActivity.this, ImageUploader.class);
+//                startActivity(intent);
+
+
+        //I'll add
+
+
+
+
+
             }
         });
     }

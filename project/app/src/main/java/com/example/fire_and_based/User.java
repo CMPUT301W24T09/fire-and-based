@@ -50,4 +50,9 @@ public class User {
     public void setUserRegisteredEvents(ArrayList<Event> eventList){
         this.userRegisteredEvents = eventList;
     }
+
+    String getProfilePicture(){return this.profilePicture; }
+
+
+
 }
