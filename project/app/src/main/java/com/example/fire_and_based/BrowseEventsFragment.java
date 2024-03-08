@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -39,15 +40,11 @@ public class BrowseEventsFragment extends Fragment {
         eventAdapter = new EventArrayAdapter(requireContext(), dataList);
         eventList.setAdapter(eventAdapter);
 
-        Button createEvent = view.findViewById(R.id.create_event_button);
-        createEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(requireActivity(), EventCreation.class);
-                startActivity(intent);
-            }
+        FloatingActionButton create_event_button = view.findViewById(R.id.create_event_button);
+        create_event_button.setVisibility(View.GONE);
 
-        });
+
+
 
         // this updates the data list that displays
         FirebaseFirestore db = FirebaseFirestore.getInstance();
