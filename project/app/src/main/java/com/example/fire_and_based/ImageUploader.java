@@ -24,6 +24,18 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 public class ImageUploader extends Firebase {
+
+
+
+    //DO NOT USE THIS CLASS
+    //DO NOT USE THIS CLASS
+    //DO NOT USE THIS CLASS
+    //DO NOT USE THIS CLASS
+    //DO NOT USE THIS CLASS
+    //DO NOT USE THIS CLASS
+    //DO NOT USE THIS CLASS
+    //DO NOT USE THIS CLASS
+
     private Uri imageData;
 
   // private ImageView imagePreview;
@@ -39,10 +51,8 @@ public class ImageUploader extends Firebase {
     ActivityResultLauncher<Intent> customActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result)
-        {
-            //if (result.getResultCode() == RESULT_OK)
-            try
-            {
+        {//if (result.getResultCode() == RESULT_OK)
+            try {
                 if (result.getData() != null)
                 {
                     imageData = result.getData().getData();
@@ -51,9 +61,7 @@ public class ImageUploader extends Firebase {
                 }
             }
             catch(Exception e)
-            {
-                Toast.makeText(ImageUploader.this, "Please Select An Image", Toast.LENGTH_LONG).show();
-            }
+            {Toast.makeText(ImageUploader.this, "Please Select An Image", Toast.LENGTH_LONG).show();}
         }
     });
 

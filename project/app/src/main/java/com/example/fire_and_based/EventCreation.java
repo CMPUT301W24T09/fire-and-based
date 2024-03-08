@@ -9,10 +9,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,10 +36,30 @@ public class EventCreation extends AppCompatActivity {
 
     private Uri bannerImage;
     private String bannerUrl = null;
-    ImageUploader imageUploader = new ImageUploader();
+    //ImageUploader imageUploader = new ImageUploader();
 
 
     StorageReference fireRef = FirebaseStorage.getInstance().getReference();
+
+    ActivityResultLauncher<Intent> customActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result)
+        {//if (result.getResultCode() == RESULT_OK)
+            try {
+                if (result.getData() != null)
+                {
+                    bannerImage = result.getData().getData();
+                    //buttonUpload.setEnabled(true);
+                    Glide.with(getApplicationContext()).load(bannerImage).into(previewBanner);
+                }
+            }
+            catch(Exception e)
+            {Toast.makeText(EventCreation.this, "Please Select An Image", Toast.LENGTH_LONG).show();}
+        }
+    });
+
+
+
 
 
     @Override
@@ -50,13 +74,19 @@ public class EventCreation extends AppCompatActivity {
         previewBanner = findViewById(R.id.bannerPreview);
 
 
+
+
+
+
         uploadLink.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                imageUploader.imageSelection(previewBanner);
-                bannerUrl = "events/"+eventTitle;
+                Intent imageIntent = new Intent(Intent.ACTION_PICK);
+                imageIntent.setType("image/*");
+                customActivityResultLauncher.launch(imageIntent);
+                //bannerImage = imageUploader.imageSelection(previewBanner);
             }
         });
 
@@ -72,6 +102,7 @@ public class EventCreation extends AppCompatActivity {
                 new Random().nextBytes(array);
                 String qrCode = new String(array, StandardCharsets.UTF_8);
 
+                bannerUrl = "events/"+eventTitleString;
                 Event newEvent = new Event(eventTitleString, eventDescriptionString, bannerUrl, qrCode);
 
                 //prep image for storage
