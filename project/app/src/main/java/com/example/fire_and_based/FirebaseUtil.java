@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import java.nio.charset.StandardCharsets;
+
 public class FirebaseUtil {
 
     // FOR THHIS CLASS THERE ARE TWO ARGS YOU NEED
@@ -73,27 +75,30 @@ public class FirebaseUtil {
 
 
     public static void addEventToDB (FirebaseFirestore db, Event event){
-        // NEED TO ADD SAFETY NET OR ELSE WE HAVE DUPES WILL DO EVENTUALLY BUT AFTER FRIDAY DUE DATE
-        // I THINK THIS ALSO WORKS FOR UPDATING BUT OVERWRITES PREVIOUS TOO
-        db.collection("events").document(event.getQRcode()).set(event);
+        // WILL override an event with the same QR code. Need to fix but async stuff strikes again
+        String docID = cleanDocumentId(event.getQRcode());
+        db.collection("events").document(docID).set(event);
     }
     public static void eventExists(FirebaseFirestore db, Event event){
-        db.collection("events").document();
+        db.collection("events");
     }
     public static void addUserToDB (FirebaseFirestore db, User user){
         db.collection("users").document(user.getDeviceID()).set(user);
     }
 
     public static void deleteEvent(FirebaseFirestore db, Event event){
-        db.collection("events").document(event.getQRcode()).delete();
+        String docID = cleanDocumentId(event.getQRcode());
+        db.collection("events").document(docID).delete();
     }
     public static void updateEventBanner(FirebaseFirestore db, Event event, String newEventBanner){
-        db.collection("events").document(event.getQRcode())
+        String docID = cleanDocumentId(event.getQRcode());
+        db.collection("events").document(docID)
                 .update("eventBanner", newEventBanner);
     }
 
     public static void updateEventDescription(FirebaseFirestore db, Event event, String eventBanner){
-        db.collection("events").document(event.getQRcode())
+        String docID = cleanDocumentId(event.getQRcode());
+        db.collection("events").document(docID)
                 .update("eventBanner", eventBanner);
     }
 
@@ -107,7 +112,8 @@ public class FirebaseUtil {
     // HERE YOU GET THE BANNER URL FROM THE FIREBASE BY GIVING IT AN EVENT OBJECT
     // BELOW I HAVE THE CODE YOU CAN JUST COPY PASTE
     public static void getEventBannerUrl(FirebaseFirestore db, Event event, final EventBannerCallback callback) {
-        db.collection("events").document(event.getQRcode()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        String docID = cleanDocumentId(event.getQRcode());
+        db.collection("events").document(docID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
@@ -202,5 +208,32 @@ public class FirebaseUtil {
 //            // DEAL WITH ERROrS
 //        }
 //    });
+
+
+    /**
+     * Given QR Codes may contain invalid characters, have to replace
+     * @param docId the possibly invalid string
+     * @return a valid Firebase ID
+     */
+    private static String cleanDocumentId(String docId) {
+        // Replace forward slashes with backward slashes
+        docId = docId.replace("/", "\\");
+
+        // Replace single period or double periods with %
+        docId = docId.replace(".", "%");
+        docId = docId.replace("..", "%%");
+
+        // Replace any characters matching the regular expression __.*__ with $$$
+        docId = docId.replaceAll("__.*__", "$$$");
+
+        // Ensure the string is no longer than 1500 bytes
+        byte[] docIdBytes = docId.getBytes(StandardCharsets.UTF_8);
+        if (docIdBytes.length > 1500) {
+            docId = new String(docIdBytes, 0, 1500, StandardCharsets.UTF_8);
+        }
+
+        return docId;
+    }
+
 
 }
