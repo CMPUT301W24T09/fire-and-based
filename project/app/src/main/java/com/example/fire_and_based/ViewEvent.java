@@ -10,8 +10,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 public class ViewEvent extends AppCompatActivity {
     public Event clickedEvent;
@@ -71,7 +69,7 @@ public class ViewEvent extends AppCompatActivity {
 
 
 
-        imagePreview = findViewById(R.id.imagePreview);
+        imagePreview = findViewById(R.id.bannerPreview);
         imageDownloader.getBannerBitmap(clickedEvent,imagePreview);
 
 

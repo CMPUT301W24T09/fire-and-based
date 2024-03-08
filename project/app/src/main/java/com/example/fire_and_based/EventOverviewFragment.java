@@ -6,16 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.viewpager2.widget.ViewPager2;
-
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 
 public class EventOverviewFragment extends Fragment {
 
@@ -52,7 +46,7 @@ public class EventOverviewFragment extends Fragment {
 
 
 
-                ImageView imagePreview = view.findViewById(R.id.imagePreview);
+                ImageView imagePreview = view.findViewById(R.id.bannerPreview);
                 ImageDownloader imageDownloader = new ImageDownloader();
                 imageDownloader.getBannerBitmap(event,imagePreview);
 

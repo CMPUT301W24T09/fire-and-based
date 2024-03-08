@@ -1,27 +1,41 @@
 package com.example.fire_and_based;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
-import androidx.annotation.Nullable;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.Firebase;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.zxing.qrcode.encoder.QRCode;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
 public class EventCreation extends AppCompatActivity {
     private Button createEventSubmit;
+    private Button uploadLink;
     private EditText eventTitle;
     private EditText eventDescription;
+    private ImageView previewBanner;
+
+    private Uri bannerImage;
+    private String bannerUrl = null;
+    ImageUploader imageUploader = new ImageUploader();
+
+
+    StorageReference fireRef = FirebaseStorage.getInstance().getReference();
 
 
     @Override
@@ -32,6 +46,22 @@ public class EventCreation extends AppCompatActivity {
         createEventSubmit = findViewById(R.id.create_new_event_submit);
         eventTitle = findViewById(R.id.event_title_input);
         eventDescription = findViewById(R.id.event_description_input);
+        uploadLink = findViewById(R.id.uploadLinkButton);
+        previewBanner = findViewById(R.id.bannerPreview);
+
+
+        uploadLink.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                imageUploader.imageSelection(previewBanner);
+                bannerUrl = "events/"+eventTitle;
+            }
+        });
+
+
+
         createEventSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,10 +72,25 @@ public class EventCreation extends AppCompatActivity {
                 new Random().nextBytes(array);
                 String qrCode = new String(array, StandardCharsets.UTF_8);
 
-                Event newEvent = new Event(eventTitleString, eventDescriptionString, null, qrCode);
+                Event newEvent = new Event(eventTitleString, eventDescriptionString, bannerUrl, qrCode);
+
+                //prep image for storage
+                StorageReference selectionRef = fireRef.child(bannerUrl);
+                //store image
+                selectionRef.putFile(bannerImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Toast.makeText(EventCreation.this, "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(EventCreation.this, "Image Upload Error", Toast.LENGTH_LONG).show();
+                    }
+                });
+
 
                 addNewEvent(newEvent);
-
                 displayQR(qrCode, eventTitleString);
 
             }

@@ -23,12 +23,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-public class ImageUploader extends Firebase
-{
+public class ImageUploader extends Firebase {
     private Uri imageData;
 
-
-    private ImageView imagePreview;
+  // private ImageView imagePreview;
     private EditText editImageId;
     private Button buttonSelect;
     private Button buttonUpload;
@@ -37,27 +35,45 @@ public class ImageUploader extends Firebase
     StorageReference fireRef = FirebaseStorage.getInstance().getReference();
 
 
-    private final ActivityResultLauncher<Intent> customActivityResultLauncher
-            = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>()
+
+    ActivityResultLauncher<Intent> customActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result)
+        {
+            //if (result.getResultCode() == RESULT_OK)
+            try
             {
-                @Override
-                public void onActivityResult(ActivityResult result)
+                if (result.getData() != null)
                 {
-                    if (result.getResultCode() == RESULT_OK)
-                    {
-                        if (result.getData() != null)
-                        {
-                            imageData = result.getData().getData();
-                            buttonUpload.setEnabled(true);
-                            Glide.with(getApplicationContext()).load(imageData).into(imagePreview);
-                        }
-                    }
-                    else
-                    {
-                        Toast.makeText(ImageUploader.this, "Please Select An Image", Toast.LENGTH_SHORT).show();
-                    }
+                    imageData = result.getData().getData();
+                    //buttonUpload.setEnabled(true);
+                    //Glide.with(getApplicationContext()).load(imageData).into(imagePreview);
                 }
-            });
+            }
+            catch(Exception e)
+            {
+                Toast.makeText(ImageUploader.this, "Please Select An Image", Toast.LENGTH_LONG).show();
+            }
+        }
+    });
+
+
+
+
+
+
+    public Uri imageSelection(ImageView imagePreview)
+    {
+
+
+        Intent imageIntent = new Intent(Intent.ACTION_PICK);
+        imageIntent.setType("image/*");
+        customActivityResultLauncher.launch(imageIntent);
+
+        imagePreview.setImageURI(imageData);
+        return imageData;
+    }
+
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,24 +81,28 @@ public class ImageUploader extends Firebase
         setContentView(R.layout.image_uploader);
 
 
-        imagePreview = findViewById(R.id.image_preview);
+        //imagePreview = findViewById(R.id.image_preview);
         editImageId = findViewById(R.id.edit_image_id);
         buttonSelect = findViewById(R.id.button_select_image);
         buttonUpload = findViewById(R.id.button_upload_image);
 
 
-        buttonSelect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent imageIntent = new Intent(Intent.ACTION_PICK);
-                imageIntent.setType("image/*");
-                customActivityResultLauncher.launch(imageIntent);
-            }
-        });
+//        buttonSelect.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View v)
+//            {
+//                Intent imageIntent = new Intent(Intent.ACTION_PICK);
+//                imageIntent.setType("image/*");
+//                customActivityResultLauncher.launch(imageIntent);
+//            }
+//        });
 
-        buttonUpload.setOnClickListener(new View.OnClickListener() {
+        buttonUpload.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 String imageName = editImageId.getText().toString();
                 StorageReference selectionRef = fireRef.child("events/" + imageName);
 //                // i just made a fake user to test updating the URL
