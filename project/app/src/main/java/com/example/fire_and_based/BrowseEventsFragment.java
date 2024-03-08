@@ -24,10 +24,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 
 public class BrowseEventsFragment extends Fragment {
-    private ListView eventList;
-    private EventArrayAdapter eventAdapter;
-    private ArrayList<Event> dataList;
-    private int lastClickedIndex;
+    protected ListView eventList;
+    protected EventArrayAdapter eventAdapter;
+    protected ArrayList<Event> dataList;
+    protected int lastClickedIndex;
 
     @Nullable
     @Override
@@ -43,7 +43,6 @@ public class BrowseEventsFragment extends Fragment {
 
         FloatingActionButton create_event_button = view.findViewById(R.id.create_event_button);
         create_event_button.setVisibility(View.GONE);
-
 
         // this updates the data list that displays
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -77,7 +76,7 @@ public class BrowseEventsFragment extends Fragment {
                 lastClickedIndex = position;
                 Event clickedEvent = dataList.get(lastClickedIndex);
 //                updateEventBanner(clickedEvent);
-                Intent intent = new Intent(requireActivity(), EventInfoActivity.class);   // need to change this to the arrow idk how
+                Intent intent = new Intent(requireActivity(), EventInfoActivity.class);
                 intent.putExtra("event",  clickedEvent);
                 startActivity(intent);
 

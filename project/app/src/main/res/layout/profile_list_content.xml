@@ -8,12 +8,6 @@
     android:paddingTop="50dp"
     android:paddingBottom="50dp">
 
-    <ImageView
-        android:id="@+id/event_poster"
-        android:layout_width="101dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
-
     <TextView
         android:id="@+id/profile_titlw"
         android:layout_width="78dp"
