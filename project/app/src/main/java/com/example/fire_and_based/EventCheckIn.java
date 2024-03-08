@@ -75,7 +75,7 @@ public class EventCheckIn extends AppCompatActivity {
      * <p>If the user is registered for the event already, direct them to the event screen.
      * If the user is not registered, ask for confirmation (Can decline joining)</p>
      *
-     * @param  qrCode the QR Code ID string of an event
+     * @param  eventQRCode the QR Code ID string of an event
      */
 
     private void offerEvent(String eventQRCode){

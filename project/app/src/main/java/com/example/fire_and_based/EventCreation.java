@@ -2,6 +2,7 @@ package com.example.fire_and_based;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -97,11 +98,33 @@ public class EventCreation extends AppCompatActivity {
                     return;
                 }
 
-                Event newEvent = new Event(eventTitleString, eventDescriptionString, null, qrCode);
-                addNewEvent(newEvent);
+                Event event = new Event(eventTitleString, eventDescriptionString, null, qrCode);
 
-                toast("Event created!");
-                onBackPressed();
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                toast("Adding your event, please wait...");
+                FirebaseUtil.addEventToDB(db, event, new FirebaseUtil.AddEventCallback() {
+                    @Override
+                    public void onEventAdded() {
+                        toast("Event successfully added!");
+                        Log.println(Log.DEBUG, "EventCreation", "New event with id: " + qrCode + " added");
+                        //TODO exit out maybe?
+                    }
+
+                    @Override
+                    public void onEventExists() {
+                        toast("ERROR: Event with the same ID already exists in the database.");
+                        Log.println(Log.DEBUG, "EventCreation", "Event with id: " + qrCode + " found a duplicate");
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        toast("An internal error occurred, please try again later");
+                        Log.println(Log.ERROR, "EventCreation", e.toString());
+                    }
+                });
+
+
 
             }
 
@@ -152,15 +175,6 @@ public class EventCreation extends AppCompatActivity {
         extras.putString("code", content);
         intent.putExtras(extras);
         startActivity(intent);
-    }
-
-    // ADD EVENT TO DATABASE HERE
-    // WE WILL NEED TO UPDATE THIS PARTICULAR ONE WHEN THE QR CODE IS GENERATED IN THE NEXT SCREEN
-
-
-    private void addNewEvent(Event event) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseUtil.addEventToDB(db, event);
     }
 
     /**

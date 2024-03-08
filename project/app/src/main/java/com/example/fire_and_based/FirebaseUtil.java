@@ -35,12 +35,15 @@ public class FirebaseUtil {
 
 
 
-    //get all events asynchronously
-    public interface FirestoreCallback {
-        void onCallback(List<Event> list);
-    }
 
-    public static void getAllEvents(FirebaseFirestore db, FirestoreCallback callback){
+    /**
+     * Asynchronously get all events in the database
+     * @param db the database reference
+     * @param callback the callback function
+     * @see FirestoreCallback
+     * @see Event
+     */
+    public static void getAllEvents(FirebaseFirestore db, getAllEventsCallback callback){
         ArrayList<Event> eventsList = new ArrayList<>();
 
         CollectionReference eventsRef = db.collection("events");
@@ -70,17 +73,63 @@ public class FirebaseUtil {
         });
     }
 
-
-
-
-
-    public static void addEventToDB (FirebaseFirestore db, Event event){
-        // WILL override an event with the same QR code. Need to fix but async stuff strikes again
-        String docID = cleanDocumentId(event.getQRcode());
-        db.collection("events").document(docID).set(event);
+    /**
+     * Callback interface to get list of all events
+     * @see Event
+     */
+    public interface getAllEventsCallback {
+        void onCallback(List<Event> list);
     }
+
+
+    /**
+     * This interface defines the callback methods for the addEventToDB operation.
+     */
+    interface AddEventCallback {
+        /**
+         * Called when the event is successfully added to the database.
+         */
+        void onEventAdded();
+
+        /**
+         * Called when an event with the same ID already exists in the database.
+         */
+        void onEventExists();
+
+        /**
+         * Called when there's an error during the operation.
+         * @param e The exception that occurred.
+         */
+        void onError(Exception e);
+    }
+
+    /**
+     * Adds an event to the Firestore database. If an event with the same ID already exists, it will not be added.
+     * @param db The Firestore database instance.
+     * @param event The event to add.
+     * @param callback The callback to handle the different outcomes of the operation.
+     */
+    public static void addEventToDB(FirebaseFirestore db, Event event, AddEventCallback callback) {
+        String docID = cleanDocumentId(event.getQRcode());
+        db.collection("events").document(docID).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                if (task.getResult().exists()) {
+                    callback.onEventExists();
+                } else {
+                    db.collection("events").document(docID).set(event)
+                            .addOnSuccessListener(aVoid -> callback.onEventAdded())
+                            .addOnFailureListener(callback::onError);
+                }
+            } else {
+                callback.onError(task.getException());
+            }
+        });
+    }
+
+
+
     public static void eventExists(FirebaseFirestore db, Event event){
-        db.collection("events");
+
     }
     public static void addUserToDB (FirebaseFirestore db, User user){
         db.collection("users").document(user.getDeviceID()).set(user);
@@ -150,6 +199,16 @@ public class FirebaseUtil {
 
 // EVEN BETTER JUST GET THE ENTIRE EVENT OBJECTS A USER IS IN
 // (sorry I deleted the other function, you can get it from VCS if needed but its kinda obsolete)
+
+    /**
+     * Asynchronously get list of Events a user is in
+     * @param db the database reference
+     * @param userID the ID of the user to get events of
+     * @param callback the callback function UserEventsAndFetchCallback()
+     * @see UserEventsAndFetchCallback
+     * @see Event
+     * @see User
+     */
     public static void getUserEvents(FirebaseFirestore db, String userID, final UserEventsAndFetchCallback callback) {
         db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
