@@ -159,12 +159,12 @@ public class FirebaseUtil {
                 if (rawEvents != null && !rawEvents.isEmpty()) {
                     ArrayList<String> eventNames = new ArrayList<>();
                     for (Map<String, Object> rawEvent : rawEvents) {
-                        if (rawEvent.containsKey("eventName")) {
+                        if (rawEvent.containsKey("QRcode")) {
                             String eventName = (String) rawEvent.get("QRcode");
                             eventNames.add(eventName);
                         }
                     }
-                    callback.onEventNamesFetched(eventNames);
+                    callback.onEventCodesFetched(eventNames);
                 } else {
                     callback.onError(new Exception("User exists but has no Events"));
                 }
@@ -175,7 +175,7 @@ public class FirebaseUtil {
     }
 
     public interface UserEventsCallback {
-        void onEventNamesFetched(ArrayList<String> eventNames);
+        void onEventCodesFetched(ArrayList<String> eventNames);
         void onError(Exception e);
     }
 
