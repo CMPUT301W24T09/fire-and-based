@@ -134,9 +134,9 @@ public class FirebaseUtil {
     }
 
 //    FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        FirebaseUtil.getEventBannerUrl(db, clickedEvent, new FirebaseUtil.EventBannerCallback() {
+//        FirebaseUtil.getEvent(db, qrCode, new FirebaseUtil.EventCallback() {
 //        @Override
-//        public void onBannerUrlFetched(String bannerUrl) {
+//        public void onEventFetched(Event event) {
 //            // DO WHAT U NEED TO IN HERE TO DISPLAY STUFF
 //        }
 //        @Override
