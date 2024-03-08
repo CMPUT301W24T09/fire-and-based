@@ -33,6 +33,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -125,8 +126,8 @@ public class ProfileActivity extends AppCompatActivity {
             imageDownloader.getProfilePicBitmap(currentUser,profilePic);
         }
 
-
-        profilePic.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton pic_button = findViewById(R.id.pic_button);
+        pic_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
