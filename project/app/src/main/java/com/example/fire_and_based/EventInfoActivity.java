@@ -1,13 +1,19 @@
 package com.example.fire_and_based;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -19,10 +25,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
 
 public class EventInfoActivity extends AppCompatActivity {
     public Event clickedEvent;
     private boolean signedUp;
+    public User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +41,14 @@ public class EventInfoActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
+            currentUser = getIntent().getParcelableExtra("currentUser");
             clickedEvent = getIntent().getParcelableExtra("event");
             signedUp = getIntent().getBooleanExtra("signed up", false);
         }
-
+        Button registerButton = findViewById(R.id.register_button);
+        if (signedUp) {
+            registerButton.setVisibility(View.GONE);
+        }
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(clickedEvent.getEventName());
@@ -82,6 +96,20 @@ public class EventInfoActivity extends AppCompatActivity {
             MenuItem mapItem = menu.findItem(R.id.map_item);
             mapItem.setVisible(false);
         }
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, currentUser.getFirstName());
+                currentUser.addEvent(clickedEvent);
+                Log.d(TAG, currentUser.getUserEvents().get(2).getEventName());
+                FirebaseUtil.addAttendingEvent(FirebaseFirestore.getInstance(), currentUser);
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("currentUser", currentUser);
+                resultIntent.putExtra("clickedEvent", clickedEvent);
+                setResult(EventInfoActivity.RESULT_OK, resultIntent);
+                finish();
+            }
+        });
     }
 
     @Override
