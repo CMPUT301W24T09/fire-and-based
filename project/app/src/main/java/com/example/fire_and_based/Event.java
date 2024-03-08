@@ -7,10 +7,10 @@ import androidx.annotation.NonNull;
 
 import java.io.Serializable;
 public class Event implements Parcelable {
-    public String eventName;
-    public String eventDescription;
-    public String eventBanner;
-    public String QRcode;
+    private String eventName;
+    private String eventDescription;
+    private String eventBanner;
+    private String QRcode;
 
     // constructor
     Event(String eventName, String eventDescription, String eventBanner, String QRcode){
@@ -42,15 +42,15 @@ public class Event implements Parcelable {
 
 
     // GETTERS AND SETTERS
-    String getEventName() {
+    public String getEventName() {
         return this.eventName;
     }
-    String getEventDescription() {
+    public String getEventDescription() {
         return this.eventDescription;
     }
-    String getEventBanner(){return this.eventBanner; }
-    String getQRcode(){return this.QRcode;}
-    void setEventBanner(String banner){this.eventBanner = banner;}
+    public String getEventBanner(){return this.eventBanner; }
+    public String getQRcode(){return this.QRcode;}
+    public void setEventBanner(String banner){this.eventBanner = banner;}
 
 
 

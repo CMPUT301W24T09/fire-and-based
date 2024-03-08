@@ -34,7 +34,7 @@ public class BrowseEventsFragment extends Fragment {
     protected EventArrayAdapter eventAdapter;
     protected ArrayList<Event> dataList;
     protected int lastClickedIndex;
-    public User currentUser;
+    protected User currentUser;
 
     @Nullable
     @Override

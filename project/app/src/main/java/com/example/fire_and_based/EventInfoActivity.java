@@ -21,7 +21,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 public class EventInfoActivity extends AppCompatActivity {
-    public Event clickedEvent;
+    private Event clickedEvent;
     private boolean signedUp;
 
     @Override

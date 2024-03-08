@@ -121,12 +121,12 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         profilePic = findViewById(R.id.profile_pic);
-        if (currentUser !=null )
+        if (currentUser.getProfilePicture() !=null )
         {
             imageDownloader.getProfilePicBitmap(currentUser,profilePic);
         }
 
-        FloatingActionButton pic_button = findViewById(R.id.pic_button);
+        Button pic_button = findViewById(R.id.pic_button);
         pic_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
