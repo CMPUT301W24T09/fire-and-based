@@ -112,14 +112,14 @@ public class ProfileActivity extends AppCompatActivity {
 
 // merge conflict if u see this past march 8 just delete plz thx : ) 
 
-//         profilePic = findViewById(R.id.profile_pic);
-//         if (currentUser !=null )
-//         {
-//             /**
-//              * Downloads profile pic if available
-//              */
-//             imageDownloader.getProfilePicBitmap(currentUser,profilePic);
-//         }
+       profilePic = findViewById(R.id.profile_pic);
+       if (currentUser !=null )
+       {
+             /**
+              * Downloads profile pic if available
+              */
+             imageDownloader.getProfilePicBitmap(currentUser,profilePic);
+       }
 
         FloatingActionButton pic_button = findViewById(R.id.pic_button);
         pic_button.setOnClickListener(new View.OnClickListener() {
