@@ -11,6 +11,8 @@ import androidx.annotation.Nullable;
 
 import com.google.firebase.firestore.*;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -311,7 +313,7 @@ public class FirebaseUtil {
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onFailure(@NonNull Exception e) {
+            public void onFailure(@NotNull Exception e) {
                 callback.onError(e);
             }
         });
