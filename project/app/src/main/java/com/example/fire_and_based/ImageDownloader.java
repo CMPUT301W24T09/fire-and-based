@@ -43,17 +43,31 @@ public class ImageDownloader
 //    }
 
     //DISPLAYS BANNER IMAGES
-    public void getBannerBitmap(Event thisEvent, ImageView imagePreview)
-    {
+    public void getBannerBitmap(Event thisEvent, ImageView imagePreview) {
         //Bitmap imageMap;
-        FirebaseUtil.getEventBannerUrl(db, thisEvent, new FirebaseUtil.EventBannerCallback()
-        {
-            public void onBannerUrlFetched(String bannerUrl)
-            {
-                //url of banner has been retrieved, find the storageRef
-                StorageReference uriRef = fireRef.child(bannerUrl);
 
-                //check if url already a key in the cache
+        String bannerUrl = thisEvent.getEventBanner();
+        StorageReference uriRef = fireRef.child(bannerUrl);
+        uriRef.getBytes(1000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap imageMap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                //since this is the first retrieval, add to memory cache
+                //addBitmapToMemoryCache(bannerUrl,imageMap);
+                //memoryCache.put(bannerUrl, imageMap);
+
+                imagePreview.setImageBitmap(imageMap);
+            }
+        });
+
+//        FirebaseUtil.getEventBanner(db, thisEvent, new FirebaseUtil.EventBannerCallback()
+//        {
+//            public void onBannerUrlFetched(String bannerUrl)
+//            {
+        //url of banner has been retrieved, find the storageRef
+
+        //check if url already a key in the cache
 //                if (!(memoryCache.get(bannerUrl) == null))
 //                {
 //                    Bitmap imageMap = memoryCache.get(bannerUrl);
@@ -62,50 +76,37 @@ public class ImageDownloader
 //                }
 //                else //download the image for the first time
 //                {
-                    uriRef.getBytes(1000000).addOnSuccessListener(new OnSuccessListener<byte[]>()
-                    {
-                        @Override
-                        public void onSuccess(byte[] bytes)
-                        {
-                            Bitmap imageMap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
 
-                            //since this is the first retrieval, add to memory cache
-                            //addBitmapToMemoryCache(bannerUrl,imageMap);
-                            //memoryCache.put(bannerUrl, imageMap);
+        //}
 
-                            imagePreview.setImageBitmap(imageMap);
-                        }
-                    });
-                //}
+//            }
+//            public void onError(Exception e) {}
+//        });
+//    }
 
-            }
-            public void onError(Exception e) {}
-        });
+//    //DISPLAYS PROFILE PICTURES USING AN IDENTICAL METHOD
+//    public void getProfileBitmap(User thisUser, ImageView imagePreview)
+//    {
+//        //Bitmap imageMap;
+//        FirebaseUtil.getUserProfileUrl(db, thisUser, new FirebaseUtil.UserPictureCallback()
+//        {
+//            public void onProfilePictureUrlFetched(String profileUrl)
+//            {
+//                //url of banner has been retrieved, find the storageRef
+//                StorageReference uriRef = fireRef.child(profileUrl);
+//                uriRef.getBytes(10000000).addOnSuccessListener(new OnSuccessListener<byte[]>()
+//                {
+//                    @Override
+//                    public void onSuccess(byte[] bytes)
+//                    {
+//                        Bitmap imageMap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+//                        imagePreview.setImageBitmap(imageMap);
+//                    }
+//                });
+//            }
+//            public void onError(Exception e) {}
+//        });
+//    }
+
     }
-
-    //DISPLAYS PROFILE PICTURES USING AN IDENTICAL METHOD
-    public void getProfileBitmap(User thisUser, ImageView imagePreview)
-    {
-        //Bitmap imageMap;
-        FirebaseUtil.getUserProfileUrl(db, thisUser, new FirebaseUtil.UserPictureCallback()
-        {
-            public void onProfilePictureUrlFetched(String profileUrl)
-            {
-                //url of banner has been retrieved, find the storageRef
-                StorageReference uriRef = fireRef.child(profileUrl);
-                uriRef.getBytes(10000000).addOnSuccessListener(new OnSuccessListener<byte[]>()
-                {
-                    @Override
-                    public void onSuccess(byte[] bytes)
-                    {
-                        Bitmap imageMap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                        imagePreview.setImageBitmap(imageMap);
-                    }
-                });
-            }
-            public void onError(Exception e) {}
-        });
-    }
-
-
 }
