@@ -26,7 +26,9 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ProfileActivity extends AppCompatActivity {
+
     public User currentUser;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,11 +61,21 @@ public class ProfileActivity extends AppCompatActivity {
         Button saveButton = findViewById(R.id.create_profile);
 
         ImageView profilePic = findViewById(R.id.profile_pic);
-        profilePic.setOnClickListener(new View.OnClickListener() {
+        profilePic.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProfileActivity.this, ImageUploader.class);
-                startActivity(intent);
+            public void onClick(View v)
+            {
+//                Intent intent = new Intent(ProfileActivity.this, ImageUploader.class);
+//                startActivity(intent);
+
+
+        //I'll add
+
+
+
+
+
             }
         });
 

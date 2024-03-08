@@ -84,6 +84,7 @@ public class User implements Parcelable {
         this.userRegisteredEvents = eventList;
     }
 
+
     public String getFirstName() {
         return firstName;
     }
@@ -132,4 +133,9 @@ public class User implements Parcelable {
         dest.writeString(phoneNumber);
         dest.writeString(email);
     }
+
+    String getProfilePicture(){return this.profilePicture; }
+
+
+
 }

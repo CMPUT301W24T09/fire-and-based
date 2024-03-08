@@ -1,6 +1,9 @@
 package com.example.fire_and_based;
 
+
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
+import androidx.annotation.NonNull;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,7 +16,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Button;
 import android.view.View;
-
 
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -30,15 +32,13 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
-    public User currentUser;
-
+    public static User currentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -68,8 +68,8 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
-    protected static User getCurrentUser() {
-        return this.currentUser;
-    }
 
+    protected static User getCurrentUser() {
+        return currentUser;
+    }
 }

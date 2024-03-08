@@ -12,34 +12,37 @@
         android:layout_height="wrap_content"
         android:text="Event Name"
         android:textSize="30sp"
-        tools:layout_editor_absoluteX="4dp"
+        app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="56dp" />
 
     <ImageView
-        android:id="@+id/imageView8"
-        android:layout_width="457dp"
-        android:layout_height="338dp"
-        app:srcCompat="@drawable/common_google_signin_btn_text_dark_normal"
-        tools:layout_editor_absoluteX="-23dp"
-        tools:layout_editor_absoluteY="16dp" />
+        android:id="@+id/previewImage"
+        android:layout_width="206dp"
+        android:layout_height="170dp"
+        android:layout_marginTop="56dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/dateText"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/common_google_signin_btn_text_dark_normal" />
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="75dp"
-        android:layout_height="59dp"
-        app:srcCompat="@drawable/baseline_calendar_month_24"
-        tools:layout_editor_absoluteX="4dp"
-        tools:layout_editor_absoluteY="280dp" />
+        android:layout_width="58dp"
+        android:layout_height="39dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView15"
+        app:srcCompat="@drawable/baseline_calendar_month_24" />
+
 
     <TextView
-        android:id="@+id/textView16"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/dateText"
+        android:layout_width="132dp"
+        android:layout_height="27dp"
+        android:layout_marginStart="12dp"
         android:text="Month Day Year"
-        android:textSize="20sp"
-        tools:layout_editor_absoluteX="79dp"
-        tools:layout_editor_absoluteY="301dp" />
-
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/textView15" />
 
     <Button
         android:id="@+id/button"
@@ -51,7 +54,7 @@
         android:text="Attending"
         android:textColor="@color/black"
         android:textSize="20dp"
-        tools:layout_editor_absoluteX="252dp"
-        tools:layout_editor_absoluteY="287dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

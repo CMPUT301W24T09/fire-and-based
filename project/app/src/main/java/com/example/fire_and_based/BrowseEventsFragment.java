@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -16,9 +17,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
+
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -26,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BrowseEventsFragment extends Fragment {
+
     protected ListView eventList;
     protected EventArrayAdapter eventAdapter;
     protected ArrayList<Event> dataList;
@@ -39,16 +43,13 @@ public class BrowseEventsFragment extends Fragment {
         View view = inflater.inflate(R.layout.event_list_fragment, container, false);
 
         dataList = new ArrayList<>();
-
         eventList = view.findViewById(R.id.event_list);
-
 
         eventAdapter = new EventArrayAdapter(requireContext(), dataList);
         eventList.setAdapter(eventAdapter);
 
         FloatingActionButton create_event_button = view.findViewById(R.id.create_event_button);
         create_event_button.setVisibility(View.GONE);
-
 
         // this updates the data list that displays
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -75,12 +76,13 @@ public class BrowseEventsFragment extends Fragment {
                 lastClickedIndex = position;
                 Event clickedEvent = dataList.get(lastClickedIndex);
 //                updateEventBanner(clickedEvent);
-                Intent intent = new Intent(requireActivity(), EventInfoActivity.class);
+                Intent intent = new Intent(requireActivity(), EventInfoActivity.class);   // need to change this to the arrow idk how
                 intent.putExtra("event",  clickedEvent);
                 startActivity(intent);
 
             }
         });
+
 
         return view;
     }

@@ -53,20 +53,7 @@
         app:layout_constraintVertical_bias="0.105"
         android:contentDescription="TODO" />
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
-        android:indeterminateDrawable="@color/design_default_color_primary_variant"
-        android:minWidth="200dip"
-        android:progressDrawable="@color/pastel_blue"
-        android:progressTint="#52DA0505"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_preview" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
