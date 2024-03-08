@@ -103,12 +103,22 @@ public class EventInfoActivity extends AppCompatActivity {
                 currentUser.addEvent(clickedEvent);
                 Log.d(TAG, currentUser.getUserEvents().get(2).getEventName());
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
-                FirebaseUtil.addAttendingEvent(db, currentUser);
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("currentUser", currentUser);
-                resultIntent.putExtra("clickedEvent", clickedEvent);
-                setResult(EventInfoActivity.RESULT_OK, resultIntent);
-                finish();
+                FirebaseUtil.addEventAndAttendee(db, clickedEvent.getQRcode(), currentUser.getDeviceID(), new FirebaseUtil.Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("currentUser", currentUser);
+                        resultIntent.putExtra("clickedEvent", clickedEvent);
+                        setResult(EventInfoActivity.RESULT_OK, resultIntent);
+                        finish();
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.d(TAG, "This broken brother");
+                    }
+                });
+
             }
         });
     }
