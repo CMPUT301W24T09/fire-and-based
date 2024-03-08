@@ -1,7 +1,10 @@
 package com.example.fire_and_based;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +18,8 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -28,6 +33,7 @@ public class AttendingEventsFragment extends Fragment {
     private EventArrayAdapter eventAdapter;
     private ArrayList<Event> dataList;
     private int lastClickedIndex;
+    public User currentUser;
 
     @Nullable
     @Override
@@ -41,20 +47,21 @@ public class AttendingEventsFragment extends Fragment {
         eventAdapter = new EventArrayAdapter(requireContext(), dataList);
         eventList.setAdapter(eventAdapter);
 
+        if (getArguments() != null) {
+            currentUser = (User) getArguments().getParcelable("currentUser");
+        }
+
+
         FloatingActionButton create_event_button = view.findViewById(R.id.create_event_button);
         create_event_button.setVisibility(View.GONE);
 
 
         // this updates the data list that displays
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseUtil.getAllEvents(db, list -> {
-            dataList.clear();
-            eventAdapter.notifyDataSetChanged();
-            for (Event event : list) {
-                dataList.add(event);
-                eventAdapter.notifyDataSetChanged();
-            }
-        });
+        dataList.clear();
+        eventAdapter.notifyDataSetChanged();
+        dataList.addAll(currentUser.getUserEvents());
+        eventAdapter.notifyDataSetChanged();
 
 //         event list on click handler
         eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -66,8 +73,21 @@ public class AttendingEventsFragment extends Fragment {
                 Intent intent = new Intent(requireActivity(), EventInfoActivity.class);   // need to change this to the arrow idk how
                 intent.putExtra("event", clickedEvent);
                 intent.putExtra("signed up", true);
+                intent.putExtra("currentUser", currentUser);
                 startActivity(intent);
 
+            }
+        });
+
+        db.collection("users").document(currentUser.getDeviceID()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (value != null && value.exists()) {
+                    dataList.clear();
+                    eventAdapter.notifyDataSetChanged();
+                    dataList.addAll(currentUser.getUserEvents());
+                    eventAdapter.notifyDataSetChanged();
+                }
             }
         });
 

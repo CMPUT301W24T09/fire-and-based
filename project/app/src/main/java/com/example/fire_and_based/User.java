@@ -11,18 +11,33 @@ public class User implements Parcelable {
     private String deviceID;
     private String userName;
     private String profilePicture;
-    private ArrayList<Event> userRegisteredEvents;
+    private ArrayList<Event> userEvents;
     private String firstName;
     private String lastName;
     private String phoneNumber;
     private String email;
 
+    User() {
+
+    }
     User(String deviceID, String userName, ArrayList<Event> userRegisteredEvents, String profilePicture){
         this.deviceID = deviceID;
         this.profilePicture = profilePicture;
         this.userName = userName;
-        this.userRegisteredEvents = userRegisteredEvents;
+        this.userEvents = userRegisteredEvents;
 
+    }
+
+    User(String deviceID, String userName, ArrayList<Event> userRegisteredEvents, String profilePicture, String firstName, String lastName,
+         String email, String phoneNumber) {
+        this.deviceID = deviceID;
+        this.profilePicture = profilePicture;
+        this.userName = userName;
+        this.userEvents = userRegisteredEvents;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
     }
 
 
@@ -30,7 +45,7 @@ public class User implements Parcelable {
         deviceID = in.readString();
         userName = in.readString();
         profilePicture = in.readString();
-        userRegisteredEvents = in.readArrayList(null);
+        userEvents = in.createTypedArrayList(Event.CREATOR);
         firstName = in.readString();
         lastName = in.readString();
         phoneNumber = in.readString();
@@ -58,7 +73,7 @@ public class User implements Parcelable {
     }
 
     public ArrayList<Event> getUserEvents(){
-        return this.userRegisteredEvents;
+        return this.userEvents;
     }
 
     public void setDeviceID(String deviceID){
@@ -70,18 +85,18 @@ public class User implements Parcelable {
     }
 
     public void addEvent(Event event){
-        this.userRegisteredEvents.add(event);
+        this.userEvents.add(event);
     }
 
     public ArrayList<Event> getEvents(){
-        return this.userRegisteredEvents;
+        return this.userEvents;
     }
 
     public void setProfilePicture(String profilePicture){
         this.profilePicture = profilePicture;
     }
     public void setUserRegisteredEvents(ArrayList<Event> eventList){
-        this.userRegisteredEvents = eventList;
+        this.userEvents = eventList;
     }
 
 
@@ -127,7 +142,7 @@ public class User implements Parcelable {
         dest.writeString(deviceID);
         dest.writeString(userName);
         dest.writeString(profilePicture);
-        dest.writeList(userRegisteredEvents);
+        dest.writeTypedList(userEvents);
         dest.writeString(firstName);
         dest.writeString(lastName);
         dest.writeString(phoneNumber);
