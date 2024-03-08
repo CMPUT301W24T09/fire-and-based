@@ -17,12 +17,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -72,27 +67,19 @@ public class EventListActivity extends AppCompatActivity {
 
         // this updates the data list that displays
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference  eventsRef = db.collection("events");
-        eventsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot querySnapshots,
-                                @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.e("Firestore", error.toString());
-                    return;
-                }
-                if (querySnapshots != null) {
-                    dataList.clear();
-                    for (QueryDocumentSnapshot doc: querySnapshots) {
-                        String event = doc.getId();
-                        String eventDescription = doc.getString("eventDescription");
-                        Log.d("Firestore", String.format("Event(%s, %s) fetched", event,
-                                eventDescription));
-                        dataList.add(new Event(event, eventDescription, null, null));
-                        eventAdapter.notifyDataSetChanged();
-                    }
-                }
+        FirebaseUtil.getAllEvents(db, list -> {
+            // This is where you handle the data once it's loaded.
+            Log.println(Log.DEBUG, "EventsListActivity", "Refreshing events list...");
+            Log.println(Log.DEBUG, "EventsListActivity", "Old event data list size: " + dataList.size());
+            dataList.clear();
+            Log.println(Log.DEBUG, "EventsListActivity", "Cleared old events");
+            eventAdapter.notifyDataSetChanged();
+            for (Event event : list) {
+                Log.println(Log.DEBUG, "EventsListActivity", "Adding " + event.getEventName());
+                dataList.add(event);
+                eventAdapter.notifyDataSetChanged();
             }
+            Log.println(Log.DEBUG, "EventsListActivity", "Event data list size after load" + dataList.size());
         });
 
 //         event list on click handler
