@@ -61,21 +61,12 @@ public class BrowseEventsFragment extends Fragment {
         FloatingActionButton create_event_button = view.findViewById(R.id.create_event_button);
         create_event_button.setVisibility(View.GONE);
 
-        // this updates the data list that displays
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUtil.getAllEvents(db, list -> {
-            // This is where you handle the data once it's loaded.
-            Log.println(Log.DEBUG, "BrowseEventsList", "Refreshing events list...");
-            Log.println(Log.DEBUG, "BrowseEventsList", "Old event data list size: " + dataList.size());
-            dataList.clear();
-            Log.println(Log.DEBUG, "BrowseEventsList", "Cleared old events");
-            eventAdapter.notifyDataSetChanged();
             for (Event event : list) {
-                Log.println(Log.DEBUG, "BrowseEventsList", "Adding " + event.getEventName());
                 dataList.add(event);
                 eventAdapter.notifyDataSetChanged();
             }
-            Log.println(Log.DEBUG, "BrowseEventsList", "Event data list size after load" + dataList.size());
         });
 
 

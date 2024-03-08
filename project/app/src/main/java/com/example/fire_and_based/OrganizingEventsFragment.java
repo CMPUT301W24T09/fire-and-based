@@ -51,28 +51,11 @@ public class OrganizingEventsFragment extends Fragment {
             }
         });
 
-        // this updates the data list that displays
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference eventsRef = db.collection("events");
-        eventsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot querySnapshots,
-                                @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.e("Firestore", error.toString());
-                    return;
-                }
-                if (querySnapshots != null) {
-                    dataList.clear();
-                    for (QueryDocumentSnapshot doc: querySnapshots) {
-                        String event = doc.getId();
-                        String eventDescription = doc.getString("eventDescription");
-                        Log.d("Firestore", String.format("Event(%s, %s) fetched", event,
-                                eventDescription));
-                        dataList.add(new Event(event, eventDescription, null, null));
-                        eventAdapter.notifyDataSetChanged();
-                    }
-                }
+        FirebaseUtil.getAllEvents(db, list -> {
+            for (Event event : list) {
+                dataList.add(event);
+                eventAdapter.notifyDataSetChanged();
             }
         });
 
