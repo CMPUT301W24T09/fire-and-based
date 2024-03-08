@@ -218,7 +218,7 @@ public class FirebaseUtil {
 // Check if a user is in a given event
     public interface UserEventQRCodeCallback {
         void onEventFound(Event event);
-        void onEventNotFound();
+        void onEventNotFound(Event event);
         void onError(Exception e);
     }
 
@@ -243,7 +243,17 @@ public class FirebaseUtil {
                             }
                         }
                     }
-                    callback.onEventNotFound();
+                    //IF EVENT NOT FOUND WE STILL NEED IT
+                    String docID = cleanDocumentId(eventQRCode);
+                    db.collection("events").document(docID).get().addOnSuccessListener(document -> {
+                        String eventName = document.getString("eventName");
+                        String eventDescription = document.getString("eventDescription");
+                        String eventBanner = document.getString("eventBanner");
+                        Event event = new Event(eventName, eventDescription, eventBanner, eventQRCode);
+                        callback.onEventNotFound(event);
+                    }).addOnFailureListener(callback::onError);
+                    return;
+
                 } else {
                     callback.onError(new Exception("User exists but has no Events"));
                 }
