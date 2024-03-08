@@ -102,7 +102,7 @@ public class EventInfoActivity extends AppCompatActivity {
                 Log.d(TAG, currentUser.getFirstName());
                 currentUser.addEvent(clickedEvent);
                 Log.d(TAG, currentUser.getUserEvents().get(2).getEventName());
-                FirebaseFirestore db = FirebaseFirestore.getInstance(EventInfoActivity.this.equals());
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
                 FirebaseUtil.addAttendingEvent(db, currentUser);
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("currentUser", currentUser);
