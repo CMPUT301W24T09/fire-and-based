@@ -5,34 +5,26 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import androidx.fragment.app.FragmentActivity;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 
-public class EventInfoActivity extends AppCompatActivity {
+public class EventInfoForOrganizerActivity extends AppCompatActivity {
     public Event clickedEvent;
-    private boolean signedUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.event_info_activity);
+        setContentView(R.layout.event_info_for_organizer_activity);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             clickedEvent = getIntent().getParcelableExtra("event");
-            signedUp = getIntent().getBooleanExtra("signed up", false);
         }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -48,22 +40,22 @@ public class EventInfoActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
-                    .add(R.id.fragment_container_view, EventOverviewFragment.newInstance(clickedEvent))
+                    .add(R.id.fragment_container_view, new EventAttendeesFragment())
                     .commit();
         }
 
-        NavigationBarView bottomNavigationView = findViewById(R.id.event_info_nav);
+        NavigationBarView bottomNavigationView = findViewById(R.id.event_info_for_organizer_nav);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.overview_item) {
+                if (item.getItemId() == R.id.attendees_item) {
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container_view, EventOverviewFragment.newInstance(clickedEvent))
+                            .replace(R.id.fragment_container_view, new EventAttendeesFragment())
                             .commit();
                 }
-                if (item.getItemId() == R.id.announcements_item) {
+                if (item.getItemId() == R.id.promotion_item) {
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container_view, EventAnnouncementsFragment.newInstance(clickedEvent))
+                            .replace(R.id.fragment_container_view, new EventPromotionFragment())
                             .commit();
                 }
                 if (item.getItemId() == R.id.map_item) {
@@ -74,29 +66,18 @@ public class EventInfoActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        if (!signedUp) {
-            Menu menu = bottomNavigationView.getMenu();
-            MenuItem announcementsItem = menu.findItem(R.id.announcements_item);
-            announcementsItem.setVisible(false);
-            MenuItem mapItem = menu.findItem(R.id.map_item);
-            mapItem.setVisible(false);
-        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (signedUp) {
-            getMenuInflater().inflate(R.menu.scanner, menu);
-            return true;
-        }
-        return false;
+        getMenuInflater().inflate(R.menu.view_qr_code, menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.scanner_item) {
-            Intent intent = new Intent(EventInfoActivity.this, EventCheckIn.class);
+        if (item.getItemId() == R.id.view_qr_code_item) {
+            Intent intent = new Intent(EventInfoForOrganizerActivity.this, EventCheckIn.class);
             startActivity(intent);
             return true;
         }

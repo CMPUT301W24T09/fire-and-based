@@ -1,7 +1,5 @@
 package com.example.fire_and_based;
 
-import static android.content.Intent.getIntent;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,32 +7,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
-
-
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class BrowseEventsFragment extends Fragment {
-
-    protected ListView eventList;
-    protected EventArrayAdapter eventAdapter;
-    protected ArrayList<Event> dataList;
-    protected int lastClickedIndex;
-    public User currentUser;
+public class AttendingEventsFragment extends Fragment {
+    private ListView eventList;
+    private EventArrayAdapter eventAdapter;
+    private ArrayList<Event> dataList;
+    private int lastClickedIndex;
 
     @Nullable
     @Override
@@ -51,23 +44,17 @@ public class BrowseEventsFragment extends Fragment {
         FloatingActionButton create_event_button = view.findViewById(R.id.create_event_button);
         create_event_button.setVisibility(View.GONE);
 
+
         // this updates the data list that displays
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUtil.getAllEvents(db, list -> {
-            // This is where you handle the data once it's loaded.
-            Log.println(Log.DEBUG, "BrowseEventsList", "Refreshing events list...");
-            Log.println(Log.DEBUG, "BrowseEventsList", "Old event data list size: " + dataList.size());
             dataList.clear();
-            Log.println(Log.DEBUG, "BrowseEventsList", "Cleared old events");
             eventAdapter.notifyDataSetChanged();
             for (Event event : list) {
-                Log.println(Log.DEBUG, "BrowseEventsList", "Adding " + event.getEventName());
                 dataList.add(event);
                 eventAdapter.notifyDataSetChanged();
             }
-            Log.println(Log.DEBUG, "BrowseEventsList", "Event data list size after load" + dataList.size());
         });
-
 
 //         event list on click handler
         eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -77,12 +64,12 @@ public class BrowseEventsFragment extends Fragment {
                 Event clickedEvent = dataList.get(lastClickedIndex);
 //                updateEventBanner(clickedEvent);
                 Intent intent = new Intent(requireActivity(), EventInfoActivity.class);   // need to change this to the arrow idk how
-                intent.putExtra("event",  clickedEvent);
+                intent.putExtra("event", clickedEvent);
+                intent.putExtra("signed up", true);
                 startActivity(intent);
 
             }
         });
-
 
         return view;
     }

@@ -29,6 +29,16 @@ public class QRCodeViewer extends AppCompatActivity {
      */
 
     protected void onCreate(Bundle savedInstanceState) {
+        /*
+        Requires the intent to have a Bundle of the event name and qr code string
+        Example call:
+        Intent intent = new Intent(this, QRCodeViewer.class);
+        Bundle extras = new Bundle();
+        extras.putString("name", "Fun Event");
+        extras.putString("code", "qwerty");
+        intent.putExtras(extras);
+        startActivity(intent);
+         */
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_qr); // Assuming you have an XML layout file named "activity_my"

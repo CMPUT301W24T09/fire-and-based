@@ -1,14 +1,17 @@
 package com.example.fire_and_based;
 
-import static android.content.ContentValues.TAG;
+
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Button;
@@ -25,11 +28,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
+
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
-    private User currentUser;
-
+    public static User currentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +56,10 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onUserFetched(User user) {
                     currentUser = user;
-                    Log.d(TAG, String.format("Username: %s UserID: %s", currentUser.getUserName(), currentUser.getDeviceID()));
+                    Log.d(TAG, String.format("Username: %s UserID: %s", currentUser.getFirstName(), currentUser.getDeviceID()));
+                    Intent intent = new Intent(MainActivity.this, UserActivity.class);
+                    intent.putExtra("currentUser", currentUser);
+                    startActivity(intent);
                 }
                 @Override
                 public void onError(Exception e) {
@@ -61,52 +67,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-
-        Button button = findViewById(R.id.eventlistButton);
-        button.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AttendeeActivity.class);
-            startActivity(intent);
-        });
-
-        Button firebaseTest = findViewById(R.id.firebaseButton);
-
-        firebaseTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, Firebase.class);
-                startActivity(intent);
-            }
-        });
-
-        Button imageUploader = findViewById(R.id.imageUploadTest);
-
-        imageUploader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ImageUploader.class);
-                startActivity(intent);
-            }
-        });
-
-        Button QRScanTest = findViewById(R.id.QRScanTest);
-
-        QRScanTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, EventCheckIn.class);
-                startActivity(intent);
-            }
-        });
-
-        Button QRGenTest = findViewById(R.id.QRGenTest);
-
-        QRGenTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, TestQRCodeGenerator.class);
-                startActivity(intent);
-            }
-        });
     }
 
+    protected static User getCurrentUser() {
+        return currentUser;
+    }
 }

@@ -24,9 +24,9 @@
 
     <LinearLayout
         android:id="@+id/linearLayout2"
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/create_new_event_submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,15 +34,15 @@
 
 
         <EditText
+            android:id="@+id/event_title_input"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:id="@+id/event_title_input"
             android:hint="Enter Event Title" />
 
         <EditText
+            android:id="@+id/event_description_input"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:id="@+id/event_description_input"
             android:hint="Enter Event Description" />
 
         <Button
@@ -73,13 +73,32 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/create_new_event_submit"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:id="@+id/create_new_event_submit"
+        android:layout_margin="8dp"
         android:text="Create New Event"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_margin="8dp"/>
+        app:layout_constraintBottom_toBottomOf="parent" />
 
+    <Button
+        android:id="@+id/uploadLinkButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Upload Event Banner"
+        app:layout_constraintBottom_toTopOf="@+id/create_new_event_submit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/bannerPreview"
+        android:layout_width="147dp"
+        android:layout_height="92dp"
+        android:background="#554D4D"
+        app:layout_constraintBottom_toTopOf="@+id/uploadLinkButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
