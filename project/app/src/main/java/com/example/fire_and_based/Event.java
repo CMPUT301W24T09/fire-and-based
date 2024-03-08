@@ -20,12 +20,6 @@ public class Event implements Parcelable {
         this.QRcode = QRcode;
     }
 
-    Event() {
-
-    }
-
-
-
 
     // for parcelable ( to pass objects into new activities)
     protected Event(Parcel in) {

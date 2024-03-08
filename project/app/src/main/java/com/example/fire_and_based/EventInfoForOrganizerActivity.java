@@ -78,10 +78,11 @@ public class EventInfoForOrganizerActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.view_qr_code_item) {
             Intent intent = new Intent(EventInfoForOrganizerActivity.this, QRCodeViewer.class);
-            intent.putExtra("name", clickedEvent.getEventName());
-            intent.putExtra("code", clickedEvent.getQRcode());
+            Bundle extras = new Bundle();
+            extras.putString("name", clickedEvent.getEventName());
+            extras.putString("code", clickedEvent.getQRcode());
+            intent.putExtras(extras);
             startActivity(intent);
-            return true;
         }
         return super.onOptionsItemSelected(item);
     }

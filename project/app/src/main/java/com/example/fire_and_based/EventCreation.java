@@ -228,12 +228,6 @@ public class EventCreation extends AppCompatActivity {
             public void onClick(View v) {
                 byte[] array = new byte[7]; // length is bounded by 7
                 new Random().nextBytes(array);
-                String qrCode = new String(array, StandardCharsets.UTF_8);
-
-
-
-
-
                 qrCode = "fire_and_based_event:" + new String(array, StandardCharsets.UTF_8);
                 showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
             }
