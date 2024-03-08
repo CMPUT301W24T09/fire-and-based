@@ -1,11 +1,19 @@
 package com.example.fire_and_based;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,25 +32,68 @@ public class FirebaseUtil {
     //    }
 
 
+
+    //get all events asynchronously
+    public interface FirestoreCallback {
+        void onCallback(List<Event> list);
+    }
+
+    public static void getAllEvents(FirebaseFirestore db, FirestoreCallback callback){
+        ArrayList<Event> eventsList = new ArrayList<>();
+
+        CollectionReference eventsRef = db.collection("events");
+        eventsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot querySnapshots,
+                                @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.e("Firestore", error.toString());
+                    return;
+                }
+                if (querySnapshots != null) {
+                    for (QueryDocumentSnapshot doc: querySnapshots) {
+                        String eventName = doc.getString("eventName");
+                        String eventDescription = doc.getString("eventDescription");
+                        String eventBanner = doc.getString("eventBanner");
+                        String qrCode = doc.getString("QRcode");
+                        Log.d("Firestore", String.format("Event(%s, %s) fetched", eventName,
+                                qrCode));
+                        eventsList.add(new Event(eventName, eventDescription, eventBanner, qrCode));
+                    }
+                    Log.d("Firestore", String.format("Fetched %d events", eventsList.size()));
+                    callback.onCallback(eventsList);
+                    eventsList.clear();
+                }
+            }
+        });
+    }
+
+
+
+
+
     public static void addEventToDB (FirebaseFirestore db, Event event){
         // NEED TO ADD SAFETY NET OR ELSE WE HAVE DUPES WILL DO EVENTUALLY BUT AFTER FRIDAY DUE DATE
         // I THINK THIS ALSO WORKS FOR UPDATING BUT OVERWRITES PREVIOUS TOO
-        db.collection("events").document(event.getEventName()).set(event);
+        db.collection("events").document(event.getQRcode()).set(event);
+    }
+    public static void eventExists(FirebaseFirestore db, Event event){
+        db.collection("events").document();
     }
     public static void addUserToDB (FirebaseFirestore db, User user){
         db.collection("users").document(user.getDeviceID()).set(user);
     }
 
     public static void deleteEvent(FirebaseFirestore db, Event event){
-        db.collection("events").document(event.getEventName()).delete();
+        db.collection("events").document(event.getQRcode()).delete();
     }
     public static void updateEventBanner(FirebaseFirestore db, Event event, String newEventBanner){
-        db.collection("events").document(event.getEventName())
+        db.collection("events").document(event.getQRcode())
                 .update("eventBanner", newEventBanner);
     }
 
     public static void updateEventDescription(FirebaseFirestore db, Event event, String eventBanner){
-        db.collection("events").document(event.getEventName())
+        db.collection("events").document(event.getQRcode())
                 .update("eventBanner", eventBanner);
     }
 
@@ -56,7 +107,7 @@ public class FirebaseUtil {
     // HERE YOU GET THE BANNER URL FROM THE FIREBASE BY GIVING IT AN EVENT OBJECT
     // BELOW I HAVE THE CODE YOU CAN JUST COPY PASTE
     public static void getEventBannerUrl(FirebaseFirestore db, Event event, final EventBannerCallback callback) {
-        db.collection("events").document(event.getEventName()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        db.collection("events").document(event.getQRcode()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
