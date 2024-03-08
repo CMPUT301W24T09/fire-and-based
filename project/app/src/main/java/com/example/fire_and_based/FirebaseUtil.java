@@ -211,6 +211,52 @@ public class FirebaseUtil {
 //    });
 
 
+
+
+
+
+// Check if a user is in a given event
+    public interface UserEventQRCodeCallback {
+        void onEventFound(Event event);
+        void onEventNotFound();
+        void onError(Exception e);
+    }
+
+    public static void checkUserInEventByQRCode(FirebaseFirestore db, String userID, String eventQRCode, final UserEventQRCodeCallback callback) {
+        db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                List<Map<String, Object>> rawEvents = (List<Map<String, Object>>) documentSnapshot.get("events");
+                if (rawEvents != null && !rawEvents.isEmpty()) {
+                    for (Map<String, Object> rawEvent : rawEvents) {
+                        if (rawEvent.containsKey("QRcode")) {
+                            String qrCode = (String) rawEvent.get("QRcode");
+                            if (qrCode.equals(eventQRCode)) {
+                                String docID = cleanDocumentId(qrCode);
+                                db.collection("events").document(docID).get().addOnSuccessListener(document -> {
+                                    String eventName = document.getString("eventName");
+                                    String eventDescription = document.getString("eventDescription");
+                                    String eventBanner = document.getString("eventBanner");
+                                    Event event = new Event(eventName, eventDescription, eventBanner, qrCode);
+                                    callback.onEventFound(event);
+                                }).addOnFailureListener(callback::onError);
+                                return;
+                            }
+                        }
+                    }
+                    callback.onEventNotFound();
+                } else {
+                    callback.onError(new Exception("User exists but has no Events"));
+                }
+            } else {
+                callback.onError(new Exception("User document not found"));
+            }
+        }).addOnFailureListener(callback::onError);
+    }
+
+
+
+
+
     /**
      * Given QR Codes may contain invalid characters, have to replace
      * @param docId the possibly invalid string
