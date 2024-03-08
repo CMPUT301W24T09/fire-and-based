@@ -30,7 +30,7 @@ public class AttendingEventsFragment extends Fragment {
     private EventArrayAdapter eventAdapter;
     private ArrayList<Event> dataList;
     private int lastClickedIndex;
-    private static final String ARG_USER = "user";
+    private static final String ARG_USER = "currentUser";
 
     public static AttendingEventsFragment newInstance(User user) {
         AttendingEventsFragment fragment = new AttendingEventsFragment();
