@@ -30,7 +30,7 @@
         <activity android:name=".TestQRCodeGenerator" />
         <activity android:name=".QRCodeViewer" />
         <activity
-            android:name=".AttendeeActivity"
+            android:name=".UserActivity"
             android:exported="true" />
 
         <meta-data
@@ -47,6 +47,14 @@
 
         <activity
             android:name=".EventCreation">
+        </activity>
+
+        <activity
+            android:name=".ProfileActivity">
+        </activity>
+
+        <activity
+            android:name=".EventInfoForOrganizerActivity">
         </activity>
 
         <activity

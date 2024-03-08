@@ -1,8 +1,7 @@
 package com.example.fire_and_based;
 
-import static android.content.ContentValues.TAG;
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -15,6 +14,7 @@ import android.widget.Button;
 import android.view.View;
 
 
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FieldPath;
@@ -25,6 +25,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
+
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -62,9 +64,10 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
+
         Button button = findViewById(R.id.eventlistButton);
         button.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AttendeeActivity.class);
+            Intent intent = new Intent(MainActivity.this, UserActivity.class);
             startActivity(intent);
         });
 
