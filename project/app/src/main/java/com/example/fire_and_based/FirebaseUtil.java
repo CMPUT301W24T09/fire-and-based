@@ -422,11 +422,13 @@ public class FirebaseUtil {
                                 String eventDescription = document.getString("eventDescription");
                                 String eventBanner = document.getString("eventBanner");
                                 Event event = new Event(eventName, eventDescription, eventBanner, qrCode);
+                                Log.println(Log.DEBUG, "FirebaseUtil", "User already in event");
                                 callback.onEventFound(event);
                             }).addOnFailureListener(callback::onError);
                             return;
                         }
                     }
+                    Log.println(Log.DEBUG, "FirebaseUtil", "User not in event, searching for event...");
                     //IF EVENT NOT FOUND WE STILL NEED IT
                     String docID = cleanDocumentId(eventQRCode);
                     db.collection("events").document(docID).get().addOnSuccessListener(document -> {
@@ -434,11 +436,24 @@ public class FirebaseUtil {
                         String eventDescription = document.getString("eventDescription");
                         String eventBanner = document.getString("eventBanner");
                         Event event = new Event(eventName, eventDescription, eventBanner, eventQRCode);
+                        Log.println(Log.DEBUG, "FirebaseUtil", "Found event the user isnt in!");
                         callback.onEventNotFound(event);
                     }).addOnFailureListener(callback::onError);
                     return;
                 } else {
-                    callback.onError(new Exception("User exists but has no Events"));
+                    Log.println(Log.DEBUG, "FirebaseUtil", "User not in ANY event, searching for event...");
+                    //IF EVENT NOT FOUND WE STILL NEED IT
+                    String docID = cleanDocumentId(eventQRCode);
+                    Log.println(Log.DEBUG, "FirebaseUtil", "User not in ANY event, searching for event... " + docID);
+                    db.collection("events").document(docID).get().addOnSuccessListener(document -> {
+                        String eventName = document.getString("eventName");
+                        String eventDescription = document.getString("eventDescription");
+                        String eventBanner = document.getString("eventBanner");
+                        Event event = new Event(eventName, eventDescription, eventBanner, eventQRCode);
+                        Log.println(Log.DEBUG, "FirebaseUtil", "Found event the user isnt in!" + eventName);
+                        callback.onEventNotFound(event);
+                    }).addOnFailureListener(callback::onError);
+                    return;
                 }
             } else {
                 callback.onError(new Exception("User document not found"));
