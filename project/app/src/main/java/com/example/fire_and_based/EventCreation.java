@@ -52,6 +52,7 @@ public class EventCreation extends AppCompatActivity {
     private String bannerUrl = null;
     //ImageUploader imageUploader = new ImageUploader();
     StorageReference fireRef = FirebaseStorage.getInstance().getReference();
+    private String qrCode = null;
 
     /**
      * Used to launch device photo gallery and display the preview of the image in an imageview
@@ -72,11 +73,6 @@ public class EventCreation extends AppCompatActivity {
             {Toast.makeText(EventCreation.this, "Please Select An Image", Toast.LENGTH_LONG).show();}
         }
     });
-
-
-
-
-    private String qrCode = null;
 
     /**
      * Launches the QR Code scanner and sets the QR code to be used for the next event
@@ -228,12 +224,6 @@ public class EventCreation extends AppCompatActivity {
             public void onClick(View v) {
                 byte[] array = new byte[7]; // length is bounded by 7
                 new Random().nextBytes(array);
-                String qrCode = new String(array, StandardCharsets.UTF_8);
-
-
-
-
-
                 qrCode = "fire_and_based_event:" + new String(array, StandardCharsets.UTF_8);
                 showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
             }
