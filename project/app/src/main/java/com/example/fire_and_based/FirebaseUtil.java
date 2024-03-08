@@ -109,36 +109,27 @@ public class FirebaseUtil {
 
 
 
-    // HERE YOU GET THE BANNER URL FROM THE FIREBASE BY GIVING IT AN EVENT OBJECT
-    // BELOW I HAVE THE CODE YOU CAN JUST COPY PASTE
-    public static void getEventBannerUrl(FirebaseFirestore db, Event event, final EventBannerCallback callback) {
-        String docID = cleanDocumentId(event.getQRcode());
-        db.collection("events").document(docID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists()) {
-                    String bannerUrl = documentSnapshot.getString("eventBanner");
-                    if (bannerUrl != null) {
-                        callback.onBannerUrlFetched(bannerUrl);
-                    } else {
-                        // Handle the case where the eventBanner field is missing
-                        callback.onError(new Exception("Banner URL not found in the document"));
-                    }
-                } else {
-                    // Handle the case where the document does not exist
-                    callback.onError(new Exception("Event document not found"));
-                }
+    // get an event object from Firebase by QR Code
+    public static void getEvent(FirebaseFirestore db, String QRCode, final EventCallback callback) {
+        String docID = cleanDocumentId(QRCode);
+        // Handle any errors that occur while fetching the document
+        db.collection("events").document(docID).get().addOnSuccessListener(doc -> {
+            if (doc.exists()) {
+                String eventName = doc.getString("eventName");
+                String eventDescription = doc.getString("eventDescription");
+                String eventBanner = doc.getString("eventBanner");
+                String qrCode = doc.getString("QRcode");
+                Log.d("Firestore", String.format("Event(%s, %s) fetched", eventName,
+                        qrCode));
+                Event event = new Event(eventName, eventDescription, eventBanner, qrCode);
+                callback.onEventFetched(event);
+            } else { //document not found, does not exist
+                callback.onError(new Exception("Event document not found"));
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                // Handle any errors that occur while fetching the document
-                callback.onError(e);
-            }
-        });
+        }).addOnFailureListener(callback::onError);
     }
-    public interface EventBannerCallback {
-        void onBannerUrlFetched(String bannerUrl);
+    public interface EventCallback {
+        void onEventFetched(Event event);
         void onError(Exception e);
     }
 
@@ -158,36 +149,29 @@ public class FirebaseUtil {
 
 
 
-    // GET EVENT NAMES OF EACH EVENT A USER IS REGISTERED IN
+    // GET codes OF EACH EVENT A USER IS REGISTERED IN
     public static void getUserEvents(FirebaseFirestore db, String userID, final UserEventsCallback callback) {
-        db.collection("users").document(userID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists()) {
-                    // brother what is going on here W LLM btw
-                    List<Map<String, Object>> rawEvents = (List<Map<String, Object>>) documentSnapshot.get("events");
-                    if (rawEvents != null && !rawEvents.isEmpty()) {
-                        ArrayList<String> eventNames = new ArrayList<>();
-                        for (Map<String, Object> rawEvent : rawEvents) {
-                            if (rawEvent.containsKey("eventName")) {
-                                String eventName = (String) rawEvent.get("eventName");
-                                eventNames.add(eventName);
-                            }
+        // Handle any errors that occur while fetching the document
+        db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                // brother what is going on here W LLM btw
+                List<Map<String, Object>> rawEvents = (List<Map<String, Object>>) documentSnapshot.get("events");
+                if (rawEvents != null && !rawEvents.isEmpty()) {
+                    ArrayList<String> eventNames = new ArrayList<>();
+                    for (Map<String, Object> rawEvent : rawEvents) {
+                        if (rawEvent.containsKey("eventName")) {
+                            String eventName = (String) rawEvent.get("QRcode");
+                            eventNames.add(eventName);
                         }
-                        callback.onEventNamesFetched(eventNames);
-                    } else {
-                        callback.onError(new Exception("User exists but has no Events"));
                     }
+                    callback.onEventNamesFetched(eventNames);
                 } else {
-                    callback.onError(new Exception("User document not found"));
+                    callback.onError(new Exception("User exists but has no Events"));
                 }
+            } else {
+                callback.onError(new Exception("User document not found"));
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {   // Handle any errors that occur while fetching the document
-                callback.onError(e);
-            }
-        });
+        }).addOnFailureListener(callback::onError);
     }
 
     public interface UserEventsCallback {
