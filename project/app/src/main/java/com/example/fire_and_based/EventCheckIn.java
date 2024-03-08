@@ -83,7 +83,7 @@ public class EventCheckIn extends AppCompatActivity {
 
         //FOR TESTING ONLY
         eventQRCode = "froggy world";
-        String userID = "321";
+        String userID = MainActivity.getCurrentUser().getDeviceID();
         //END TESTING ONLY
 
 

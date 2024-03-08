@@ -68,5 +68,8 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
+    protected static User getCurrentUser() {
+        return this.currentUser;
+    }
 
 }

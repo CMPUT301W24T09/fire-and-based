@@ -1,14 +1,12 @@
 package com.example.fire_and_based;
 
-<<<<<<< HEAD
+
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-=======
-import android.util.Log;
->>>>>>> ab776ae7046cd077d490a33075ae47ddcc9b33f1
+
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -20,11 +18,10 @@ import androidx.annotation.Nullable;
 import com.google.firebase.firestore.*;
 
 import java.util.ArrayList;
-<<<<<<< HEAD
+
 import java.util.HashMap;
-=======
-import java.util.Arrays;
->>>>>>> ab776ae7046cd077d490a33075ae47ddcc9b33f1
+
+
 import java.util.List;
 import java.util.Map;
 
@@ -343,7 +340,7 @@ public class FirebaseUtil {
         void onError(Exception e);
     }
 
-<<<<<<< HEAD
+
     public static void updateProfileInfo(FirebaseFirestore db, User user) {
         Map<String, Object> updates = new HashMap<>();
         updates.put("firstName", user.getFirstName());
@@ -360,9 +357,6 @@ public class FirebaseUtil {
                 });
     }
 
-=======
-
-// Check if a user is in a given event
 
     /**
      * Callback for checking if a given user is in a given event
@@ -497,7 +491,4 @@ public class FirebaseUtil {
 
         return docId;
     }
-
-
->>>>>>> ab776ae7046cd077d490a33075ae47ddcc9b33f1
 }
