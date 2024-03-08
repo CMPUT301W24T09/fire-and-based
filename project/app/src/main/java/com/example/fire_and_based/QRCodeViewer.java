@@ -13,19 +13,22 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.zxing.WriterException;
+/**
+ * GUI for displaying a scannable QR Code
+ *
+ * @author   Ilya Nalivako
+ */
 
 public class QRCodeViewer extends AppCompatActivity {
+    /**
+     * Create method to bring up the QR Code
+     * <p>Requires an Extras bundle with strings:
+     * "name" of the event name and
+     * "code" of the QR Code ID
+     * to be put into it</p>
+     */
+
     protected void onCreate(Bundle savedInstanceState) {
-        /*
-        Requires the intent to have a Bundle of the event name and qr code string
-        Example call:
-        Intent intent = new Intent(this, QRCodeViewer.class);
-        Bundle extras = new Bundle();
-        extras.putString("name", "Fun Event");
-        extras.putString("code", "qwerty");
-        intent.putExtras(extras);
-        startActivity(intent);
-         */
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_qr); // Assuming you have an XML layout file named "activity_my"
@@ -36,8 +39,7 @@ public class QRCodeViewer extends AppCompatActivity {
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(QRCodeViewer.this, UserActivity.class);
-                startActivity(intent);
+                onBackPressed();
             }
 
         });
@@ -77,6 +79,11 @@ public class QRCodeViewer extends AppCompatActivity {
 
     }
 
+    /**
+     * Logs an error encountered by this class. Shorthand call basically
+     *
+     * @param  error The string of the error to be logged
+     */
     private void logError(String error){
         Log.println(Log.ERROR, "QRCodeDisplay", error);
     }

@@ -15,15 +15,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
+
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BrowseEventsFragment extends Fragment {
     protected ListView eventList;
@@ -39,7 +39,9 @@ public class BrowseEventsFragment extends Fragment {
         View view = inflater.inflate(R.layout.event_list_fragment, container, false);
 
         dataList = new ArrayList<>();
+
         eventList = view.findViewById(R.id.event_list);
+
 
         eventAdapter = new EventArrayAdapter(requireContext(), dataList);
         eventList.setAdapter(eventAdapter);
@@ -47,30 +49,24 @@ public class BrowseEventsFragment extends Fragment {
         FloatingActionButton create_event_button = view.findViewById(R.id.create_event_button);
         create_event_button.setVisibility(View.GONE);
 
+
         // this updates the data list that displays
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference eventsRef = db.collection("events");
-        eventsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot querySnapshots,
-                                @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.e("Firestore", error.toString());
-                    return;
-                }
-                if (querySnapshots != null) {
-                    dataList.clear();
-                    for (QueryDocumentSnapshot doc: querySnapshots) {
-                        String event = doc.getId();
-                        String eventDescription = doc.getString("eventDescription");
-                        Log.d("Firestore", String.format("Event(%s, %s) fetched", event,
-                                eventDescription));
-                        dataList.add(new Event(event, eventDescription, null, null));
-                        eventAdapter.notifyDataSetChanged();
-                    }
-                }
+        FirebaseUtil.getAllEvents(db, list -> {
+            // This is where you handle the data once it's loaded.
+            Log.println(Log.DEBUG, "BrowseEventsList", "Refreshing events list...");
+            Log.println(Log.DEBUG, "BrowseEventsList", "Old event data list size: " + dataList.size());
+            dataList.clear();
+            Log.println(Log.DEBUG, "BrowseEventsList", "Cleared old events");
+            eventAdapter.notifyDataSetChanged();
+            for (Event event : list) {
+                Log.println(Log.DEBUG, "BrowseEventsList", "Adding " + event.getEventName());
+                dataList.add(event);
+                eventAdapter.notifyDataSetChanged();
             }
+            Log.println(Log.DEBUG, "BrowseEventsList", "Event data list size after load" + dataList.size());
         });
+
 
 //         event list on click handler
         eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
