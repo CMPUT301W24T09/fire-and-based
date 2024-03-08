@@ -1,5 +1,7 @@
 package com.example.fire_and_based;
 
+import static android.content.Intent.getIntent;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +30,7 @@ public class BrowseEventsFragment extends Fragment {
     protected EventArrayAdapter eventAdapter;
     protected ArrayList<Event> dataList;
     protected int lastClickedIndex;
+    public User currentUser;
 
     @Nullable
     @Override

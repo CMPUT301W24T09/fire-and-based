@@ -1,5 +1,9 @@
 package com.example.fire_and_based;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -9,6 +13,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -161,7 +166,16 @@ public class FirebaseUtil {
                     String username = documentSnapshot.getString("userName");
                     String profilePicture = documentSnapshot.getString("profilePicture");
                     ArrayList<Event> userEvents = (ArrayList<Event>) documentSnapshot.get("userEvents");
-                    callback.onUserFetched(new User(userID, username, userEvents, profilePicture));
+                    String firstName = documentSnapshot.getString("firstName");
+                    String lastName = documentSnapshot.getString("lastName");
+                    String email = documentSnapshot.getString("email");
+                    String phoneNumber = documentSnapshot.getString("phoneNumber");
+                    User user = new User(userID, username, userEvents, profilePicture);
+                    user.setFirstName(firstName);
+                    user.setLastName(lastName);
+                    user.setEmail(email);
+                    user.setPhoneNumber(phoneNumber);
+                    callback.onUserFetched(user);
                 }
                 else {
                     callback.onError(new Exception("User document does not exist."));
@@ -178,6 +192,22 @@ public class FirebaseUtil {
     public interface UserObjectCallback {
         void onUserFetched(User user);
         void onError(Exception e);
+    }
+
+    public static void updateProfileInfo(FirebaseFirestore db, User user) {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("firstName", user.getFirstName());
+        updates.put("lastName", user.getLastName());
+        updates.put("email", user.getEmail());
+        updates.put("phoneNumber", user.getPhoneNumber());
+        db.collection("users").document(user.getDeviceID())
+                .update(updates)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d(TAG, "Document Successfully Updated");
+                    }
+                });
     }
 
 }
