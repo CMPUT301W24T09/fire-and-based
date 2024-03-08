@@ -78,7 +78,7 @@ public class EventCheckIn extends AppCompatActivity {
      * @param  eventQRCode the QR Code ID string of an event
      */
 
-    private void offerEvent(String eventQRCode){
+    public void offerEvent(String eventQRCode){
 
         String userID = MainActivity.getDeviceID();
 
