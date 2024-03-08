@@ -148,23 +148,38 @@ public class FirebaseUtil {
 
 
 
-
-    // GET codes OF EACH EVENT A USER IS REGISTERED IN
-    public static void getUserEvents(FirebaseFirestore db, String userID, final UserEventsCallback callback) {
-        // Handle any errors that occur while fetching the document
+// EVEN BETTER JUST GET THE ENTIRE EVENT OBJECTS A USER IS IN
+// (sorry I deleted the other function, you can get it from VCS if needed but its kinda obsolete)
+    public static void getUserEvents(FirebaseFirestore db, String userID, final UserEventsAndFetchCallback callback) {
         db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                // brother what is going on here W LLM btw
                 List<Map<String, Object>> rawEvents = (List<Map<String, Object>>) documentSnapshot.get("events");
                 if (rawEvents != null && !rawEvents.isEmpty()) {
-                    ArrayList<String> eventNames = new ArrayList<>();
+                    ArrayList<String> eventCodes = new ArrayList<>();
                     for (Map<String, Object> rawEvent : rawEvents) {
                         if (rawEvent.containsKey("QRcode")) {
-                            String eventName = (String) rawEvent.get("QRcode");
-                            eventNames.add(eventName);
+                            String eventCode = (String) rawEvent.get("QRcode");
+                            eventCodes.add(eventCode);
                         }
                     }
-                    callback.onEventCodesFetched(eventNames);
+
+                    ArrayList<Event> events = new ArrayList<>();
+                    for (String eventCode : eventCodes) {
+                        String docID = cleanDocumentId(eventCode);
+                        db.collection("events").document(docID).get().addOnSuccessListener(document -> {
+                            String eventName = document.getString("eventName");
+                            String eventDescription = document.getString("eventDescription");
+                            String eventBanner = document.getString("eventBanner");
+                            String qrCode = document.getString("QRcode");
+                            Log.d("Firestore", String.format("Event(%s, %s) fetched", eventName, qrCode));
+                            Event event = new Event(eventName, eventDescription, eventBanner, qrCode);
+                            events.add(event);
+
+                            if (events.size() == eventCodes.size()) {
+                                callback.onEventsFetched(events);
+                            }
+                        }).addOnFailureListener(callback::onError);
+                    }
                 } else {
                     callback.onError(new Exception("User exists but has no Events"));
                 }
@@ -174,22 +189,24 @@ public class FirebaseUtil {
         }).addOnFailureListener(callback::onError);
     }
 
-    public interface UserEventsCallback {
-        void onEventCodesFetched(ArrayList<String> eventNames);
+    public interface UserEventsAndFetchCallback {
+        void onEventsFetched(ArrayList<Event> events);
         void onError(Exception e);
     }
 
-    // HERES HOW TO USE IT
-//     FirebaseUtil.getUserEvents(db, userId, new FirebaseUtil.UserEventsCallback() {
+    //example call:
+//    FirebaseFirestore db = FirebaseFirestore.getInstance();
+//    String userID = "yourUserID";
+//
+//        FirebaseUtil.getUserEvents(db, userID, new FirebaseUtil.UserEventsAndFetchCallback() {
+//        @Override
+//        public void onEventsFetched(ArrayList<Event> events) {
+//            events.forEach(event -> System.out.println("Fetched event: " + event.getEventName()));
+//        }
 //
 //        @Override
-//        public void onEventNamesFetched(ArrayList<String> eventNames) {
-//            // U HAVE ANN ARRAY OF EVENT NAMES NOW U CAN RENDER THE DATA ON A VIEW OR SOMETHIGN
-              // IN HERE DO THAT
-//        }
-//        @Override
 //        public void onError(Exception e) {
-//            // DEAL WITH ERROrS
+//            System.err.println("An error occurred: " + e.getMessage());
 //        }
 //    });
 
