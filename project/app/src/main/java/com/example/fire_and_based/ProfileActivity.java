@@ -39,11 +39,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class ProfileActivity extends AppCompatActivity {
 
     public User currentUser;
-
-
 
     public Uri profileImage;
     public String profileUrl;
@@ -69,20 +70,6 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(ProfileActivity.this, "Please Select An Image", Toast.LENGTH_LONG).show();}
         }
     });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -115,17 +102,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         Button saveButton = findViewById(R.id.create_profile);
 
-
-
-
-
-
-        profilePic = findViewById(R.id.profile_pic);
-        if (currentUser !=null )
-        {
-            imageDownloader.getProfilePicBitmap(currentUser,profilePic);
-        }
-
         FloatingActionButton pic_button = findViewById(R.id.pic_button);
         pic_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,36 +116,35 @@ public class ProfileActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentUser.setFirstName(firstNameEdit.getText().toString());
-                currentUser.setLastName(lastNameEdit.getText().toString());
-                currentUser.setEmail(emailEdit.getText().toString());
-                currentUser.setPhoneNumber(phoneNumberEdit.getText().toString());
+                Log.d(TAG, String.format("Email%sEmail", emailEdit.getText().toString()));
+                if (validEmail(emailEdit.getText().toString().replace("\n", ""))) {
+                    currentUser.setEmail(emailEdit.getText().toString().replace("\n", ""));
+                }
+                else {
+                    Toast.makeText(ProfileActivity.this, "Invalid Email Address", Toast.LENGTH_SHORT).show();
+                }
+                if (validPhone(phoneNumberEdit.getText().toString().replace("\n", ""))) {
+                    currentUser.setPhoneNumber(phoneNumberEdit.getText().toString().replace("\n", ""));
+                }
+                else {
+                    Toast.makeText(ProfileActivity.this, "Invalid Phone Number", Toast.LENGTH_SHORT).show();
+                }
+                if (validName(firstNameEdit.getText().toString().replace("\n", ""))) {
+                    currentUser.setFirstName(firstNameEdit.getText().toString().replace("\n", ""));
+                }
+                else {
+                    Toast.makeText(ProfileActivity.this, "Invalid First Name", Toast.LENGTH_SHORT).show();
+                }
+                if (validName(lastNameEdit.getText().toString().replace("\n", ""))) {
+                    currentUser.setLastName(lastNameEdit.getText().toString().replace("\n", ""));
+                }
+                else {
+                    Toast.makeText(ProfileActivity.this, "Invalid Last Name", Toast.LENGTH_SHORT).show();
+                }
 
                 profileUrl = "profiles/"+currentUser.getDeviceID();
 
                 //prep image for storage
-                StorageReference selectionRef = fireRef.child(profileUrl);
-                //store image
-                selectionRef.putFile(profileImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(ProfileActivity.this, "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(ProfileActivity.this, "Image Upload Error", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-
-
-
-
-
-
-
-
 
                 FirebaseUtil.updateProfileInfo(FirebaseFirestore.getInstance(), currentUser);
                 Intent intent = new Intent(ProfileActivity.this, UserActivity.class);
@@ -177,5 +152,29 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    public static boolean validEmail(String email) {
+        String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
+                + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+        Pattern pattern = Pattern.compile(regexPattern);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
+    public static boolean validPhone(String phoneNumber) {
+        String phoneRegex = "\\d{10}|(?:\\d{3}-){2}\\d{4}|\\(\\d{3}\\)\\d{3}-?\\d{4}";
+        Pattern pattern = Pattern.compile(phoneRegex);
+        Matcher matcher = pattern.matcher(phoneNumber);
+        return matcher.matches();
+    }
+    public static boolean validName(String name) {
+        char[] chars = name.toCharArray();
+        for (char c : chars) {
+            if(!Character.isLetter(c)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

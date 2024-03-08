@@ -20,6 +20,10 @@ public class Event implements Parcelable {
         this.QRcode = QRcode;
     }
 
+    Event() {
+
+    }
+
 
 
 

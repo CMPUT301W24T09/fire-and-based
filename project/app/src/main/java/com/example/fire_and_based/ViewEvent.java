@@ -49,14 +49,6 @@ public class ViewEvent extends AppCompatActivity {
 //        return imageUri;
 //    }
 
-
-
-
-
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +62,7 @@ public class ViewEvent extends AppCompatActivity {
 
 
         imagePreview = findViewById(R.id.bannerPreview);
+
         imageDownloader.getBannerBitmap(clickedEvent,imagePreview);
 
 
