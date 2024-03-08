@@ -3,6 +3,7 @@ package com.example.fire_and_based;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.journeyapps.barcodescanner.ScanOptions;
 import com.journeyapps.barcodescanner.ScanContract;
 
@@ -76,39 +78,53 @@ public class EventCheckIn extends AppCompatActivity {
      * @param  qrCode the QR Code ID string of an event
      */
 
-    private void offerEvent(String qrCode){
+    private void offerEvent(String eventQRCode){
 
-        //TODO add database call and user id
-        Event event = new Event("testName", "test description", null, "testQRC");
-        ArrayList<Event> testUserRegisteredEvents = new ArrayList<Event>();
-        User user = new User("testID", "testUserName", testUserRegisteredEvents, null);
+        //FOR TESTING ONLY
+        eventQRCode = "froggy";
+        String userID = "321";
+        //END TESTING ONLY
 
-        //end fake test
 
-        if (!user.getUserEvents().contains(event)){
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Would you like to join the event " + event.getEventName() + "?")
-                    .setCancelable(false)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            Toast.makeText(EventCheckIn.this, "Joined event " + event.getEventName(), Toast.LENGTH_LONG).show();
-                            user.addEvent(event);
-                            //TODO add user to event as well
-                            goToEvent(event);
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            Toast.makeText(EventCheckIn.this, "Declined event invitation", Toast.LENGTH_LONG).show();
-                            //TODO direct user back to wherever (without adding them)
-                        }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
-        } else {
-            Toast.makeText(EventCheckIn.this, "You are already in event " + event.getEventName(), Toast.LENGTH_LONG).show();
-            goToEvent(event);
-        }
+        Log.println(Log.DEBUG, "EventCheckIn", "Checking if user is already in event...");
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUtil.checkUserInEventByQRCode(db, userID, eventQRCode, new FirebaseUtil.UserEventQRCodeCallback() {
+            @Override
+            public void onEventFound(Event event) {
+                Log.println(Log.DEBUG, "EventCheckIn", "Found user is already in that event");
+                Toast.makeText(EventCheckIn.this, "You are already in event " + event.getEventName(), Toast.LENGTH_LONG).show();
+                goToEvent(event);
+            }
+
+            @Override
+            public void onEventNotFound(Event event) {
+                Log.println(Log.DEBUG, "EventCheckIn", "User is not in the event, offering to join");
+                AlertDialog.Builder builder = new AlertDialog.Builder(EventCheckIn.this);
+                builder.setMessage("Would you like to join the event " + event.getEventName() + "?")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Log.println(Log.DEBUG, "EventCheckIn", "User accepted event");
+                                Toast.makeText(EventCheckIn.this, "Joined event " + event.getEventName(), Toast.LENGTH_LONG).show();
+                                //TODO add user to event and event to user, save both to DB
+                                goToEvent(event);
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Log.println(Log.DEBUG, "EventCheckIn", "User declined event");
+                                Toast.makeText(EventCheckIn.this, "Declined event invitation", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+            @Override
+            public void onError(Exception e) {
+                Log.println(Log.ERROR, "EventCheckIn", "An error occurred trying to join the event: " + e.getMessage());
+            }
+        });
+
     }
 
     /**
