@@ -19,25 +19,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 public class UserActivity extends AppCompatActivity {
-    /**
-     * The current user of the app, retrieved from the intent that started this activity.
-     */
     public User currentUser;
 
-    /**
-     * Called when the activity is starting. This is where the activity initializes the views
-     * in its content view and retrieves the current user from the intent's extras.
-     *
-     * @param savedInstanceState If the activity is being re-initialized after previously being shut down
-     *                           then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
-     *                           Note: Otherwise it is null.
-     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_activity);
 
-        // Retrieve the User object passed as an extra from the intent
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             currentUser = getIntent().getParcelableExtra("currentUser");
@@ -46,7 +34,6 @@ public class UserActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Initialize the fragment container with BrowseEventsFragment if it's the first creation
         if (savedInstanceState == null) {
             Bundle bundle = new Bundle();
             BrowseEventsFragment fragment = new BrowseEventsFragment();
@@ -57,7 +44,6 @@ public class UserActivity extends AppCompatActivity {
                     .commit();
         }
 
-        // Set up BottomNavigationView and handle item selection
         NavigationBarView bottomNavigationView = findViewById(R.id.bottom_nav);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
@@ -92,24 +78,12 @@ public class UserActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Initializes the contents of the Activity's standard options menu.
-     *
-     * @param menu The options menu in which the items are placed.
-     * @return You must return true for the menu to be displayed; if you return false it will not be shown.
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.profile, menu);
         return true;
     }
 
-    /**
-     * This hook is called whenever an item in your options menu is selected.
-     *
-     * @param item The menu item that was selected.
-     * @return boolean Return false to allow normal menu processing to proceed, true to consume it here.
-     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.profile_item) {
