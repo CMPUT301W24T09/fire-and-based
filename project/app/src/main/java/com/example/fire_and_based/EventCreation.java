@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,7 +16,6 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -53,10 +51,12 @@ public class EventCreation extends AppCompatActivity {
     private Uri bannerImage;
     private String bannerUrl = null;
     //ImageUploader imageUploader = new ImageUploader();
-
-
     StorageReference fireRef = FirebaseStorage.getInstance().getReference();
+    private String qrCode = null;
 
+    /**
+     * Used to launch device photo gallery and display the preview of the image in an imageview
+     */
     ActivityResultLauncher<Intent> customActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result)
@@ -73,11 +73,6 @@ public class EventCreation extends AppCompatActivity {
             {Toast.makeText(EventCreation.this, "Please Select An Image", Toast.LENGTH_LONG).show();}
         }
     });
-
-
-
-
-    private String qrCode = null;
 
     /**
      * Launches the QR Code scanner and sets the QR code to be used for the next event
@@ -128,6 +123,7 @@ public class EventCreation extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
+                //Display image in imageview
                 Intent imageIntent = new Intent(Intent.ACTION_PICK);
                 imageIntent.setType("image/*");
                 customActivityResultLauncher.launch(imageIntent);
@@ -228,12 +224,6 @@ public class EventCreation extends AppCompatActivity {
             public void onClick(View v) {
                 byte[] array = new byte[7]; // length is bounded by 7
                 new Random().nextBytes(array);
-                String qrCode = new String(array, StandardCharsets.UTF_8);
-
-
-
-
-
                 qrCode = "fire_and_based_event:" + new String(array, StandardCharsets.UTF_8);
                 showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
             }

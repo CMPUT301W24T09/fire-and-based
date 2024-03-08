@@ -7,6 +7,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -64,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onUserFetched(User user) {
                     currentUser = user;
                     Log.d(TAG, String.format("Username: %s UserID: %s", currentUser.getFirstName(), currentUser.getDeviceID()));
+
                     Intent intent = new Intent(MainActivity.this, UserActivity.class);
                     intent.putExtra("currentUser", currentUser);
                     startActivity(intent);
@@ -84,5 +89,14 @@ public class MainActivity extends AppCompatActivity {
      */
     protected static User getCurrentUser() {
         return currentUser;
+
+      
+    /**
+     * Returns the current user session ID if exists.
+     *
+     * @return The currently logged-in userID or null if no session is active.
+    */  
+    protected static String getDeviceID() {
+        return currentUser.getDeviceID();
     }
 }

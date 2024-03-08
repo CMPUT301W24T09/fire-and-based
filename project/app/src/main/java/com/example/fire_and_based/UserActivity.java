@@ -13,6 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -47,9 +48,12 @@ public class UserActivity extends AppCompatActivity {
 
         // Initialize the fragment container with BrowseEventsFragment if it's the first creation
         if (savedInstanceState == null) {
+            Bundle bundle = new Bundle();
+            BrowseEventsFragment fragment = new BrowseEventsFragment();
+            bundle.putParcelable("currentUser", currentUser);
+            fragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
-                    .setReorderingAllowed(true)
-                    .add(R.id.fragment_container_view, new BrowseEventsFragment())
+                    .replace(R.id.fragment_container_view, fragment)
                     .commit();
         }
 
@@ -58,19 +62,29 @@ public class UserActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Bundle bundle = new Bundle();
                 if (item.getItemId() == R.id.browse_events_item) {
+                    BrowseEventsFragment fragment = new BrowseEventsFragment();
+                    bundle.putParcelable("currentUser", currentUser);
+                    fragment.setArguments(bundle);
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container_view, new BrowseEventsFragment())
+                            .replace(R.id.fragment_container_view, fragment)
                             .commit();
                 }
                 if (item.getItemId() == R.id.my_attended_events) {
+                    AttendingEventsFragment fragment = new AttendingEventsFragment();
+                    bundle.putParcelable("currentUser", currentUser);
+                    fragment.setArguments(bundle);
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container_view, new AttendingEventsFragment())
+                            .replace(R.id.fragment_container_view, fragment)
                             .commit();
                 }
                 if (item.getItemId() == R.id.my_organized_events) {
+                    OrganizingEventsFragment fragment = new OrganizingEventsFragment();
+                    bundle.putParcelable("currentUser", currentUser);
+                    fragment.setArguments(bundle);
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container_view, new OrganizingEventsFragment())
+                            .replace(R.id.fragment_container_view, fragment)
                             .commit();
                 }
                 return true;

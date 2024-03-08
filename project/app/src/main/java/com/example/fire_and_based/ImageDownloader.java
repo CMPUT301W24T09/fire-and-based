@@ -42,11 +42,14 @@ public class ImageDownloader
 //        };
 //    }
 
-    //DISPLAYS BANNER IMAGES
-    public void getBannerBitmap(Event thisEvent, ImageView imagePreview) {
+    /**
+     * Gets the bitmap of the banner for a particular event and displays it to the given ImageView
+     */
+    public void getBannerBitmap(Event thisEvent, ImageView imagePreview)
+    {
         //Bitmap imageMap;
-
         String bannerUrl = thisEvent.getEventBanner();
+
         StorageReference uriRef = fireRef.child(bannerUrl);
         uriRef.getBytes(1000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
@@ -60,6 +63,32 @@ public class ImageDownloader
                 imagePreview.setImageBitmap(imageMap);
             }
         });
+
+    }
+    /**
+     * Gets the bitmap of the profilepic for a user and displays it to the given ImageView
+     */
+        public void getProfilePicBitmap(User thisUser, ImageView profilePreview) {
+            //Bitmap imageMap;
+
+            String profileUrl = thisUser.getProfilePicture();
+            StorageReference uriRef = fireRef.child(profileUrl);
+            uriRef.getBytes(1000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    Bitmap imageMap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                    //since this is the first retrieval, add to memory cache
+                    //addBitmapToMemoryCache(bannerUrl,imageMap);
+                    //memoryCache.put(bannerUrl, imageMap);
+
+                    profilePreview.setImageBitmap(imageMap);
+                }
+            });
+        }
+
+
+
 
 //        FirebaseUtil.getEventBanner(db, thisEvent, new FirebaseUtil.EventBannerCallback()
 //        {
@@ -108,5 +137,5 @@ public class ImageDownloader
 //        });
 //    }
 
-    }
+
 }

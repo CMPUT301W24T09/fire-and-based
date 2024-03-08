@@ -13,25 +13,35 @@ public class User implements Parcelable {
     private String deviceID;
     private String userName;
     private String profilePicture;
-    private ArrayList<Event> userRegisteredEvents;
+    private ArrayList<Event> userEvents;
     private String firstName;
     private String lastName;
     private String phoneNumber;
     private String email;
 
     /**
-     * Constructs a new User with specified device ID, user name, profile picture, and a list of registered events.
+     * Constructs a new User with specified device ID, user name, profile picture, and a several parameters.
      *
      * @param deviceID The unique identifier for the user's device.
      * @param userName The user's chosen name.
      * @param userRegisteredEvents A list of events the user has registered for.
      * @param profilePicture The URL or resource identifier for the user's profile picture.
+     * @param firstName The first name of the User.
+     * @param lastName The last name of the User.
+     * @param email The User's email.
+     * @param phoneNumber The User's phone number.
      */
-    public User(String deviceID, String userName, ArrayList<Event> userRegisteredEvents, String profilePicture){
+    }
+    User(String deviceID, String userName, ArrayList<Event> userRegisteredEvents, String profilePicture, String firstName, String lastName,
+         String email, String phoneNumber) {
         this.deviceID = deviceID;
-        this.userName = userName;
         this.profilePicture = profilePicture;
-        this.userRegisteredEvents = userRegisteredEvents;
+        this.userName = userName;
+        this.userEvents = userRegisteredEvents;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
     }
 
     /**
@@ -44,7 +54,7 @@ public class User implements Parcelable {
         deviceID = in.readString();
         userName = in.readString();
         profilePicture = in.readString();
-        userRegisteredEvents = in.readArrayList(Event.class.getClassLoader());
+        userEvents = in.createTypedArrayList(Event.CREATOR);
         firstName = in.readString();
         lastName = in.readString();
         phoneNumber = in.readString();
@@ -82,6 +92,8 @@ public class User implements Parcelable {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    public ArrayList<Event> getUserEvents(){
+        return this.userEvents;
     }
 
     public ArrayList<Event> getUserEvents() {
@@ -92,17 +104,24 @@ public class User implements Parcelable {
         this.userRegisteredEvents = eventList;
     }
 
-    public void addEvent(Event event) {
-        this.userRegisteredEvents.add(event);
-    }
 
     public String getProfilePicture() {
         return this.profilePicture;
+    public void addEvent(Event event){
+        this.userEvents.add(event);
+    }
+
+    public ArrayList<Event> getEvents(){
+        return this.userEvents;
     }
 
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
     }
+    public void setUserRegisteredEvents(ArrayList<Event> eventList){
+        this.userEvents = eventList;
+    }
+
 
     public String getFirstName() {
         return firstName;
@@ -148,7 +167,7 @@ public class User implements Parcelable {
         dest.writeString(deviceID);
         dest.writeString(userName);
         dest.writeString(profilePicture);
-        dest.writeList(userRegisteredEvents);
+        dest.writeTypedList(userEvents);
         dest.writeString(firstName);
         dest.writeString(lastName);
         dest.writeString(phoneNumber);

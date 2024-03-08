@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,12 +23,14 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
     private Context context;
 
-    /**
-     * Constructs a new {@code EventArrayAdapter}.
-     *
-     * @param context The current context.
-     * @param events  An ArrayList of {@link Event} objects to be displayed.
-     */
+    
+    ImageDownloader imageDownloader = new ImageDownloader();
+   /**
+   * Constructs a new {@code EventArrayAdapter}.
+   *
+   * @param context The current context.
+   * @param events  An ArrayList of {@link Event} objects to be displayed.
+   */
     public EventArrayAdapter(Context context, ArrayList<Event> events){
         super(context, 0, events);
         this.events = events;
@@ -50,15 +54,26 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 
         // Inflate a new view if one isn't provided
         if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.event_content, parent, false);
+            view = LayoutInflater.from(context).inflate(R.layout.event_list_content, parent,false);
         }
 
         // Get the Event object located at this position in the list
         Event event = events.get(position);
 
+        /**
+         * Downloads event banner and displays
+         */
+        ImageView imagePreview = view.findViewById(R.id.previewImage);
+        if (event.getEventBanner() != null)
+        {
+            imageDownloader.getBannerBitmap(event,imagePreview);
+        }
+
         // Find the TextView in the event_content.xml layout with the ID event_name_text
-        TextView eventName = view.findViewById(R.id.event_name_text);
-        // Set the text of eventName TextView to the event's name
+        TextView eventName = view.findViewById(R.id.event_title_text);
+//        TextView eventDescription = view.findViewById(R.id.event_description_text);
+
+          // Set the text of eventName TextView to the event's name
         eventName.setText(event.getEventName());
 
         // Optionally, you can set more event details if available and needed
