@@ -42,14 +42,14 @@ public class EventListActivity extends AppCompatActivity {
         eventAdapter = new EventArrayAdapter(this, dataList);
         eventList.setAdapter(eventAdapter);
 
-        drawerLayout = findViewById(R.id.drawer_layout);
+        //drawerLayout = findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
 
 
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+       // Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_menu_24);

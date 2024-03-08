@@ -163,7 +163,26 @@ public class EventCreation extends AppCompatActivity {
                     return;
                 }
 
-                Event event = new Event(eventTitleString, eventDescriptionString, null, qrCode);
+
+                bannerUrl = "events/"+eventTitleString;
+                Event newEvent = new Event(eventTitleString, eventDescriptionString, bannerUrl, qrCode);
+
+                //prep image for storage
+                StorageReference selectionRef = fireRef.child(bannerUrl);
+                //store image
+                selectionRef.putFile(bannerImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Toast.makeText(EventCreation.this, "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(EventCreation.this, "Image Upload Error", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                Event event = new Event(eventTitleString, eventDescriptionString, bannerUrl, qrCode);
 
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -211,27 +230,9 @@ public class EventCreation extends AppCompatActivity {
                 new Random().nextBytes(array);
                 String qrCode = new String(array, StandardCharsets.UTF_8);
 
-                bannerUrl = "events/"+eventTitleString;
-                Event newEvent = new Event(eventTitleString, eventDescriptionString, bannerUrl, qrCode);
-
-                //prep image for storage
-                StorageReference selectionRef = fireRef.child(bannerUrl);
-                //store image
-                selectionRef.putFile(bannerImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(EventCreation.this, "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(EventCreation.this, "Image Upload Error", Toast.LENGTH_LONG).show();
-                    }
-                });
 
 
-                addNewEvent(newEvent);
-                displayQR(qrCode, eventTitleString);
+
 
                 qrCode = "fire_and_based_event:" + new String(array, StandardCharsets.UTF_8);
                 showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
