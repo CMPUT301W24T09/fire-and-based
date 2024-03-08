@@ -17,7 +17,7 @@ public class User implements Parcelable {
     private String phoneNumber;
     private String email;
 
-    User(String deviceID, String userName, ArrayList<Event> userRegisteredEvents, String profilePicture){
+    public User(String deviceID, String userName, ArrayList<Event> userRegisteredEvents, String profilePicture){
         this.deviceID = deviceID;
         this.profilePicture = profilePicture;
         this.userName = userName;
