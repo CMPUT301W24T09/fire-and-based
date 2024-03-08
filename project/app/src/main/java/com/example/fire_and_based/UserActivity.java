@@ -1,7 +1,10 @@
 package com.example.fire_and_based;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -15,11 +18,17 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 public class UserActivity extends AppCompatActivity {
+    public User currentUser;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_activity);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            currentUser = getIntent().getParcelableExtra("currentUser");
+        }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -65,6 +74,7 @@ public class UserActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.profile_item) {
             Intent intent = new Intent(UserActivity.this, ProfileActivity.class);
+            intent.putExtra("currentUser", currentUser);
             startActivity(intent);
             return true;
         }

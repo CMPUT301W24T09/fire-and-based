@@ -6,64 +6,39 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="200dp"
+        android:fontFamily="@font/abeezee"
+        android:text="Fire and Based"
+        android:textSize="40sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.878"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="97dp"
+        android:layout_height="98dp"
+        android:layout_marginBottom="225dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/f2d0ee5e58d6074256b6c408bb4d95f2"
+        tools:layout_editor_absoluteX="3dp" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hello World!"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/firebaseButton"
-            android:layout_width="260dp"
-            android:layout_height="wrap_content"
-            android:text="Click me for Firebase"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="417dp" />
-
-        <Button
-            android:id="@+id/imageUploadTest"
-
-            android:layout_width="260dp"
-            android:layout_height="wrap_content"
-            android:text="Click me for Image Uploader"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="475dp" />
-
-        <Button
-            android:id="@+id/QRScanTest"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Scan QR Code" />
-
-        <Button
-            android:id="@+id/QRGenTest"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Generate QR Code" />
-
-        <Button
-            android:id="@+id/eventlistButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Event List" />
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/textView17"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_slab"
+        android:text="Loading..."
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

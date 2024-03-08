@@ -1,9 +1,15 @@
 package com.example.fire_and_based;
 
+
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.util.Log;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+
+import androidx.annotation.NonNull;
+
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -19,7 +25,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+
+import java.util.HashMap;
+
+
 import java.util.List;
 import java.util.Map;
 
@@ -310,7 +319,16 @@ public class FirebaseUtil {
                     String username = documentSnapshot.getString("userName");
                     String profilePicture = documentSnapshot.getString("profilePicture");
                     ArrayList<Event> userEvents = (ArrayList<Event>) documentSnapshot.get("userEvents");
-                    callback.onUserFetched(new User(userID, username, userEvents, profilePicture));
+                    String firstName = documentSnapshot.getString("firstName");
+                    String lastName = documentSnapshot.getString("lastName");
+                    String email = documentSnapshot.getString("email");
+                    String phoneNumber = documentSnapshot.getString("phoneNumber");
+                    User user = new User(userID, username, userEvents, profilePicture);
+                    user.setFirstName(firstName);
+                    user.setLastName(lastName);
+                    user.setEmail(email);
+                    user.setPhoneNumber(phoneNumber);
+                    callback.onUserFetched(user);
                 }
                 else {
                     callback.onError(new Exception("User document does not exist."));
@@ -330,7 +348,22 @@ public class FirebaseUtil {
     }
 
 
-// Check if a user is in a given event
+    public static void updateProfileInfo(FirebaseFirestore db, User user) {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("firstName", user.getFirstName());
+        updates.put("lastName", user.getLastName());
+        updates.put("email", user.getEmail());
+        updates.put("phoneNumber", user.getPhoneNumber());
+        db.collection("users").document(user.getDeviceID())
+                .update(updates)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d(TAG, "Document Successfully Updated");
+                    }
+                });
+    }
+
 
     /**
      * Callback for checking if a given user is in a given event
@@ -465,6 +498,4 @@ public class FirebaseUtil {
 
         return docId;
     }
-
-
 }

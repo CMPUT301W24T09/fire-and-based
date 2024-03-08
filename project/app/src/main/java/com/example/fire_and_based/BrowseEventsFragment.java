@@ -1,5 +1,7 @@
 package com.example.fire_and_based;
 
+import static android.content.Intent.getIntent;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,17 +16,25 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
+
+
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BrowseEventsFragment extends Fragment {
-    private ListView eventList;
-    private EventArrayAdapter eventAdapter;
-    private ArrayList<Event> dataList;
-    private int lastClickedIndex;
+
+    protected ListView eventList;
+    protected EventArrayAdapter eventAdapter;
+    protected ArrayList<Event> dataList;
+    protected int lastClickedIndex;
+    public User currentUser;
 
     @Nullable
     @Override
@@ -32,19 +42,14 @@ public class BrowseEventsFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.event_list_fragment, container, false);
 
-        eventList = view.findViewById(R.id.event_list);
-
         dataList = new ArrayList<>();
-        dataList.add(new Event(null, null, null, null));
+        eventList = view.findViewById(R.id.event_list);
 
         eventAdapter = new EventArrayAdapter(requireContext(), dataList);
         eventList.setAdapter(eventAdapter);
 
         FloatingActionButton create_event_button = view.findViewById(R.id.create_event_button);
         create_event_button.setVisibility(View.GONE);
-
-
-
 
         // this updates the data list that displays
         FirebaseFirestore db = FirebaseFirestore.getInstance();
