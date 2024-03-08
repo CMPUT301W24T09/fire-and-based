@@ -45,7 +45,9 @@ public class EventOverviewFragment extends Fragment {
 
 
 
-
+                /**
+                 * Downloads event banner and displays
+                 */
                 ImageView imagePreview = view.findViewById(R.id.bannerPreview);
                 ImageDownloader imageDownloader = new ImageDownloader();
                 imageDownloader.getBannerBitmap(event,imagePreview);

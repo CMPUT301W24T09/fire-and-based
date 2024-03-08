@@ -53,6 +53,10 @@ public class ProfileActivity extends AppCompatActivity {
     ImageDownloader imageDownloader = new ImageDownloader();
 
     //LAUNCHES DEVICE IMAGE GALLERY (i will put this in its own class later sowwy)
+
+    /**
+     * Used to launch device photo gallery and display the preview of the image in an imageview
+     */
     ActivityResultLauncher<Intent> customActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result)
@@ -102,11 +106,29 @@ public class ProfileActivity extends AppCompatActivity {
 
         Button saveButton = findViewById(R.id.create_profile);
 
+
+
+
+
+// merge conflict if u see this past march 8 just delete plz thx : ) 
+
+//         profilePic = findViewById(R.id.profile_pic);
+//         if (currentUser !=null )
+//         {
+//             /**
+//              * Downloads profile pic if available
+//              */
+//             imageDownloader.getProfilePicBitmap(currentUser,profilePic);
+//         }
+
         FloatingActionButton pic_button = findViewById(R.id.pic_button);
         pic_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
+                /**
+                 * links to customActivityResultLauncher to display the image in imageview
+                 */
                 Intent imageIntent = new Intent(Intent.ACTION_PICK);
                 imageIntent.setType("image/*");
                 customActivityResultLauncher.launch(imageIntent);
@@ -142,8 +164,8 @@ public class ProfileActivity extends AppCompatActivity {
                     Toast.makeText(ProfileActivity.this, "Invalid Last Name", Toast.LENGTH_SHORT).show();
                 }
 
+                //setup profile url
                 profileUrl = "profiles/"+currentUser.getDeviceID();
-
                 //prep image for storage
 
                 FirebaseUtil.updateProfileInfo(FirebaseFirestore.getInstance(), currentUser);
