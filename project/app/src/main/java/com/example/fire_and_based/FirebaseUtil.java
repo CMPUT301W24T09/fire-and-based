@@ -4,14 +4,10 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -237,16 +233,9 @@ public class FirebaseUtil {
     public static void getUserEvents(FirebaseFirestore db, String userID, final UserEventsAndFetchCallback callback) {
         db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                List<Map<String, Object>> rawEvents = (List<Map<String, Object>>) documentSnapshot.get("events");
-                if (rawEvents != null && !rawEvents.isEmpty()) {
-                    ArrayList<String> eventCodes = new ArrayList<>();
-                    for (Map<String, Object> rawEvent : rawEvents) {
-                        if (rawEvent.containsKey("QRcode")) {
-                            String eventCode = (String) rawEvent.get("QRcode");
-                            eventCodes.add(eventCode);
-                        }
-                    }
-
+                List<String> eventIDs = (List<String>) documentSnapshot.get("events");
+                if (eventIDs != null && !eventIDs.isEmpty()) {
+                    ArrayList<String> eventCodes = new ArrayList<>(eventIDs);
                     ArrayList<Event> events = new ArrayList<>();
                     for (String eventCode : eventCodes) {
                         String docID = cleanDocumentId(eventCode);
@@ -329,22 +318,19 @@ public class FirebaseUtil {
     public static void checkUserInEventByQRCode(FirebaseFirestore db, String userID, String eventQRCode, final UserEventQRCodeCallback callback) {
         db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                List<Map<String, Object>> rawEvents = (List<Map<String, Object>>) documentSnapshot.get("events");
-                if (rawEvents != null && !rawEvents.isEmpty()) {
-                    for (Map<String, Object> rawEvent : rawEvents) {
-                        if (rawEvent.containsKey("QRcode")) {
-                            String qrCode = (String) rawEvent.get("QRcode");
-                            if (qrCode.equals(eventQRCode)) {
-                                String docID = cleanDocumentId(qrCode);
-                                db.collection("events").document(docID).get().addOnSuccessListener(document -> {
-                                    String eventName = document.getString("eventName");
-                                    String eventDescription = document.getString("eventDescription");
-                                    String eventBanner = document.getString("eventBanner");
-                                    Event event = new Event(eventName, eventDescription, eventBanner, qrCode);
-                                    callback.onEventFound(event);
-                                }).addOnFailureListener(callback::onError);
-                                return;
-                            }
+                List<String> eventIDs = (List<String>) documentSnapshot.get("events");
+                if (eventIDs != null && !eventIDs.isEmpty()) {
+                    for (String qrCode : eventIDs) {
+                        if (qrCode.equals(eventQRCode)) {
+                            String docID = cleanDocumentId(qrCode);
+                            db.collection("events").document(docID).get().addOnSuccessListener(document -> {
+                                String eventName = document.getString("eventName");
+                                String eventDescription = document.getString("eventDescription");
+                                String eventBanner = document.getString("eventBanner");
+                                Event event = new Event(eventName, eventDescription, eventBanner, qrCode);
+                                callback.onEventFound(event);
+                            }).addOnFailureListener(callback::onError);
+                            return;
                         }
                     }
                     //IF EVENT NOT FOUND WE STILL NEED IT
@@ -357,7 +343,6 @@ public class FirebaseUtil {
                         callback.onEventNotFound(event);
                     }).addOnFailureListener(callback::onError);
                     return;
-
                 } else {
                     callback.onError(new Exception("User exists but has no Events"));
                 }
@@ -367,6 +352,52 @@ public class FirebaseUtil {
         }).addOnFailureListener(callback::onError);
     }
 
+
+
+    //TODO need to add user to events and events to user
+
+    /**
+     * Generic shared callback interface for success/fail
+     */
+    interface Callback {
+        void onSuccess();
+        void onFailure(Exception e);
+    }
+
+    /**
+     * Adds the eventID to the user's attended events field,
+     * and the attendee ID to the event's attendees field.
+     * Both succeed or fail simultaneously
+     * @param db the database reference
+     * @param eventId the event ID to add and be added to
+     * @param attendee the user ID to add and be added to
+     * @param callback the callback function
+     */
+    public static void addEventAndAttendee(FirebaseFirestore db, String eventId, String attendee, Callback callback) {
+        DocumentReference eventDoc = db.collection("events").document(eventId);
+        DocumentReference userDoc = db.collection("users").document(attendee);
+
+        db.runTransaction((Transaction.Function<Void>) transaction -> {
+                    DocumentSnapshot eventSnapshot = transaction.get(eventDoc);
+                    List<String> attendees = (List<String>) eventSnapshot.get("attendees");
+                    if (attendees == null) {
+                        attendees = new ArrayList<>();
+                    }
+                    attendees.add(attendee);
+                    transaction.update(eventDoc, "attendees", attendees);
+
+                    DocumentSnapshot userSnapshot = transaction.get(userDoc);
+                    List<String> attendeeEvents = (List<String>) userSnapshot.get("attendeeEvents");
+                    if (attendeeEvents == null) {
+                        attendeeEvents = new ArrayList<>();
+                    }
+                    attendeeEvents.add(eventId);
+                    transaction.update(userDoc, "attendeeEvents", attendeeEvents);
+
+                    return null;
+                }).addOnSuccessListener(aVoid -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e));
+    }
 
 
 

@@ -81,13 +81,15 @@ public class EventCheckIn extends AppCompatActivity {
     private void offerEvent(String eventQRCode){
 
         //FOR TESTING ONLY
-        eventQRCode = "froggy";
+        eventQRCode = "froggy world";
         String userID = "321";
         //END TESTING ONLY
 
 
         Log.println(Log.DEBUG, "EventCheckIn", "Checking if user is already in event...");
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String finalEventQRCode = eventQRCode;
+
         FirebaseUtil.checkUserInEventByQRCode(db, userID, eventQRCode, new FirebaseUtil.UserEventQRCodeCallback() {
             @Override
             public void onEventFound(Event event) {
@@ -105,9 +107,21 @@ public class EventCheckIn extends AppCompatActivity {
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 Log.println(Log.DEBUG, "EventCheckIn", "User accepted event");
-                                Toast.makeText(EventCheckIn.this, "Joined event " + event.getEventName(), Toast.LENGTH_LONG).show();
-                                //TODO add user to event and event to user, save both to DB
-                                goToEvent(event);
+
+                                FirebaseUtil.addEventAndAttendee(db, finalEventQRCode, userID, new FirebaseUtil.Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        Log.println(Log.DEBUG, "EventCheckIn", "User and event added to each other");
+                                        Toast.makeText(EventCheckIn.this, "Joined event " + event.getEventName(), Toast.LENGTH_LONG).show();
+                                        goToEvent(event);
+                                    }
+
+                                    @Override
+                                    public void onFailure(Exception e) {
+                                        Log.println(Log.ERROR, "EventCheckIn", "An error occurred trying to join the event: " + e.getMessage());
+                                    }
+                                });
+
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
