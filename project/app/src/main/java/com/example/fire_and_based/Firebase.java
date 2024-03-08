@@ -23,6 +23,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+
+// THIS CLASS IS DEPRECIATED MOSTLY JUST FOR REFERNCE ATM
 public class Firebase extends AppCompatActivity {
     ListView eventList;
     ArrayList<Event> eventDataList;
