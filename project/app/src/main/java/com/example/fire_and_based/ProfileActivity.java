@@ -120,7 +120,10 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         profilePic = findViewById(R.id.profile_pic);
-        imageDownloader.getProfilePicBitmap(currentUser,profilePic);
+        if (currentUser !=null )
+        {
+            imageDownloader.getProfilePicBitmap(currentUser,profilePic);
+        }
 
 
         profilePic.setOnClickListener(new View.OnClickListener() {
