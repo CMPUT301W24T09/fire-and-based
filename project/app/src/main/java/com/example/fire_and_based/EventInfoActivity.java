@@ -52,7 +52,7 @@ public class EventInfoActivity extends AppCompatActivity {
                     .commit();
         }
 
-        NavigationBarView bottomNavigationView = findViewById(R.id.bottom_nav);
+        NavigationBarView bottomNavigationView = findViewById(R.id.event_info_nav);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

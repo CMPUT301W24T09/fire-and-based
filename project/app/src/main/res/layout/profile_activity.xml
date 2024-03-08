@@ -95,12 +95,12 @@
             android:textSize="24sp" />
 
         <ImageButton
-            android:id="@+id/delete_button"
+            android:id="@+id/profile_pic"
             android:layout_width="62dp"
             android:layout_height="48dp"
             android:layout_weight="1"
             android:background="?android:attr/selectableItemBackground"
-            android:src="@drawable/baseline_delete_circle_outline" />
+            android:src="@drawable/baseline_add_circle_outline_24" />
 
         <Button
             android:id="@+id/create_profile"
