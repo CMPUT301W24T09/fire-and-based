@@ -29,16 +29,35 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/**
+ * Activity for displaying detailed information about an event, including
+ * overview, announcements, and a map. Users can navigate through these sections
+ * via a BottomNavigationView.
+ */
 public class EventInfoActivity extends AppCompatActivity {
+    /**
+     * The event for which information is displayed.
+     */
     public Event clickedEvent;
+    /**
+     * Flag indicating whether the user has signed up for the event.
+     */
     private boolean signedUp;
     public User currentUser;
 
+    /**
+     * Initializes the activity, its views, and fragments based on the event details.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_info_activity);
 
+        // Retrieve the event object and signed up flag from the intent extras
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             currentUser = getIntent().getParcelableExtra("currentUser");
@@ -52,6 +71,8 @@ public class EventInfoActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(clickedEvent.getEventName());
+
+        // Set up the toolbar with the event name and a navigation click listener
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,13 +80,14 @@ public class EventInfoActivity extends AppCompatActivity {
             }
         });
 
+        // Load the default fragment if there's no saved instance state
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
                     .add(R.id.fragment_container_view, EventOverviewFragment.newInstance(clickedEvent))
                     .commit();
         }
-
+        // Set up the bottom navigation view for switching between fragments
         NavigationBarView bottomNavigationView = findViewById(R.id.event_info_nav);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
@@ -88,7 +110,7 @@ public class EventInfoActivity extends AppCompatActivity {
                 return true;
             }
         });
-
+        // Hide certain menu items if the user hasn't signed up for the event
         if (!signedUp) {
             Menu menu = bottomNavigationView.getMenu();
             MenuItem announcementsItem = menu.findItem(R.id.announcements_item);
@@ -112,6 +134,12 @@ public class EventInfoActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Inflates the menu; this adds items to the action bar if it is present.
+     *
+     * @param menu The options menu in which the items are placed.
+     * @return True for the menu to be displayed; if false it will not be shown.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (signedUp) {
@@ -121,9 +149,16 @@ public class EventInfoActivity extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * Handles action bar item clicks.
+     *
+     * @param item The menu item that was selected.
+     * @return boolean Return false to allow normal menu processing to proceed, true to consume it here.
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.scanner_item) {
+            // Navigate to the EventCheckIn activity
             Intent intent = new Intent(EventInfoActivity.this, EventCheckIn.class);
             startActivity(intent);
             return true;

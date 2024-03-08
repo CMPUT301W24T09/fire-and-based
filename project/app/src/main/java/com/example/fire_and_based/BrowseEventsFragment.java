@@ -14,25 +14,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
-
-
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * Fragment for browsing a list of all events.
+ * It showcases events fetched from Firestore in a ListView, allowing the user to select
+ * an event to see more details.
+ */
 public class BrowseEventsFragment extends Fragment {
 
     protected ListView eventList;
@@ -41,11 +35,20 @@ public class BrowseEventsFragment extends Fragment {
     protected int lastClickedIndex;
     public User currentUser;
 
+    /**
+     * Called to have the fragment instantiate its user interface view.
+     * This is optional, and non-graphical fragments can return null.
+     * This will be called between onCreate(Bundle) and onActivityCreated(Bundle).
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     * @return Return the View for the fragment's UI, or null.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-
+        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.event_list_fragment, container, false);
 
         if (getArguments() != null) {
@@ -54,37 +57,29 @@ public class BrowseEventsFragment extends Fragment {
 
         dataList = new ArrayList<>();
         eventList = view.findViewById(R.id.event_list);
-
         eventAdapter = new EventArrayAdapter(requireContext(), dataList);
         eventList.setAdapter(eventAdapter);
 
+        // Hide the create event button in this fragment
         FloatingActionButton create_event_button = view.findViewById(R.id.create_event_button);
         create_event_button.setVisibility(View.GONE);
 
-        // this updates the data list that displays
+        // Fetch all events from Firestore and update the ListView
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUtil.getAllEvents(db, list -> {
-            // This is where you handle the data once it's loaded.
             Log.println(Log.DEBUG, "BrowseEventsList", "Refreshing events list...");
-            Log.println(Log.DEBUG, "BrowseEventsList", "Old event data list size: " + dataList.size());
             dataList.clear();
-            Log.println(Log.DEBUG, "BrowseEventsList", "Cleared old events");
+            dataList.addAll(list);
             eventAdapter.notifyDataSetChanged();
-            for (Event event : list) {
-                Log.println(Log.DEBUG, "BrowseEventsList", "Adding " + event.getEventName());
-                dataList.add(event);
-                eventAdapter.notifyDataSetChanged();
-            }
-            Log.println(Log.DEBUG, "BrowseEventsList", "Event data list size after load" + dataList.size());
         });
 
-
-//         event list on click handler
+        // Handle clicks on events to open the EventInfoActivity
         eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 lastClickedIndex = position;
                 Event clickedEvent = dataList.get(lastClickedIndex);
+
 //                updateEventBanner(clickedEvent);
                 Intent intent = new Intent(requireActivity(), EventInfoActivity.class);   // need to change this to the arrow idk how
                 intent.putExtra("event",  clickedEvent);
