@@ -33,24 +33,32 @@ android {
 }
 
 dependencies {
+    //Firebase firestore and storage functionality
+    //Core dependency
     implementation(platform("com.google.firebase:firebase-bom:32.7.3"))
+    //Firestore (NoSQL Database, stores users and events data)
     implementation("com.google.firebase:firebase-firestore")
+    //Storage stores image assets
+    implementation("com.google.firebase:firebase-storage:20.3.0")
 
-
+    //UI and navigation elements
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("com.google.firebase:firebase-storage:20.3.0")
-   // implementation("androidx.collection:collection-jvm:1.4.0")
+    implementation("androidx.activity:activity:1.8.2")
+    implementation("androidx.fragment:fragment:1.6.2")
+
+    //Testing
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
+    //Image loading and downloading
     implementation("com.github.bumptech.glide:glide:4.15.1")
     implementation("com.squareup.picasso:picasso:2.71828")
 
-    implementation("androidx.activity:activity:1.8.2")
-    implementation("androidx.fragment:fragment:1.6.2")
-    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    //QR Code core dependency and android-specific implementation
     implementation("com.google.zxing:core:3.4.1")
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+
 }
