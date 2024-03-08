@@ -51,11 +51,11 @@ public class EventCreation extends AppCompatActivity {
     private Uri bannerImage;
     private String bannerUrl = null;
     //ImageUploader imageUploader = new ImageUploader();
-
-
     StorageReference fireRef = FirebaseStorage.getInstance().getReference();
 
-    //LAUNCHES DEVICE IMAGE GALLERY
+    /**
+     * Used to launch device photo gallery and display the preview of the image in an imageview
+     */
     ActivityResultLauncher<Intent> customActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result)
@@ -127,6 +127,7 @@ public class EventCreation extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
+                //Display image in imageview
                 Intent imageIntent = new Intent(Intent.ACTION_PICK);
                 imageIntent.setType("image/*");
                 customActivityResultLauncher.launch(imageIntent);

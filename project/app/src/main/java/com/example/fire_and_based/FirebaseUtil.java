@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import java.util.HashMap;
@@ -33,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Set;
 
 public class FirebaseUtil {
 
@@ -45,9 +47,6 @@ public class FirebaseUtil {
     //        FirebaseFirestore db = FirebaseFirestore.getInstance();
     //        FirebaseUtil.addEventToDB(db, event);
     //    }
-
-
-
 
     /**
      * Asynchronously get all events in the database
@@ -283,6 +282,29 @@ public class FirebaseUtil {
         }).addOnFailureListener(callback::onError);
     }
 
+    public static void addAttendingEvent(FirebaseFirestore db, User user) {
+        String uuid = user.getDeviceID();
+        ArrayList<Event> attending = user.getUserEvents();
+        DocumentReference docsRef = db.collection("users").document(uuid);
+        Map<String, Object> attendingMap = new HashMap<>();
+        attendingMap.put("userEvents", attending);
+
+        docsRef.set(attendingMap, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d(TAG, "Added attending event");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "Failure.");
+                    }
+                });
+
+    }
+
     /**
      * Callback for getting a user's registered events
      * @see User
@@ -316,18 +338,20 @@ public class FirebaseUtil {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
-                    String username = documentSnapshot.getString("userName");
-                    String profilePicture = documentSnapshot.getString("profilePicture");
-                    ArrayList<Event> userEvents = (ArrayList<Event>) documentSnapshot.get("userEvents");
-                    String firstName = documentSnapshot.getString("firstName");
-                    String lastName = documentSnapshot.getString("lastName");
-                    String email = documentSnapshot.getString("email");
-                    String phoneNumber = documentSnapshot.getString("phoneNumber");
-                    User user = new User(userID, username, userEvents, profilePicture);
-                    user.setFirstName(firstName);
-                    user.setLastName(lastName);
-                    user.setEmail(email);
-                    user.setPhoneNumber(phoneNumber);
+                    User user = documentSnapshot.toObject(User.class);
+                    FirebaseUtil.getUserEvents(db, userID, new UserEventsAndFetchCallback() {
+                        @Override
+                        public void onEventsFetched(ArrayList<Event> events) {
+                            user.setUserRegisteredEvents(events);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Log.d(TAG, e.toString());
+                        }
+                    });
+                    Log.d(TAG, String.format("Username: %s First: %s Last: %s Phone: %s Email: %s ID: %s Null: %s", user.getUserName(), user.getFirstName(), user.getLastName()
+                    , user.getPhoneNumber(), user.getEmail(), user.getDeviceID(), user.getUserEvents()));
                     callback.onUserFetched(user);
                 }
                 else {

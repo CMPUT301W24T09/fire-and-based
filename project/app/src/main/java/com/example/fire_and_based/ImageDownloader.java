@@ -42,12 +42,14 @@ public class ImageDownloader
 //        };
 //    }
 
-    //DISPLAYS BANNER IMAGES
+    /**
+     * Gets the bitmap of the banner for a particular event and displays it to the given ImageView
+     */
     public void getBannerBitmap(Event thisEvent, ImageView imagePreview)
     {
         //Bitmap imageMap;
-
         String bannerUrl = thisEvent.getEventBanner();
+
         StorageReference uriRef = fireRef.child(bannerUrl);
         uriRef.getBytes(1000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
@@ -63,6 +65,9 @@ public class ImageDownloader
         });
 
     }
+    /**
+     * Gets the bitmap of the profilepic for a user and displays it to the given ImageView
+     */
         public void getProfilePicBitmap(User thisUser, ImageView profilePreview) {
             //Bitmap imageMap;
 
