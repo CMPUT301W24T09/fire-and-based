@@ -43,7 +43,8 @@ public class ImageDownloader
 //    }
 
     //DISPLAYS BANNER IMAGES
-    public void getBannerBitmap(Event thisEvent, ImageView imagePreview) {
+    public void getBannerBitmap(Event thisEvent, ImageView imagePreview)
+    {
         //Bitmap imageMap;
 
         String bannerUrl = thisEvent.getEventBanner();
@@ -60,6 +61,29 @@ public class ImageDownloader
                 imagePreview.setImageBitmap(imageMap);
             }
         });
+
+    }
+        public void getProfilePicBitmap(User thisUser, ImageView profilePreview) {
+            //Bitmap imageMap;
+
+            String profileUrl = thisUser.getProfilePicture();
+            StorageReference uriRef = fireRef.child(profileUrl);
+            uriRef.getBytes(1000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    Bitmap imageMap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                    //since this is the first retrieval, add to memory cache
+                    //addBitmapToMemoryCache(bannerUrl,imageMap);
+                    //memoryCache.put(bannerUrl, imageMap);
+
+                    profilePreview.setImageBitmap(imageMap);
+                }
+            });
+        }
+
+
+
 
 //        FirebaseUtil.getEventBanner(db, thisEvent, new FirebaseUtil.EventBannerCallback()
 //        {
@@ -108,5 +132,5 @@ public class ImageDownloader
 //        });
 //    }
 
-    }
+
 }
