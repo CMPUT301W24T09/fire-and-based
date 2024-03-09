@@ -2,11 +2,13 @@ package com.example.fire_and_based;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import androidx.annotation.NonNull;
-
 import java.util.ArrayList;
 
+/**
+ * Represents a user in the application, including their personal information and events they are associated with.
+ * Implements Parcelable to enable passing User objects between activities.
+ */
 public class User implements Parcelable {
     private String deviceID;
     private String userName;
@@ -17,30 +19,51 @@ public class User implements Parcelable {
     private String phoneNumber;
     private String email;
 
-    User() {
-
-    }
-    User(String deviceID, String userName, ArrayList<Event> userRegisteredEvents, String profilePicture){
+    /**
+     * Constructs a User with device ID, user name, a list of registered events, and a profile picture.
+     *
+     * @param deviceID        The unique identifier for the user's device.
+     * @param userName        The user's chosen username.
+     * @param userRegisteredEvents A list of events the user has registered for.
+     * @param profilePicture  The URL or path to the user's profile picture.
+     */
+    User(String deviceID, String userName, ArrayList<Event> userRegisteredEvents, String profilePicture) {
         this.deviceID = deviceID;
-        this.profilePicture = profilePicture;
         this.userName = userName;
         this.userEvents = userRegisteredEvents;
-
+        this.profilePicture = profilePicture;
     }
 
+    /**
+     * Constructs a User with detailed personal information, including device ID, user name, registered events, profile picture,
+     * first name, last name, email, and phone number.
+     *
+     * @param deviceID        The unique identifier for the user's device.
+     * @param userName        The user's chosen username.
+     * @param userRegisteredEvents A list of events the user has registered for.
+     * @param profilePicture  The URL or path to the user's profile picture.
+     * @param firstName       The user's first name.
+     * @param lastName        The user's last name.
+     * @param email           The user's email address.
+     * @param phoneNumber     The user's phone number.
+     */
     User(String deviceID, String userName, ArrayList<Event> userRegisteredEvents, String profilePicture, String firstName, String lastName,
          String email, String phoneNumber) {
         this.deviceID = deviceID;
-        this.profilePicture = profilePicture;
         this.userName = userName;
         this.userEvents = userRegisteredEvents;
+        this.profilePicture = profilePicture;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
     }
 
-
+    /**
+     * Constructs a User instance from a Parcel, enabling the class to be parcelable.
+     *
+     * @param in The Parcel containing the User data.
+     */
     protected User(Parcel in) {
         deviceID = in.readString();
         userName = in.readString();
@@ -52,6 +75,9 @@ public class User implements Parcelable {
         email = in.readString();
     }
 
+    /**
+     * Creator to facilitate the parceling of User objects.
+     */
     public static final Creator<User> CREATOR = new Creator<User>() {
         @Override
         public User createFromParcel(Parcel in) {
@@ -64,79 +90,168 @@ public class User implements Parcelable {
         }
     };
 
-    public String getDeviceID(){
+    // GETTERS AND SETTERS
+
+    /**
+     * Gets the device ID of the user.
+     *
+     * @return The device ID.
+     */
+    public String getDeviceID() {
         return this.deviceID;
     }
 
+    /**
+     * Gets the user name.
+     *
+     * @return The user name.
+     */
     public String getUserName() {
         return this.userName;
     }
 
-    public ArrayList<Event> getUserEvents(){
+    /**
+     * Gets the list of events the user has registered for.
+     *
+     * @return A list of user events.
+     */
+    public ArrayList<Event> getUserEvents() {
         return this.userEvents;
     }
 
-    public void setDeviceID(String deviceID){
+    /**
+     * Sets the device ID of the user.
+     *
+     * @param deviceID The new device ID.
+     */
+    public void setDeviceID(String deviceID) {
         this.deviceID = deviceID;
     }
 
-    public void setUserName(String userName){
+    /**
+     * Sets the user name.
+     *
+     * @param userName The new user name.
+     */
+    public void setUserName(String userName) {
         this.userName = userName;
     }
 
-    public void addEvent(Event event){
+    /**
+     * Adds an event to the list of events the user has registered for.
+     *
+     * @param event The event to add.
+     */
+    public void addEvent(Event event) {
         this.userEvents.add(event);
     }
 
-    public ArrayList<Event> getEvents(){
-        return this.userEvents;
-    }
-
-    public void setProfilePicture(String profilePicture){
+    /**
+     * Sets the profile picture of the user.
+     *
+     * @param profilePicture The new profile picture URL or path.
+     */
+    public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
     }
-    public void setUserRegisteredEvents(ArrayList<Event> eventList){
+
+    /**
+     * Sets the list of events the user has registered for.
+     *
+     * @param eventList The new list of events.
+     */
+    public void setUserRegisteredEvents(ArrayList<Event> eventList) {
         this.userEvents = eventList;
     }
 
-
+    /**
+     * Gets the first name of the user.
+     *
+     * @return The first name.
+     */
     public String getFirstName() {
         return firstName;
     }
 
+    /**
+     * Sets the first name of the user.
+     *
+     * @param firstName The new first name.
+     */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
+    /**
+     * Gets the last name of the user.
+     *
+     * @return The last name.
+     */
     public String getLastName() {
         return lastName;
     }
 
+    /**
+     * Sets the last name of the user.
+     *
+     * @param lastName The new last name.
+     */
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
+    /**
+     * Gets the phone number of the user.
+     *
+     * @return The phone number.
+     */
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
+    /**
+     * Sets the phone number of the user.
+     *
+     * @param phoneNumber The new phone number.
+     */
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
+    /**
+     * Gets the email address of the user.
+     *
+     * @return The email address.
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * Sets the email address of the user.
+     *
+     * @param email The new email address.
+     */
     public void setEmail(String email) {
         this.email = email;
     }
 
+    /**
+     * Describe the kinds of special objects contained in this Parcelable instance's marshaled representation.
+     *
+     * @return A bitmask indicating the set of special object types marshaled by this Parcelable object instance.
+     */
     @Override
     public int describeContents() {
         return 0;
     }
 
+    /**
+     * Flatten this object in to a Parcel.
+     *
+     * @param dest  The Parcel in which the object should be written.
+     * @param flags Additional flags about how the object should be written. Generally zero.
+     */
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(deviceID);
@@ -149,8 +264,12 @@ public class User implements Parcelable {
         dest.writeString(email);
     }
 
-    String getProfilePicture(){return this.profilePicture; }
-
-
-
+    /**
+     * Gets the profile picture of the user.
+     *
+     * @return The profile picture URL or path.
+     */
+    String getProfilePicture() {
+        return this.profilePicture;
+    }
 }
