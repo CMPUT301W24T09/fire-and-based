@@ -4,11 +4,14 @@
 
     <item
         android:id="@+id/overview_item"
-        android:title="Overview" />
+        android:title="Overview"
+        android:icon="@drawable/overview_image"/>
     <item
         android:id="@+id/announcements_item"
-        android:title="Announcements" />
+        android:title="Announcements"
+        android:icon="@drawable/announcements_image"/>
     <item
         android:id="@+id/map_item"
-        android:title="Map" />
+        android:title="Map"
+        android:icon="@drawable/location"/>
 </menu>

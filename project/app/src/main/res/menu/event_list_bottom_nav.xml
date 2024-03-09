@@ -4,11 +4,14 @@
 
     <item
         android:id="@+id/browse_events_item"
-        android:title="Browse" />
+        android:title="Browse"
+        android:icon="@drawable/browsing_image" />
     <item
         android:id="@+id/my_attended_events"
-        android:title="Attending" />
+        android:title="Attending"
+        android:icon="@drawable/attending_image" />
     <item
         android:id="@+id/my_organized_events"
-        android:title="Organizing" />
+        android:title="Organizing"
+        android:icon="@drawable/organizing_image"/>
 </menu>
