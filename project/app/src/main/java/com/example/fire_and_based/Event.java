@@ -31,12 +31,6 @@ public class Event implements Parcelable {
     }
 
     /**
-     * Default constructor for creating an empty Event instance.
-     */
-    Event() {
-    }
-
-    /**
      * Constructs an Event from a Parcel, allowing for the class to be parcelable.
      *
      * @param in The Parcel containing the event data.
@@ -62,6 +56,7 @@ public class Event implements Parcelable {
         }
     };
 
+
     // GETTERS AND SETTERS
 
     /**
@@ -69,7 +64,7 @@ public class Event implements Parcelable {
      *
      * @return The name of the event.
      */
-    String getEventName() {
+    public String getEventName() {
         return this.eventName;
     }
 
@@ -78,7 +73,7 @@ public class Event implements Parcelable {
      *
      * @return The description of the event.
      */
-    String getEventDescription() {
+    public String getEventDescription() {
         return this.eventDescription;
     }
 

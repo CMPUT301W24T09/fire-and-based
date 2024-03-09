@@ -78,13 +78,9 @@ public class EventCheckIn extends AppCompatActivity {
      * @param  eventQRCode the QR Code ID string of an event
      */
 
-    private void offerEvent(String eventQRCode){
+    public void offerEvent(String eventQRCode){
 
-
-        //FOR TESTING ONLY
-        eventQRCode = "froggy world";
         String userID = MainActivity.getDeviceID();
-        //END TESTING ONLY
 
 
         Log.println(Log.DEBUG, "EventCheckIn", "Checking if user is already in event...");
@@ -136,7 +132,7 @@ public class EventCheckIn extends AppCompatActivity {
             }
             @Override
             public void onError(Exception e) {
-                Log.println(Log.ERROR, "EventCheckIn", "An error occurred trying to join the event: " + e.getMessage());
+                Log.println(Log.ERROR, "EventCheckIn", "An error occurred trying to see if user in event: " + e.getMessage());
             }
         });
 

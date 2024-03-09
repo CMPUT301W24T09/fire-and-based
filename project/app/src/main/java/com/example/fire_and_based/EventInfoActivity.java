@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -30,7 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 
 public class EventInfoActivity extends AppCompatActivity {
-    public Event clickedEvent;
+    private Event clickedEvent;
     private boolean signedUp;
     public User currentUser;
 
@@ -99,15 +100,12 @@ public class EventInfoActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, currentUser.getFirstName());
-                currentUser.addEvent(clickedEvent);
-                Log.d(TAG, currentUser.getUserEvents().get(2).getEventName());
-                FirebaseUtil.addAttendingEvent(FirebaseFirestore.getInstance(), currentUser);
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("currentUser", currentUser);
-                resultIntent.putExtra("clickedEvent", clickedEvent);
-                setResult(EventInfoActivity.RESULT_OK, resultIntent);
-                finish();
+                // when user clicks register what do we need to do
+                // 1. need to check if they are already registered in that event
+                //   check user.getUserEvents() and check if that event is already in it
+
+                // 2. user is not registered in that event -> we can add
+
             }
         });
     }

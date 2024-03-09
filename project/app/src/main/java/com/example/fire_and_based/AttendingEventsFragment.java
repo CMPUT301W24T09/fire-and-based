@@ -1,10 +1,7 @@
 package com.example.fire_and_based;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +15,6 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -28,12 +23,22 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+import java.lang.Exception;
+
 public class AttendingEventsFragment extends Fragment {
     private ListView eventList;
     private EventArrayAdapter eventAdapter;
     private ArrayList<Event> dataList;
     private int lastClickedIndex;
-    public User currentUser;
+    private static final String ARG_USER = "currentUser";
+
+    public static AttendingEventsFragment newInstance(User user) {
+        AttendingEventsFragment fragment = new AttendingEventsFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(ARG_USER, user);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Nullable
     @Override
@@ -47,49 +52,42 @@ public class AttendingEventsFragment extends Fragment {
         eventAdapter = new EventArrayAdapter(requireContext(), dataList);
         eventList.setAdapter(eventAdapter);
 
-        if (getArguments() != null) {
-            currentUser = (User) getArguments().getParcelable("currentUser");
-        }
-
-
         FloatingActionButton create_event_button = view.findViewById(R.id.create_event_button);
         create_event_button.setVisibility(View.GONE);
 
+        User user = getArguments().getParcelable(ARG_USER);
 
         // this updates the data list that displays
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        dataList.clear();
-        eventAdapter.notifyDataSetChanged();
-        dataList.addAll(currentUser.getUserEvents());
-        eventAdapter.notifyDataSetChanged();
+        FirebaseUtil.getUserEvents(db, user.getDeviceID(), new FirebaseUtil.UserEventsAndFetchCallback() {
+                    @Override
+                    public void onEventsFetched(ArrayList<Event> events) {
+                        for (Event event : events) {
+                            dataList.add(event);
+                            eventAdapter.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e("FirebaseError", "Error fetching user events: " + e.getMessage());
+                    }
+                });
 
 //         event list on click handler
-        eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                lastClickedIndex = position;
-                Event clickedEvent = dataList.get(lastClickedIndex);
+                eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        lastClickedIndex = position;
+                        Event clickedEvent = dataList.get(lastClickedIndex);
 //                updateEventBanner(clickedEvent);
-                Intent intent = new Intent(requireActivity(), EventInfoActivity.class);   // need to change this to the arrow idk how
-                intent.putExtra("event", clickedEvent);
-                intent.putExtra("signed up", true);
-                intent.putExtra("currentUser", currentUser);
-                startActivity(intent);
+                        Intent intent = new Intent(requireActivity(), EventInfoActivity.class);   // need to change this to the arrow idk how
+                        intent.putExtra("event", clickedEvent);
+                        intent.putExtra("signed up", true);
+                        startActivity(intent);
 
-            }
-        });
-
-        db.collection("users").document(currentUser.getDeviceID()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (value != null && value.exists()) {
-                    dataList.clear();
-                    eventAdapter.notifyDataSetChanged();
-                    dataList.addAll(currentUser.getUserEvents());
-                    eventAdapter.notifyDataSetChanged();
-                }
-            }
-        });
+                    }
+                });
 
         return view;
     }

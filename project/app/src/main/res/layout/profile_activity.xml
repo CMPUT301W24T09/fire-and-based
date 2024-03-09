@@ -98,19 +98,18 @@
             android:textColor="#808080"
             android:textSize="24sp" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <Button
             android:id="@+id/pic_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:translationX="168dp"
-            app:srcCompat="@drawable/baseline_add_circle_outline_24" />
+            android:text="Button" />
 
         <ImageView
             android:id="@+id/profile_pic"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:srcCompat="@tools:sample/avatars" />
+            android:layout_height="150dp"
+            android:layout_margin="16dp"
+            android:background="#554d4D" />
 
         <Button
             android:id="@+id/create_profile"
