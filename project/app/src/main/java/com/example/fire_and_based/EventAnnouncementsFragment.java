@@ -9,6 +9,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+/**
+ * This class displays the announcements for an event.
+ * Outstanding issues: xml file used by this class is not made yet, so this class does
+ * not actually display announcments yet.
+ * Also announcements need to be added to firebase.
+ */
 public class EventAnnouncementsFragment extends Fragment {
     private static final String ARG_EVENT = "event";
 

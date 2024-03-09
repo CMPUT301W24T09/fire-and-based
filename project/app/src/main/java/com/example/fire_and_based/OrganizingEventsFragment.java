@@ -23,6 +23,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * This class displays the list of events a user is the organizer for.
+ * It has a button to add events.
+ * Outstanding issues: need to update firebase to have a list of events the user organized.
+ */
 public class OrganizingEventsFragment extends Fragment {
     private ListView eventList;
     private EventArrayAdapter eventAdapter;

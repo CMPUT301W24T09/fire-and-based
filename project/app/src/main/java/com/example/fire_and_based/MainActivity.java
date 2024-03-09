@@ -35,6 +35,10 @@ import java.util.ArrayList;
 
 import java.util.UUID;
 
+/**
+ * This class is the main activity. It displays the loading page for the app
+ * while the app fetches the user info. It then sends you to UserActivity.
+ */
 public class MainActivity extends AppCompatActivity {
     private static User currentUser;
     @Override

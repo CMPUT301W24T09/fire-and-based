@@ -36,6 +36,11 @@ import java.util.Map;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
+/**
+ * This class has all the functions for accessing the necessary data from the firebase
+ * or storing the necessary data in the firebase.
+ */
+
 public class FirebaseUtil {
 
     // FOR THHIS CLASS THERE ARE TWO ARGS YOU NEED

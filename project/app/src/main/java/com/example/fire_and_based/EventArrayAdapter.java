@@ -15,6 +15,9 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
+/**
+ * This class is the adapter for the events. It displays each event in the list.
+ */
 public class EventArrayAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
     private Context context;
@@ -26,10 +29,6 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         this.events = events;
         this.context = context;
     }
-
-
-
-
 
 
 

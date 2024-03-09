@@ -14,7 +14,10 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-
+/**
+ * This class displays the map and gives an option to turn geolocation on and off.
+ * Outstanding issues: geolocation must be set up. must make xml for map.
+ */
 public class EventMapFragment extends Fragment {
     private static final String ARG_EVENT = "event";
 

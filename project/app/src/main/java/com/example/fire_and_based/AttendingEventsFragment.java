@@ -25,6 +25,9 @@ import java.util.ArrayList;
 
 import java.lang.Exception;
 
+/**
+ * This class displays the list of events a user is signed up for.
+ */
 public class AttendingEventsFragment extends Fragment {
     private ListView eventList;
     private EventArrayAdapter eventAdapter;

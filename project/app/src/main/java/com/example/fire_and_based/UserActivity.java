@@ -18,6 +18,11 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+/**
+ * This activity hosts the BrowseEventsFragment, AttendingEventsFragment, and OrganizingEventsFragment.
+ * It is the main page for the entire app and provides different views for browsing events based on
+ * whether a user is signed up for an event, organizing an event, etc.
+ */
 public class UserActivity extends AppCompatActivity {
     private User currentUser;
 

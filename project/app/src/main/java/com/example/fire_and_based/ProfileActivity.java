@@ -42,6 +42,10 @@ import com.google.firebase.storage.UploadTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * This class displays the profile for a user, and allows you to edit your details.
+ * It also allows you to upload a profile pic.
+ */
 public class ProfileActivity extends AppCompatActivity {
 
     public User currentUser;

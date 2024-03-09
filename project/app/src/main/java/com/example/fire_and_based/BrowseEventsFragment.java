@@ -33,6 +33,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class displays all events.
+ */
+
 public class BrowseEventsFragment extends Fragment {
 
     protected ListView eventList;
