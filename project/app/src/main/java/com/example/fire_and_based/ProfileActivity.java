@@ -123,6 +123,9 @@ public class ProfileActivity extends AppCompatActivity {
         profilePic = findViewById(R.id.profile_pic);
         if (currentUser.getProfilePicture() !=null )
         {
+            /**
+             * Downloads profile pic if available
+             */
             imageDownloader.getProfilePicBitmap(currentUser,profilePic);
         }
 
