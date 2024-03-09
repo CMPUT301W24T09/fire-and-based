@@ -14,6 +14,9 @@ import androidx.fragment.app.Fragment;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+/**
+ * This class implements the functionality for scanning a qr code to check into an eent.
+ */
 public class ScanQRCodeFragment extends Fragment {
 
     private final ActivityResultLauncher<ScanOptions> qrLauncher = registerForActivityResult(

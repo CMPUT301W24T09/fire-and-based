@@ -9,6 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+/**
+ * This class displays the list of attendees.
+ * Outstanding issues: needs to be updated to actually display the list of attendees,
+ * needs to be connected to the proper xml file.
+ */
 public class EventAttendeesFragment extends Fragment {
     @Nullable
     @Override

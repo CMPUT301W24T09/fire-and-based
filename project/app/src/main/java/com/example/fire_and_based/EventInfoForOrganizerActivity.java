@@ -14,6 +14,11 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+/**
+ * This activity hosts the EventAttendeesFragment, EventPromotionFragment, and EventMapFragment.
+ * It displays the event info for an event that the user is organizing.
+ * It also has a button to view the qr code.
+ */
 public class EventInfoForOrganizerActivity extends AppCompatActivity {
     public Event clickedEvent;
 

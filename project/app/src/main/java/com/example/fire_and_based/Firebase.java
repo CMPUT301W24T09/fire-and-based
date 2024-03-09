@@ -23,6 +23,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+
 public class Firebase extends AppCompatActivity {
     ListView eventList;
     ArrayList<Event> eventDataList;

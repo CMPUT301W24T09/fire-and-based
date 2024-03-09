@@ -30,6 +30,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/**
+ * This activity hosts the EventOverviewFragment, EventAnnouncementsFragment, and EventMapFragment.
+ * It will only display the announcements tab and the map tab if the user is signed up for the event.
+ * Similarly, it will not display the button to scan a qrcode to check in if a user is not signed up for the event.
+ */
+
 public class EventInfoActivity extends AppCompatActivity {
     private Event clickedEvent;
     private boolean signedUp;
