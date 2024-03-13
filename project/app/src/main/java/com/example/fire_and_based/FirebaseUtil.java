@@ -271,7 +271,7 @@ public class FirebaseUtil {
     public static void getUserEvents(FirebaseFirestore db, String userID, final UserEventsAndFetchCallback callback) {
         db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                List<String> eventIDs = (List<String>) documentSnapshot.get("events");
+                List<String> eventIDs = (List<String>) documentSnapshot.get("attendeeEvents");
                 if (eventIDs != null && !eventIDs.isEmpty()) {
                     ArrayList<String> eventCodes = new ArrayList<>(eventIDs);
                     ArrayList<Event> events = new ArrayList<>();
