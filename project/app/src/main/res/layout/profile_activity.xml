@@ -106,8 +106,8 @@
 
         <ImageView
             android:id="@+id/profile_pic"
+            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
             android:layout_margin="16dp"
             android:background="#554d4D" />
 
