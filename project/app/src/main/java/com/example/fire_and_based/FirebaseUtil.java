@@ -270,11 +270,12 @@ public class FirebaseUtil {
      * @see User
      */
     public static void getUserEvents(FirebaseFirestore db, String userID, final UserEventsAndFetchCallback callback) {
-        db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                List<String> eventIDs = (List<String>) documentSnapshot.get("attendeeEvents");
-                if (eventIDs != null && !eventIDs.isEmpty()) {
-                    ArrayList<String> eventCodes = new ArrayList<>(eventIDs);
+        db.collection("users").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    ArrayList<HashMap<String, Object>> eventMaps = (ArrayList<HashMap<String, Object>>) document.get("userEvents");
                     ArrayList<Event> events = new ArrayList<>();
                     if (eventMaps != null) {
                         for (HashMap<String, Object> eventMap : eventMaps) {

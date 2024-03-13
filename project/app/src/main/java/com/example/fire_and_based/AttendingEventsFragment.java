@@ -65,7 +65,6 @@ public class AttendingEventsFragment extends Fragment {
         FirebaseUtil.getUserEvents(db, user.getDeviceID(), new FirebaseUtil.UserEventsAndFetchCallback() {
                     @Override
                     public void onEventsFetched(ArrayList<Event> events) {
-                        dataList.clear();
                         for (Event event : events) {
                             dataList.add(event);
                             eventAdapter.notifyDataSetChanged();

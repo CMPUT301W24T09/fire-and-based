@@ -44,7 +44,6 @@ public class Event implements Parcelable {
         eventName = in.readString();
         eventDescription = in.readString();
         eventBanner = in.readString();
-        QRcode = in.readString();
     }
 
     /**
@@ -158,7 +157,6 @@ public class Event implements Parcelable {
         dest.writeString(eventName);
         dest.writeString(eventDescription);
         dest.writeString(eventBanner);
-        dest.writeString(QRcode);
     }
 
     @Override

@@ -66,14 +66,10 @@ public class BrowseEventsFragment extends Fragment {
         create_event_button.setVisibility(View.GONE);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseUtil.getAllEvents(db, new FirebaseUtil.getAllEventsCallback() {
-            @Override
-            public void onCallback(List<Event> list) {
-                dataList.clear();
-                for (Event event : list) {
-                    dataList.add(event);
-                    eventAdapter.notifyDataSetChanged();
-                }
+        FirebaseUtil.getAllEvents(db, list -> {
+            for (Event event : list) {
+                dataList.add(event);
+                eventAdapter.notifyDataSetChanged();
             }
         });
 
@@ -85,14 +81,25 @@ public class BrowseEventsFragment extends Fragment {
                 lastClickedIndex = position;
                 Event clickedEvent = dataList.get(lastClickedIndex);
 //                updateEventBanner(clickedEvent);
-                Intent intent = new Intent(requireActivity(), EventInfoActivity.class);
-                intent.putExtra("event", clickedEvent);
+                Intent intent = new Intent(requireActivity(), EventInfoActivity.class);   // need to change this to the arrow idk how
+                intent.putExtra("event",  clickedEvent);
                 intent.putExtra("currentUser", currentUser);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE);
             }
         });
 
 
+
+
         return view;
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                currentUser = data.getParcelableExtra("currentUser");
+            }
+        }
     }
 }
