@@ -165,7 +165,7 @@ public class EventCreation extends AppCompatActivity {
 
 
                 //prep image for storage
-                if (bannerUrl != null){
+                if (bannerImage != null){
                     bannerUrl = "events/"+eventTitleString;
                     StorageReference selectionRef = fireRef.child(bannerUrl);
                     //store image
