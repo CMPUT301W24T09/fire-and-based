@@ -58,6 +58,7 @@ public class OrganizingEventsFragment extends Fragment {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUtil.getAllEvents(db, list -> {
+            dataList.clear();
             for (Event event : list) {
                 dataList.add(event);
                 eventAdapter.notifyDataSetChanged();

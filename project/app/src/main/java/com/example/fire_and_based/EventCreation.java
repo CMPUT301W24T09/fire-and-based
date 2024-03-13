@@ -173,6 +173,7 @@ public class EventCreation extends AppCompatActivity {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Toast.makeText(EventCreation.this, "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
+                            bannerImage = null;
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override

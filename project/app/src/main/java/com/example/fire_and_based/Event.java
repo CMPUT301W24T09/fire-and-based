@@ -123,20 +123,6 @@ public class Event implements Parcelable {
         this.eventDescription = eventDescription;
     }
 
-    /**
-     * Updates the QR code for the event with the specified QR code.
-     *
-     * @param QRcode The new QR code for the event.
-     */
-    public void setQRcode(String QRcode) {
-        this.QRcode = QRcode;
-    }
-
-    /**
-     * Describe the kinds of special objects contained in this Parcelable instance's marshaled representation.
-     *
-     * @return A bitmask indicating the set of special object types marshaled by this Parcelable object instance.
-     */
     @Override
     public int describeContents() {
         return 0;
