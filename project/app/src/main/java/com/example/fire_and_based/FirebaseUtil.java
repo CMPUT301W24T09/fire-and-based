@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.NonNull;
 
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -276,36 +275,29 @@ public class FirebaseUtil {
                 if (eventIDs != null && !eventIDs.isEmpty()) {
                     ArrayList<String> eventCodes = new ArrayList<>(eventIDs);
                     ArrayList<Event> events = new ArrayList<>();
-                    if (eventMaps != null) {
-                        for (HashMap<String, Object> eventMap : eventMaps) {
-                            Event event = new Event((String) eventMap.get("eventName"), (String) eventMap.get("eventDescription"), (String) eventMap.get("eventBanner"), (String) eventMap.get("QRcode"));
+                    for (String eventCode : eventCodes) {
+                        String docID = cleanDocumentId(eventCode);
+                        db.collection("events").document(docID).get().addOnSuccessListener(document -> {
+                            String eventName = document.getString("eventName");
+                            String eventDescription = document.getString("eventDescription");
+                            String eventBanner = document.getString("eventBanner");
+                            String qrCode = document.getString("QRcode");
+                            Log.d("Firestore", String.format("Event(%s, %s) fetched", eventName, qrCode));
+                            Event event = new Event(eventName, eventDescription, eventBanner, qrCode);
                             events.add(event);
-                        }
-                        callback.onEventsFetched(events);
-                    }
-                }
-            }
-        });
-    }
 
-    public static void getOrganizingEvents(FirebaseFirestore db, String userID, final UserEventsAndFetchCallback callback) {
-        db.collection("users").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    ArrayList<HashMap<String, Object>> eventMaps = (ArrayList<HashMap<String, Object>>) document.get("organizingEvents");
-                    ArrayList<Event> events = new ArrayList<>();
-                    if (eventMaps != null) {
-                        for (HashMap<String, Object> eventMap : eventMaps) {
-                            Event event = new Event((String) eventMap.get("eventName"), (String) eventMap.get("eventDescription"), (String) eventMap.get("eventBanner"), (String) eventMap.get("QRcode"));
-                            events.add(event);
-                        }
-                        callback.onEventsFetched(events);
+                            if (events.size() == eventCodes.size()) {
+                                callback.onEventsFetched(events);
+                            }
+                        }).addOnFailureListener(callback::onError);
                     }
+                } else {
+                    callback.onError(new Exception("User exists but has no Events"));
                 }
+            } else {
+                callback.onError(new Exception("User document not found"));
             }
-        });
+        }).addOnFailureListener(callback::onError);
     }
 
     public static void addAttendingEvent(FirebaseFirestore db, User user) {
@@ -580,13 +572,5 @@ public class FirebaseUtil {
                 .update("userEvents", FieldValue.arrayUnion(eventMap))
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "Event successfully added to user!"))
                 .addOnFailureListener(e -> Log.w(TAG, "Error adding event to user", e));
-    }
-
-    static void addUserToEvent(FirebaseFirestore db, Event event, User user) {
-        String userID = user.getDeviceID();
-        db.collection("events").document(event.getEventName())
-                .update("attendees", FieldValue.arrayUnion(userID))
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "User successfully added to event!"))
-                .addOnFailureListener(e -> Log.w(TAG, "Error adding user to event"));
     }
 }

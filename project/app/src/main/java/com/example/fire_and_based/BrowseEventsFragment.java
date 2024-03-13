@@ -88,6 +88,7 @@ public class BrowseEventsFragment extends Fragment {
                 Intent intent = new Intent(requireActivity(), EventInfoActivity.class);
                 intent.putExtra("event", clickedEvent);
                 intent.putExtra("currentUser", currentUser);
+                Log.d(TAG, "STARTED BOI");
                 startActivity(intent);
             }
         });
