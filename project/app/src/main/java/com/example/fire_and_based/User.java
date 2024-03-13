@@ -19,6 +19,9 @@ public class User implements Parcelable {
     private String phoneNumber;
     private String email;
 
+    public User() {
+    }
+
     /**
      * Constructs a User with device ID, user name, a list of registered events, and a profile picture.
      *
