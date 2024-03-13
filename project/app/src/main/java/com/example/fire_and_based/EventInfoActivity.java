@@ -59,6 +59,9 @@ public class EventInfoActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("currentUser", currentUser);
+                setResult(Activity.RESULT_OK, resultIntent);
                 finish();
             }
         });
@@ -123,7 +126,6 @@ public class EventInfoActivity extends AppCompatActivity {
                         Log.e("FirebaseError", "Error registering user: " + e.getMessage());
                     }
                 });
-
             }
         });
     }

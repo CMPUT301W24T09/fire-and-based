@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Represents an event with a name, description, banner image, and a QR code.
@@ -28,6 +29,10 @@ public class Event implements Parcelable {
         this.eventDescription = eventDescription;
         this.eventBanner = eventBanner;
         this.QRcode = QRcode;
+    }
+
+    Event() {
+
     }
 
     /**
@@ -128,9 +133,9 @@ public class Event implements Parcelable {
      *
      * @param QRcode The new QR code for the event.
      */
-    public void setQRcode(String QRcode) {
-        this.QRcode = QRcode;
-    }
+    //public void setQRcode(String QRcode) {
+      //  this.QRcode = QRcode;
+    //}
 
     /**
      * Describe the kinds of special objects contained in this Parcelable instance's marshaled representation.
@@ -154,5 +159,18 @@ public class Event implements Parcelable {
         dest.writeString(eventDescription);
         dest.writeString(eventBanner);
         dest.writeString(QRcode);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Event event = (Event) obj;
+        return Objects.equals(eventName, event.eventName);
     }
 }

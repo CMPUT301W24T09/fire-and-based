@@ -1,11 +1,13 @@
 package com.example.fire_and_based;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,6 +18,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -29,6 +32,7 @@ import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Calendar;
 import java.util.Random;
 
 /**
@@ -47,11 +51,13 @@ public class EventCreation extends AppCompatActivity {
     private EditText eventTitle;
     private EditText eventDescription;
     private ImageView previewBanner;
+    private DatePickerDialog datePickerDialog;
 
     private Uri bannerImage;
     private String bannerUrl = null;
     //ImageUploader imageUploader = new ImageUploader();
     StorageReference fireRef = FirebaseStorage.getInstance().getReference();
+    private Button dateButton;
 
     /**
      * Used to launch device photo gallery and display the preview of the image in an imageview
@@ -116,8 +122,9 @@ public class EventCreation extends AppCompatActivity {
         eventDescription = findViewById(R.id.event_description_input);
         uploadLink = findViewById(R.id.uploadLinkButton);
         previewBanner = findViewById(R.id.bannerPreview);
-
-
+        initDatePicker();
+        dateButton = findViewById(R.id.dateSelector);
+        dateButton.setText(getTodaysDate());
 
 
 
@@ -247,6 +254,15 @@ public class EventCreation extends AppCompatActivity {
         });
 
     }
+
+    private String getTodaysDate() {
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        return makeDateString(day, month, year);
+    }
+
     /**
      * Brings up a screen with the event name and a scannable QR code to join it
      *
@@ -269,4 +285,56 @@ public class EventCreation extends AppCompatActivity {
     private void toast(String text){
         Toast.makeText(EventCreation.this, text, Toast.LENGTH_LONG).show();
     }
+    private void initDatePicker() {
+        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int day) {
+                month = month + 1;
+                String date = makeDateString(day, month, year);
+                dateButton.setText(date);
+            }
+        };
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        datePickerDialog = new DatePickerDialog(EventCreation.this, DatePickerDialog.THEME_HOLO_LIGHT, dateSetListener, year, month, day);
+    }
+
+    private String makeDateString(int day, int month, int year) {
+        return getMonthFormat(month) + " " + day + " " + year;
+    }
+
+    private String getMonthFormat(int month) {
+        if (month == 1)
+            return "JAN";
+        if (month == 2)
+            return "FEB";
+        if (month == 3)
+            return "MAR";
+        if (month == 4)
+            return "APR";
+        if (month == 5)
+            return "MAY";
+        if (month == 6)
+            return "JUN";
+        if (month == 7)
+            return "JUL";
+        if (month == 8)
+            return "AUG";
+        if (month == 9)
+            return "SEP";
+        if (month == 10)
+            return "OCT";
+        if (month == 11)
+            return "NOV";
+        if (month == 12)
+            return "DEC";
+        return "JAN";
+    }
+
+    public void openDatePicker(View view) {
+        datePickerDialog.show();
+    }
+
 }
