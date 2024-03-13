@@ -52,10 +52,7 @@ public class EventInfoActivity extends AppCompatActivity {
             clickedEvent = getIntent().getParcelableExtra("event");
             signedUp = getIntent().getBooleanExtra("signed up", false);
         }
-        Button registerButton = findViewById(R.id.register_button);
-        if (signedUp) {
-            registerButton.setVisibility(View.GONE);
-        }
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(clickedEvent.getEventName());
@@ -99,30 +96,36 @@ public class EventInfoActivity extends AppCompatActivity {
             }
         });
 
-        if (!signedUp) {
+        Button registerButton = findViewById(R.id.register_button);
+        if (signedUp) {
+            registerButton.setVisibility(View.GONE);
+        } else {
             Menu menu = bottomNavigationView.getMenu();
             MenuItem announcementsItem = menu.findItem(R.id.announcements_item);
             announcementsItem.setVisible(false);
             MenuItem mapItem = menu.findItem(R.id.map_item);
             mapItem.setVisible(false);
         }
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // when user clicks register what do we need to do
-                // 1. need to check if they are already registered in that event
-                //   check user.getUserEvents() and check if that event is already in it
+                FirebaseUtil.addEventAndAttendee(db, clickedEvent.getQRcode(), currentUser.getDeviceID(), new FirebaseUtil.Callback() {
+                    @Override
+                    public void onSuccess() {
+                        getIntent().putExtra("currentUser", currentUser);
+                        getIntent().putExtra("event", clickedEvent);
+                        getIntent().putExtra("signed up", true);
+                        Toast.makeText(EventInfoActivity.this, "Success! You are now registered.", Toast.LENGTH_LONG).show();
+                        recreate();
+                    }
 
-                // 2. user is not registered in that event -> we can add
-                if (currentUser.getUserEvents().contains(clickedEvent)) {
-                    Toast.makeText(EventInfoActivity.this, "You cannot register for an event you are already registered for", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    currentUser.addEvent(clickedEvent);
-                    FirebaseUtil.addAttendingEvent(FirebaseFirestore.getInstance(), currentUser);
-                    FirebaseUtil.addUserToEvent(FirebaseFirestore.getInstance(), clickedEvent, currentUser);
-                    Toast.makeText(EventInfoActivity.this, "Successfully registered for " + clickedEvent.getEventName(), Toast.LENGTH_SHORT).show();
-                }
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.e("FirebaseError", "Error registering user: " + e.getMessage());
+                    }
+                });
             }
         });
     }
