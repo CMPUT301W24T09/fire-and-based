@@ -164,23 +164,24 @@ public class EventCreation extends AppCompatActivity {
                 }
 
 
-                bannerUrl = "events/"+eventTitleString;
-                Event newEvent = new Event(eventTitleString, eventDescriptionString, bannerUrl, qrCode);
-
                 //prep image for storage
-                StorageReference selectionRef = fireRef.child(bannerUrl);
-                //store image
-                selectionRef.putFile(bannerImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(EventCreation.this, "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(EventCreation.this, "Image Upload Error", Toast.LENGTH_LONG).show();
-                    }
-                });
+                if (bannerUrl != null){
+                    bannerUrl = "events/"+eventTitleString;
+                    StorageReference selectionRef = fireRef.child(bannerUrl);
+                    //store image
+                    selectionRef.putFile(bannerImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Toast.makeText(EventCreation.this, "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(EventCreation.this, "Image Upload Error", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
 
                 Event event = new Event(eventTitleString, eventDescriptionString, bannerUrl, qrCode);
 
