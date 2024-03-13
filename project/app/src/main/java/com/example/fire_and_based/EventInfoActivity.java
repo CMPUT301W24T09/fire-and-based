@@ -62,6 +62,9 @@ public class EventInfoActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("currentUser", currentUser);
+                setResult(Activity.RESULT_OK, resultIntent);
                 finish();
             }
         });
@@ -111,7 +114,15 @@ public class EventInfoActivity extends AppCompatActivity {
                 //   check user.getUserEvents() and check if that event is already in it
 
                 // 2. user is not registered in that event -> we can add
-
+                if (currentUser.getUserEvents().contains(clickedEvent)) {
+                    Toast.makeText(EventInfoActivity.this, "You cannot register for an event you are already registered for", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    currentUser.addEvent(clickedEvent);
+                    FirebaseUtil.addAttendingEvent(FirebaseFirestore.getInstance(), currentUser);
+                    FirebaseUtil.addUserToEvent(FirebaseFirestore.getInstance(), clickedEvent, currentUser);
+                    Toast.makeText(EventInfoActivity.this, "Successfully registered for " + clickedEvent.getEventName(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

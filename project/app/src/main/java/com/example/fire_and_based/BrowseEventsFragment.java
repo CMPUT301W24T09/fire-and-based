@@ -84,7 +84,6 @@ public class BrowseEventsFragment extends Fragment {
                 Intent intent = new Intent(requireActivity(), EventInfoActivity.class);   // need to change this to the arrow idk how
                 intent.putExtra("event",  clickedEvent);
                 intent.putExtra("currentUser", currentUser);
-                Log.d(TAG, "STARTED BOI");
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });
@@ -99,7 +98,6 @@ public class BrowseEventsFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                Log.d(TAG, "GOTTEN BOI");
                 currentUser = data.getParcelableExtra("currentUser");
             }
         }

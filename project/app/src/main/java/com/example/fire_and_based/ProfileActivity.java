@@ -93,6 +93,9 @@ public class ProfileActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.putExtra("currentUser", currentUser);
+                setResult(Activity.RESULT_OK, intent);
                 finish();
             }
         });
@@ -181,9 +184,6 @@ public class ProfileActivity extends AppCompatActivity {
                 //prep image for storage
 
                 FirebaseUtil.updateProfileInfo(FirebaseFirestore.getInstance(), currentUser);
-                Intent intent = new Intent(ProfileActivity.this, UserActivity.class);
-                intent.putExtra("currentUser", currentUser);
-                startActivity(intent);
             }
         });
     }
