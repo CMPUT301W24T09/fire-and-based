@@ -58,9 +58,6 @@ public class MainActivity extends AppCompatActivity {
             currentUser = new User(uuid, "", new ArrayList<Event>(), "");
             FirebaseUtil.addUserToDB(db, currentUser);
             editor.commit();
-            Intent intent = new Intent(MainActivity.this, UserActivity.class);
-            intent.putExtra("currentUser", currentUser);
-            startActivity(intent);
         }
         else {
             FirebaseUtil.getUserObject(db, uuid, new FirebaseUtil.UserObjectCallback() {
