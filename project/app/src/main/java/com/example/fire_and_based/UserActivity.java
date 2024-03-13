@@ -2,9 +2,6 @@ package com.example.fire_and_based;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
-import static com.google.zxing.integration.android.IntentIntegrator.REQUEST_CODE;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -97,18 +94,9 @@ public class UserActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.profile_item) {
             Intent intent = new Intent(UserActivity.this, ProfileActivity.class);
             intent.putExtra("currentUser", currentUser);
-            startActivityForResult(intent, REQUEST_CODE);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                currentUser = data.getParcelableExtra("currentUser");
-            }
-        }
     }
 }

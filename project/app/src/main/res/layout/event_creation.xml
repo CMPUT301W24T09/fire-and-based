@@ -69,16 +69,6 @@
             android:layout_height="wrap_content"
             android:text="Preview QR Image" />
 
-        <Button
-            android:id="@+id/dateSelector"
-            style="?android:spinnerStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="openDatePicker"
-            android:text="JAN 01 2001"
-            android:textColor="@color/black"
-            android:textSize="30sp" />
-
 
     </LinearLayout>
 
