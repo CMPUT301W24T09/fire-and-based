@@ -1,5 +1,7 @@
 package com.example.fire_and_based;
 
+import static androidx.fragment.app.FragmentManager.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -57,11 +59,16 @@ public class OrganizingEventsFragment extends Fragment {
         });
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseUtil.getAllEvents(db, list -> {
-            for (Event event : list) {
-                dataList.add(event);
-                eventAdapter.notifyDataSetChanged();
+        FirebaseUtil.getOrganizingEvents(db, MainActivity.getDeviceID(), new FirebaseUtil.UserEventsAndFetchCallback() {
+            @Override
+            public void onEventsFetched(ArrayList<Event> events) {
+                for (Event event : events) {
+                    dataList.add(event);
+                    eventAdapter.notifyDataSetChanged();
+                }
             }
+            @Override
+            public void onError(Exception e) {}
         });
 
         eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
