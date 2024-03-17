@@ -18,6 +18,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,9 +35,16 @@ public class FirebaseUtilTest {
 
     @Before
     public void defineMockBehavior(){
-        when(mockFirestore.collection("events")).thenReturn(mockCollectionReference);
-        when(mockFirestore.collection("users")).thenReturn(mockCollectionReference);
-        //TODO: other strings return error
+        when(mockFirestore.collection(anyString())).thenAnswer(invocation -> {
+            String collectionName = invocation.getArgument(0);
+            if ("events".equals(collectionName) || "users".equals(collectionName)) {
+                return mockCollectionReference; // Existing collections
+            } else {
+                // Simulate that the collection does not exist
+                throw new FirebaseFirestoreException("Collection not found: " + collectionName,
+                        FirebaseFirestoreException.Code.NOT_FOUND);
+            }
+        });
 
         //does not mean the document always *exists*, just have a reference to a potential
         //and execute the task. Can define result of mockTask as needed
@@ -49,9 +57,14 @@ public class FirebaseUtilTest {
             return mockGetTask;
         });
 
-        when(mockDocRef.set(any(Event.class))).thenReturn(mockSetTask);
-        when(mockDocRef.set(any(User.class))).thenReturn(mockSetTask);
-        //TODO error on others?
+        when(mockDocRef.set(any())).thenAnswer(invocation -> {
+            Object argument = invocation.getArgument(0);
+            if (argument instanceof Event || argument instanceof User) {
+                return mockSetTask;
+            } else {
+                throw new IllegalArgumentException("Invalid object type: " + argument.getClass().getSimpleName());
+            }
+        });
 
     }
 
