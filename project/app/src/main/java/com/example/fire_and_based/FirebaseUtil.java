@@ -72,6 +72,7 @@ public class FirebaseUtil {
                 if (error != null) {
                     Log.e("Firestore", error.toString());
                     return;
+                    //TODO wait no add a proper onFailure() thing to the callback
                 }
                 if (querySnapshots != null) {
                     for (QueryDocumentSnapshot doc : querySnapshots) {
@@ -85,7 +86,6 @@ public class FirebaseUtil {
                     }
                     Log.d("Firestore", String.format("Fetched %d events", eventsList.size()));
                     callback.onCallback(eventsList);
-                    eventsList.clear();
                 }
             }
         });

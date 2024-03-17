@@ -141,4 +141,12 @@ public class Event implements Parcelable {
         dest.writeString(eventBanner);
         dest.writeString(QRcode);
     }
+
+    @Override
+    public boolean equals(Object o){
+        if (o instanceof Event){
+            return (((Event) o).getQRcode().equals(this.getQRcode()));
+        }
+        return false;
+    }
 }

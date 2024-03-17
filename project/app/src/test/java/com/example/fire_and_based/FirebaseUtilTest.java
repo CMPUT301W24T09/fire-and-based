@@ -1,6 +1,7 @@
 package com.example.fire_and_based;
 
 import static com.example.fire_and_based.FirebaseUtil.addEventToDB;
+import static com.example.fire_and_based.FirebaseUtil.getAllEvents;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
@@ -10,6 +11,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import android.util.Log;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -17,24 +20,33 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 public class FirebaseUtilTest {
-    FirebaseFirestore mockFirestore = mock(FirebaseFirestore.class);
-    CollectionReference mockCollectionReference = mock(CollectionReference.class);
-    DocumentReference mockDocRef = mock(DocumentReference.class);
-    DocumentSnapshot mockDocSnapshot = mock(DocumentSnapshot.class);
-    Task<DocumentSnapshot> mockGetTask = mock(Task.class);
-    Task<Void> mockSetTask = mock(Task.class);
+    private FirebaseFirestore mockFirestore = mock(FirebaseFirestore.class);
+    private CollectionReference mockCollectionReference = mock(CollectionReference.class);
+    private DocumentReference mockDocRef = mock(DocumentReference.class);
+    private DocumentSnapshot mockDocSnapshot = mock(DocumentSnapshot.class);
+    private Task<DocumentSnapshot> mockGetTask = mock(Task.class);
+    private Task<Void> mockSetTask = mock(Task.class);
+    private QuerySnapshot mockQuerySnapshot = mock(QuerySnapshot.class);
+    private QueryDocumentSnapshot mockQueryDocumentSnapshot = mock(QueryDocumentSnapshot.class);
+    private Iterator<QueryDocumentSnapshot> mockQDSIterator = mock(Iterator.class);
 
     @Before
-    public void defineMockBehavior(){
+    public void defineFirebaseMockBehavior(){
         when(mockFirestore.collection(anyString())).thenAnswer(invocation -> {
             String collectionName = invocation.getArgument(0);
             if ("events".equals(collectionName) || "users".equals(collectionName)) {
@@ -65,12 +77,132 @@ public class FirebaseUtilTest {
                 throw new IllegalArgumentException("Invalid object type: " + argument.getClass().getSimpleName());
             }
         });
-
     }
 
     @Test
+    public void testGetAllEventsGetOne() throws InterruptedException {
+
+        when(mockQuerySnapshot.iterator()).thenReturn(mockQDSIterator);
+        when(mockQDSIterator.hasNext()).thenReturn(true, false);
+        when(mockQDSIterator.next()).thenReturn(mockQueryDocumentSnapshot);
+
+        Event mockEvent = new Event(
+                "eventName",
+                "eventDescription",
+                "eventBanner",
+                "QRcode");
+        List<Event> expectedEvents = new ArrayList<>();
+        expectedEvents.add(mockEvent);
+
+        when(mockCollectionReference.addSnapshotListener(any())).thenAnswer(invocation -> {
+            EventListener<QuerySnapshot> listener = invocation.getArgument(0);
+            when(mockQueryDocumentSnapshot.getString("eventName")).thenReturn("eventName");
+            when(mockQueryDocumentSnapshot.getString("eventDescription")).thenReturn("eventDescription");
+            when(mockQueryDocumentSnapshot.getString("eventBanner")).thenReturn("eventBanner");
+            when(mockQueryDocumentSnapshot.getString("QRcode")).thenReturn("QRcode");
+            listener.onEvent(mockQuerySnapshot, null);
+            return null;
+        });
+
+        FirebaseUtil.getAllEventsCallback mockCallback = mock(FirebaseUtil.getAllEventsCallback.class);
+
+        // Call method and wait
+        CountDownLatch latch = new CountDownLatch(1);
+        doAnswer(invocation -> {
+            latch.countDown();
+            return null;
+        }).when(mockCallback).onCallback(any(ArrayList.class));
+        getAllEvents(mockFirestore, mockCallback);
+        latch.await();
+
+        // Assert
+        verify(mockCallback, times(1)).onCallback(expectedEvents);
+    }
+    @Test
+    public void testGetAllEventsGetSeveral() throws InterruptedException { //TODO
+
+        when(mockQuerySnapshot.iterator()).thenReturn(mockQDSIterator);
+        when(mockQDSIterator.hasNext()).thenReturn(true, false);
+        when(mockQDSIterator.next()).thenReturn(mockQueryDocumentSnapshot);
+
+        Event mockEvent1 = new Event(
+                "eventName1",
+                "eventDescription1",
+                "eventBanner1",
+                "QRcode1");
+        Event mockEvent2 = new Event(
+                "eventName2",
+                "eventDescription2",
+                "eventBanner2",
+                "QRcode2");
+        List<Event> expectedEvents = new ArrayList<>();
+        expectedEvents.add(mockEvent1);
+
+        when(mockCollectionReference.addSnapshotListener(any())).thenAnswer(invocation -> {
+            EventListener<QuerySnapshot> listener = invocation.getArgument(0);
+            when(mockQueryDocumentSnapshot.getString("eventName")).thenReturn("eventName1", "eventName2");
+            when(mockQueryDocumentSnapshot.getString("eventDescription")).thenReturn("eventDescription1", "eventDescription2");
+            when(mockQueryDocumentSnapshot.getString("eventBanner")).thenReturn("eventBanner1", "eventBanner2");
+            when(mockQueryDocumentSnapshot.getString("QRcode")).thenReturn("QRcode1", "QRcode2");
+            listener.onEvent(mockQuerySnapshot, null);
+            return null;
+        });
+
+        FirebaseUtil.getAllEventsCallback mockCallback = mock(FirebaseUtil.getAllEventsCallback.class);
+
+        // Call method and wait
+        CountDownLatch latch = new CountDownLatch(1);
+        doAnswer(invocation -> {
+            latch.countDown();
+            return null;
+        }).when(mockCallback).onCallback(any(ArrayList.class));
+        getAllEvents(mockFirestore, mockCallback);
+        latch.await();
+
+        // Assert
+        verify(mockCallback, times(1)).onCallback(expectedEvents);
+    }
+    @Test
+    public void testGetAllEventsGetNone() throws InterruptedException { //TODO
+
+        when(mockQuerySnapshot.iterator()).thenReturn(mockQDSIterator);
+        when(mockQDSIterator.hasNext()).thenReturn(false);
+        when(mockQDSIterator.next()).thenReturn(null);
+
+        List<Event> expectedEvents = new ArrayList<>();
+
+        when(mockCollectionReference.addSnapshotListener(any())).thenAnswer(invocation -> {
+            EventListener<QuerySnapshot> listener = invocation.getArgument(0);
+            when(mockQueryDocumentSnapshot.getString("eventName")).thenReturn("eventName");
+            when(mockQueryDocumentSnapshot.getString("eventDescription")).thenReturn("eventDescription");
+            when(mockQueryDocumentSnapshot.getString("eventBanner")).thenReturn("eventBanner");
+            when(mockQueryDocumentSnapshot.getString("QRcode")).thenReturn("QRcode");
+            listener.onEvent(mockQuerySnapshot, null);
+            return null;
+        });
+
+        FirebaseUtil.getAllEventsCallback mockCallback = mock(FirebaseUtil.getAllEventsCallback.class);
+
+        // Call method and wait
+        CountDownLatch latch = new CountDownLatch(1);
+        doAnswer(invocation -> {
+            latch.countDown();
+            return null;
+        }).when(mockCallback).onCallback(any(ArrayList.class));
+        getAllEvents(mockFirestore, mockCallback);
+        latch.await();
+
+        // Assert
+        verify(mockCallback, times(1)).onCallback(expectedEvents);
+    }
+
+    //TODO add a fail check, when there is one
+
+
+
+
+    @Test
     public void testAddEventToDBSuccess() throws InterruptedException {
-        System.out.println("Testing success");
 
         FirebaseUtil.AddEventCallback mockCallback = mock(FirebaseUtil.AddEventCallback.class);
 
@@ -107,7 +239,6 @@ public class FirebaseUtilTest {
             return null;
         }).when(mockCallback).onError(any());
 
-        System.out.println("Calling test method");
         // Call the method to test
         Event event = new Event("name", "desc", "no", "abcd");
         addEventToDB(mockFirestore, event, mockCallback);
@@ -122,7 +253,6 @@ public class FirebaseUtilTest {
     }
     @Test
     public void testAddEventToDBFailEventExists() throws InterruptedException {
-        System.out.println("Testing event exists");
 
         FirebaseUtil.AddEventCallback mockCallback = mock(FirebaseUtil.AddEventCallback.class);
 
@@ -159,7 +289,6 @@ public class FirebaseUtilTest {
             return null;
         }).when(mockCallback).onError(any());
 
-        System.out.println("Calling test method");
         // Call the method to test
         Event event = new Event("name", "desc", "no", "abcd");
         addEventToDB(mockFirestore, event, mockCallback);
@@ -174,7 +303,6 @@ public class FirebaseUtilTest {
     }
     @Test
     public void testAddEventToDBFailGetTask() throws InterruptedException {
-        System.out.println("Testing fail get");
 
         FirebaseUtil.AddEventCallback mockCallback = mock(FirebaseUtil.AddEventCallback.class);
 
@@ -211,7 +339,6 @@ public class FirebaseUtilTest {
             return null;
         }).when(mockCallback).onError(any());
 
-        System.out.println("Calling test method");
         // Call the method to test
         Event event = new Event("name", "desc", "no", "abcd");
         addEventToDB(mockFirestore, event, mockCallback);
@@ -226,7 +353,6 @@ public class FirebaseUtilTest {
     }
     @Test
     public void testAddEventToDBFailSetTask() throws InterruptedException {
-        System.out.println("Testing fail set");
 
         FirebaseUtil.AddEventCallback mockCallback = mock(FirebaseUtil.AddEventCallback.class);
 
@@ -263,7 +389,6 @@ public class FirebaseUtilTest {
             return null;
         }).when(mockCallback).onError(any());
 
-        System.out.println("Calling test method");
         // Call the method to test
         Event event = new Event("name", "desc", "no", "abcd");
         addEventToDB(mockFirestore, event, mockCallback);
