@@ -21,11 +21,11 @@ jobs:
         cache: gradle
 
     - name: Create google-services.json
-      run: cat /home/runner/work/<Project-Name>/<Project-Name>/app/google-services.json | base64
+      run: cat /home/runner/work/<Project-Name>/<Project-Name>/project/app/google-services.json | base64
     - name: Put data in google-services.json
       env:
         DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
-      run: echo $DATA > /home/runner/work/<Project-Name>/<Project-Name>/app/google-services.json
+      run: echo $DATA > /home/runner/work/<Project-Name>/<Project-Name>/project/app/google-services.json
     - name: Grant execute permission for gradlew
       working-directory: ./project
       run: chmod +x gradlew
