@@ -35,7 +35,7 @@
             android:textSize="30sp" />
 
         <ImageButton
-            android:id="@+id/arrow_button"
+            android:id="@+id/edit_button"
             android:layout_width="117dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
