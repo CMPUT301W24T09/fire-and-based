@@ -139,8 +139,6 @@ public class FirebaseUtil {
         });
     }
 
-    //TODO change these to be async like add event
-
     /**
      * Add a user to the database
      *
@@ -262,19 +260,12 @@ public class FirebaseUtil {
                     ArrayList<Event> events = new ArrayList<>();
                     for (String eventCode : eventCodes) {
                         String docID = cleanDocumentId(eventCode);
-                        db.collection("events").document(docID).get().addOnSuccessListener(document -> {
-                            String eventName = document.getString("eventName");
-                            String eventDescription = document.getString("eventDescription");
-                            String eventBanner = document.getString("eventBanner");
-                            String qrCode = document.getString("QRcode");
-                            Log.d("Firestore", String.format("Event(%s, %s) fetched", eventName, qrCode));
-                            Event event = new Event(eventName, eventDescription, eventBanner, qrCode);
+                        getEvent(db, docID, event -> {
                             events.add(event);
-
                             if (events.size() == eventCodes.size()) {
                                 successListener.onSuccess(events);
                             }
-                        }).addOnFailureListener(failureListener);
+                        }, failureListener);
                     }
                 } else {
                     failureListener.onFailure(new Exception("User exists but has no Events"));
