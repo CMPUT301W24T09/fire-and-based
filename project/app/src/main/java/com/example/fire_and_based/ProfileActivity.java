@@ -180,7 +180,13 @@ public class ProfileActivity extends AppCompatActivity {
                 profileUrl = "profiles/"+currentUser.getDeviceID();
                 //prep image for storage
 
-                FirebaseUtil.updateProfileInfo(FirebaseFirestore.getInstance(), currentUser);
+                FirebaseUtil.updateProfileInfo(FirebaseFirestore.getInstance(), currentUser,
+                        aVoid -> {
+                            //TODO success
+                        },
+                        e -> {
+                            //TODO FAIL
+                        });
                 Intent intent = new Intent(ProfileActivity.this, UserActivity.class);
                 intent.putExtra("currentUser", currentUser);
                 startActivity(intent);

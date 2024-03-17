@@ -56,25 +56,28 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("uuid_key", uuid);
             currentUser = new User(uuid, "", new ArrayList<Event>(), "");
-            FirebaseUtil.addUserToDB(db, currentUser);
+            FirebaseUtil.addUserToDB(db, currentUser,
+                    aVoid -> {
+                        // TODO user added successfully
+                    },
+                    e -> {
+                        // TODO handle database error
+                    });
             editor.commit();
         }
         else {
-            FirebaseUtil.getUserObject(db, uuid, new FirebaseUtil.UserObjectCallback() {
-                @Override
-                public void onUserFetched(User user) {
-                    currentUser = user;
-                    Log.d(TAG, String.format("Username: %s UserID: %s", currentUser.getFirstName(), currentUser.getDeviceID()));
+            FirebaseUtil.getUserObject(db, uuid,
+                    user -> {
+                        currentUser = user;
+                        Log.d(TAG, String.format("Username: %s UserID: %s", currentUser.getFirstName(), currentUser.getDeviceID()));
 
-                    Intent intent = new Intent(MainActivity.this, UserActivity.class);
-                    intent.putExtra("currentUser", currentUser);
-                    startActivity(intent);
-                }
-                @Override
-                public void onError(Exception e) {
-                    Log.d(TAG, e.toString());
-                }
-            });
+                        Intent intent = new Intent(MainActivity.this, UserActivity.class);
+                        intent.putExtra("currentUser", currentUser);
+                        startActivity(intent);
+                    },
+                    e -> {
+                        Log.d(TAG, e.toString());
+                    });
         }
     }
 

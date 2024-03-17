@@ -92,7 +92,13 @@ public class ViewEvent extends AppCompatActivity {
             public void onClick(View v) {
 
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
-                FirebaseUtil.deleteEvent(db, clickedEvent);
+                FirebaseUtil.deleteEvent(db, clickedEvent,
+                        aVoid -> {
+                            System.out.println("Success");
+                        },
+                        e -> {
+                            System.err.println("Error");
+                        });
 
                 Intent intent = new Intent(ViewEvent.this, Firebase.class);
                 startActivity(intent);

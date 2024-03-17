@@ -104,21 +104,15 @@ public class EventCheckIn extends AppCompatActivity {
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 Log.println(Log.DEBUG, "EventCheckIn", "User accepted event");
-
-                                FirebaseUtil.addEventAndAttendee(db, finalEventQRCode, userID, new FirebaseUtil.Callback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        Log.println(Log.DEBUG, "EventCheckIn", "User and event added to each other");
-                                        Toast.makeText(EventCheckIn.this, "Joined event " + event.getEventName(), Toast.LENGTH_LONG).show();
-                                        goToEvent(event);
-                                    }
-
-                                    @Override
-                                    public void onFailure(Exception e) {
-                                        Log.println(Log.ERROR, "EventCheckIn", "An error occurred trying to join the event: " + e.getMessage());
-                                    }
-                                });
-
+                                FirebaseUtil.addEventAndAttendee(db, finalEventQRCode, userID,
+                                        aVoid -> {
+                                            Log.println(Log.DEBUG, "EventCheckIn", "User and event added to each other");
+                                            Toast.makeText(EventCheckIn.this, "Joined event " + event.getEventName(), Toast.LENGTH_LONG).show();
+                                            goToEvent(event);
+                                        },
+                                        e -> {
+                                            Log.println(Log.ERROR, "EventCheckIn", "An error occurred trying to join the event: " + e.getMessage());
+                                        });
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

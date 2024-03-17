@@ -4,27 +4,16 @@ package com.example.fire_and_based;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.util.Log;
-import android.net.Uri;
-
-import androidx.annotation.NonNull;
-
-import androidx.annotation.NonNull;
 
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import androidx.annotation.Nullable;
 
 import com.google.firebase.firestore.*;
 
-import org.jetbrains.annotations.NotNull;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import java.util.HashMap;
@@ -34,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Set;
 
 /**
  * This class has all the functions for accessing the necessary data from the firebase
@@ -158,10 +146,16 @@ public class FirebaseUtil {
      *
      * @param db   the database
      * @param user the user
+     * @param successListener what to do in case of success
+     * @param failureListener what to do in case of failure (database error)
      * @see User
      */
-    public static void addUserToDB(FirebaseFirestore db, User user) {
-        db.collection("users").document(user.getDeviceID()).set(user);
+    public static void addUserToDB(FirebaseFirestore db, User user, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
+        db.collection("users")
+                .document(user.getDeviceID())
+                .set(user)
+                .addOnSuccessListener(successListener)
+                .addOnFailureListener(failureListener);
     }
 
     /**
@@ -169,11 +163,17 @@ public class FirebaseUtil {
      *
      * @param db    the database
      * @param event the user
+     * @param successListener what to do in case of success
+     * @param failureListener what to do in case of failure (database error)
      * @see Event
      */
-    public static void deleteEvent(FirebaseFirestore db, Event event) {
+    public static void deleteEvent(FirebaseFirestore db, Event event, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
         String docID = cleanDocumentId(event.getQRcode());
-        db.collection("events").document(docID).delete();
+        db.collection("events")
+                .document(docID)
+                .delete()
+                .addOnSuccessListener(successListener)
+                .addOnFailureListener(failureListener);
     }
 
     //TODO add more update classes?
@@ -184,25 +184,34 @@ public class FirebaseUtil {
      * @param db             the database
      * @param event          the user
      * @param newEventBanner the url to a new banner
+     * @param successListener what to do in case of success
+     * @param failureListener what to do in case of failure (database error)
      * @see Event
      */
-    public static void updateEventBanner(FirebaseFirestore db, Event event, String newEventBanner) {
+    public static void updateEventBanner(FirebaseFirestore db, Event event, String newEventBanner, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
         String docID = cleanDocumentId(event.getQRcode());
-        db.collection("events").document(docID)
-                .update("eventBanner", newEventBanner);
+        db.collection("events")
+                .document(docID)
+                .update("eventBanner", newEventBanner)
+                .addOnSuccessListener(successListener)
+                .addOnFailureListener(failureListener);
     }
 
     /**
-     * Update an event's banner
+     * Update user's pfp
      *
      * @param db                the database
      * @param user              the user
      * @param profilePictureURL the url to a new pfp
+     * @param successListener what to do in case of success
+     * @param failureListener what to do in case of failure (database error)
      * @see Event
      */
-    public static void updateUserProfileImageUrl(FirebaseFirestore db, User user, String profilePictureURL) {
+    public static void updateUserProfileImageUrl(FirebaseFirestore db, User user, String profilePictureURL, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
         db.collection("users").document(user.getDeviceID())
-                .update("profilePicture", profilePictureURL);
+                .update("profilePicture", profilePictureURL)
+                .addOnSuccessListener(successListener)
+                .addOnFailureListener(failureListener);
     }
 
     // get an event object from Firebase by QR Code
@@ -210,11 +219,11 @@ public class FirebaseUtil {
     /**
      * @param db       the database
      * @param QRCode   the QR Code of an event to get
-     * @param callback the callback function
-     * @see GetEventCallback
+     * @param successListener what to do in case of success
+     * @param failureListener what to do in case of failure (database error)
      * @see Event
      */
-    public static void getEvent(FirebaseFirestore db, String QRCode, final GetEventCallback callback) {
+    public static void getEvent(FirebaseFirestore db, String QRCode, OnSuccessListener<Event> successListener, OnFailureListener failureListener) {
         String docID = cleanDocumentId(QRCode);
         // Handle any errors that occur while fetching the document
         db.collection("events").document(docID).get().addOnSuccessListener(doc -> {
@@ -226,49 +235,25 @@ public class FirebaseUtil {
                 Log.d("Firestore", String.format("Event(%s, %s) fetched", eventName,
                         qrCode));
                 Event event = new Event(eventName, eventDescription, eventBanner, qrCode);
-                callback.onEventFetched(event);
+                successListener.onSuccess(event);
             } else { //document not found, does not exist
-                callback.onError(new Exception("Event document not found"));
+                failureListener.onFailure(new Exception("Event document not found"));
             }
-        }).addOnFailureListener(callback::onError);
+        }).addOnFailureListener(failureListener);
     }
 
-    /**
-     * Callback function for getting an event from the database
-     */
-    public interface GetEventCallback {
-        void onEventFetched(Event event);
-
-        void onError(Exception e);
-    }
-
-//    FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        FirebaseUtil.getEvent(db, qrCode, new FirebaseUtil.EventCallback() {
-//        @Override
-//        public void onEventFetched(Event event) {
-//            // DO WHAT U NEED TO IN HERE TO DISPLAY STUFF
-//        }
-//        @Override
-//        public void onError(Exception e) {
-//           // HANDLE THE ERROR
-//        }
-//    });
-
-
-// EVEN BETTER JUST GET THE ENTIRE EVENT OBJECTS A USER IS IN
-// (sorry I deleted the other function, you can get it from VCS if needed but its kinda obsolete)
 
     /**
      * Asynchronously get list of Events a user is in
      *
      * @param db       the database reference
      * @param userID   the ID of the user to get events of
-     * @param callback the callback function UserEventsAndFetchCallback()
-     * @see UserEventsAndFetchCallback
+     * @param successListener what to do in case of success
+     * @param failureListener what to do in case of failure (database error)
      * @see Event
      * @see User
      */
-    public static void getUserEvents(FirebaseFirestore db, String userID, final UserEventsAndFetchCallback callback) {
+    public static void getUserEvents(FirebaseFirestore db, String userID, OnSuccessListener<ArrayList<Event>> successListener, OnFailureListener failureListener) {
         db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 List<String> eventIDs = (List<String>) documentSnapshot.get("attendeeEvents");
@@ -287,111 +272,54 @@ public class FirebaseUtil {
                             events.add(event);
 
                             if (events.size() == eventCodes.size()) {
-                                callback.onEventsFetched(events);
+                                successListener.onSuccess(events);
                             }
-                        }).addOnFailureListener(callback::onError);
+                        }).addOnFailureListener(failureListener);
                     }
                 } else {
-                    callback.onError(new Exception("User exists but has no Events"));
+                    failureListener.onFailure(new Exception("User exists but has no Events"));
                 }
             } else {
-                callback.onError(new Exception("User document not found"));
+                failureListener.onFailure(new Exception("User document not found"));
             }
-        }).addOnFailureListener(callback::onError);
-    }
-
-    public static void addAttendingEvent(FirebaseFirestore db, User user) {
-        String uuid = user.getDeviceID();
-        ArrayList<Event> attending = user.getUserEvents();
-        DocumentReference docsRef = db.collection("users").document(uuid);
-        Map<String, Object> attendingMap = new HashMap<>();
-        attendingMap.put("userEvents", attending);
-
-        docsRef.set(attendingMap, SetOptions.merge())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d(TAG, "Added attending event");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "Failure.");
-                    }
-                });
-
+        }).addOnFailureListener(failureListener);
     }
 
     /**
-     * Callback for getting a user's registered events
-     *
-     * @see User
-     * @see Event
+     * Get a User object in the database from their ID
+     * @param db db reference
+     * @param userID the ID of the user
+     * @param successListener what to do in case of success
+     * @param failureListener what to do in case of failure (database error)
      */
-    public interface UserEventsAndFetchCallback {
-        void onEventsFetched(ArrayList<Event> events);
-
-        void onError(Exception e);
-    }
-
-    //example call:
-//    FirebaseFirestore db = FirebaseFirestore.getInstance();
-//    String userID = "yourUserID";
-//
-//        FirebaseUtil.getUserEvents(db, userID, new FirebaseUtil.UserEventsAndFetchCallback() {
-//        @Override
-//        public void onEventsFetched(ArrayList<Event> events) {
-//            events.forEach(event -> System.out.println("Fetched event: " + event.getEventName()));
-//        }
-//
-//        @Override
-//        public void onError(Exception e) {
-//            System.err.println("An error occurred: " + e.getMessage());
-//        }
-//    });
-
-
-    public static void getUserObject(FirebaseFirestore db, String userID, final UserObjectCallback callback) {
-        db.collection("users").document(userID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists()) {
-                    User user = documentSnapshot.toObject(User.class);
-                    FirebaseUtil.getUserEvents(db, userID, new UserEventsAndFetchCallback() {
-                        @Override
-                        public void onEventsFetched(ArrayList<Event> events) {
+    public static void getUserObject(FirebaseFirestore db, String userID, OnSuccessListener<User> successListener, OnFailureListener failureListener) {
+        db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                User user = documentSnapshot.toObject(User.class);
+                FirebaseUtil.getUserEvents(db, userID,
+                        events -> {
                             user.setUserRegisteredEvents(events);
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
+                        },
+                        e -> {
                             Log.d(TAG, e.toString());
-                        }
-                    });
-                    Log.d(TAG, String.format("Username: %s First: %s Last: %s Phone: %s Email: %s ID: %s Null: %s", user.getUserName(), user.getFirstName(), user.getLastName()
-                            , user.getPhoneNumber(), user.getEmail(), user.getDeviceID(), user.getUserEvents()));
-                    callback.onUserFetched(user);
-                } else {
-                    callback.onError(new Exception("User document does not exist."));
-                }
+                        });
+                Log.d(TAG, String.format("Username: %s First: %s Last: %s Phone: %s Email: %s ID: %s Null: %s", user.getUserName(), user.getFirstName(), user.getLastName()
+                        , user.getPhoneNumber(), user.getEmail(), user.getDeviceID(), user.getUserEvents()));
+                successListener.onSuccess(user);
+            } else {
+                failureListener.onFailure(new Exception("User document does not exist."));
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NotNull Exception e) {
-                callback.onError(e);
-            }
-        });
+        }).addOnFailureListener(failureListener);
     }
 
-    public interface UserObjectCallback {
-        void onUserFetched(User user);
-
-        void onError(Exception e);
-    }
-
-
-    public static void updateProfileInfo(FirebaseFirestore db, User user) {
+    /**
+     * Update a User object in the database
+     * @param db db reference
+     * @param user complete user object to be replaced
+     * @param successListener what to do in case of success
+     * @param failureListener what to do in case of failure (database error)
+     */
+    public static void updateProfileInfo(FirebaseFirestore db, User user, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
         Map<String, Object> updates = new HashMap<>();
         updates.put("firstName", user.getFirstName());
         updates.put("lastName", user.getLastName());
@@ -399,12 +327,8 @@ public class FirebaseUtil {
         updates.put("phoneNumber", user.getPhoneNumber());
         db.collection("users").document(user.getDeviceID())
                 .update(updates)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d(TAG, "Document Successfully Updated");
-                    }
-                });
+                .addOnSuccessListener(successListener)
+                .addOnFailureListener(failureListener);
     }
 
 
@@ -485,17 +409,6 @@ public class FirebaseUtil {
     }
 
 
-    //TODO need to add user to events and events to user
-
-    /**
-     * Generic shared callback interface for success/fail
-     */
-    interface Callback {
-        void onSuccess();
-
-        void onFailure(Exception e);
-    }
-
     /**
      * Adds the eventID to the user's attended events field,
      * and the attendee ID to the event's attendees field.
@@ -504,9 +417,8 @@ public class FirebaseUtil {
      * @param db       the database reference
      * @param eventId  the event ID to add and be added to
      * @param attendee the user ID to add and be added to
-     * @param callback the callback function
      */
-    public static void addEventAndAttendee(FirebaseFirestore db, String eventId, String attendee, Callback callback) {
+    public static void addEventAndAttendee(FirebaseFirestore db, String eventId, String attendee, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
         DocumentReference eventDoc = db.collection("events").document(eventId);
         DocumentReference userDoc = db.collection("users").document(attendee);
 
@@ -530,8 +442,8 @@ public class FirebaseUtil {
                     transaction.update(userDoc, "attendeeEvents", attendeeEvents);
 
                     return null;
-                }).addOnSuccessListener(aVoid -> callback.onSuccess())
-                .addOnFailureListener(e -> callback.onFailure(e));
+                }).addOnSuccessListener(successListener)
+                .addOnFailureListener(failureListener);
     }
 
 
@@ -561,16 +473,4 @@ public class FirebaseUtil {
         return docId;
     }
 
-
-    static void addEventToUser(FirebaseFirestore db, User userObject, Event eventToBeAdded) {
-        String userDocId = userObject.getDeviceID();
-        // Assuming eventToBeAdded can be serialized directly; otherwise, convert it to a Map
-        Map<String, Object> eventMap = new HashMap<>();
-        eventMap.put("eventName", eventToBeAdded.getEventName()); // and so on for other Event fields
-
-        db.collection("users").document(userDocId)
-                .update("userEvents", FieldValue.arrayUnion(eventMap))
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "Event successfully added to user!"))
-                .addOnFailureListener(e -> Log.w(TAG, "Error adding event to user", e));
-    }
 }

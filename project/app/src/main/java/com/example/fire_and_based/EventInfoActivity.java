@@ -108,22 +108,16 @@ public class EventInfoActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseUtil.addEventAndAttendee(db, clickedEvent.getQRcode(), currentUser.getDeviceID(), new FirebaseUtil.Callback() {
-                    @Override
-                    public void onSuccess() {
-                        getIntent().putExtra("currentUser", currentUser);
-                        getIntent().putExtra("event", clickedEvent);
-                        getIntent().putExtra("signed up", true);
-                        Toast.makeText(EventInfoActivity.this, "Success! You are now registered.", Toast.LENGTH_LONG).show();
-                        recreate();
-                    }
-
-                    @Override
-                    public void onFailure(Exception e) {
-                        Log.e("FirebaseError", "Error registering user: " + e.getMessage());
-                    }
-                });
-
+                FirebaseUtil.addEventAndAttendee(db, clickedEvent.getQRcode(), currentUser.getDeviceID(),
+                        aVoid -> {
+                            getIntent().putExtra("currentUser", currentUser);
+                            getIntent().putExtra("event", clickedEvent);
+                            getIntent().putExtra("signed up", true);
+                            Toast.makeText(EventInfoActivity.this, "Success! You are now registered.", Toast.LENGTH_LONG).show();
+                            recreate();
+                        }, e -> {
+                            Log.e("FirebaseError", "Error registering user: " + e.getMessage());
+                        });
             }
         });
     }

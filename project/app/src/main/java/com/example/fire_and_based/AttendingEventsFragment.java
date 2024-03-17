@@ -62,20 +62,16 @@ public class AttendingEventsFragment extends Fragment {
 
         // this updates the data list that displays
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseUtil.getUserEvents(db, user.getDeviceID(), new FirebaseUtil.UserEventsAndFetchCallback() {
-                    @Override
-                    public void onEventsFetched(ArrayList<Event> events) {
-                        dataList.clear();
-                        for (Event event : events) {
-                            dataList.add(event);
-                            eventAdapter.notifyDataSetChanged();
-                        }
+        FirebaseUtil.getUserEvents(db, user.getDeviceID(),
+                events -> {
+                    dataList.clear();
+                    for (Event event : events) {
+                        dataList.add(event);
+                        eventAdapter.notifyDataSetChanged();
                     }
-
-                    @Override
-                    public void onError(Exception e) {
-                        Log.e("FirebaseError", "Error fetching user events: " + e.getMessage());
-                    }
+                },
+                e -> {
+                    Log.e("FirebaseError", "Error fetching user events: " + e.getMessage());
                 });
 
 //         event list on click handler
