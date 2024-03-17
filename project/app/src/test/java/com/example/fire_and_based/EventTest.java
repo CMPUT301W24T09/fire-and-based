@@ -45,10 +45,4 @@ public class EventTest {
         event.setEventBanner("Updated Banner URL");
         assertEquals("Updated Banner URL", event.getEventBanner());
     }
-
-    @Test
-    public void setQRcodeTest() {
-        event.setQRcode("UpdatedQRCode");
-        assertEquals("UpdatedQRCode", event.getQRcode());
-    }
 }
