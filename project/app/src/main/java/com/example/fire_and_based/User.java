@@ -20,9 +20,6 @@ public class User implements Parcelable {
     private String homepage;
     private boolean isAdmin = false;
 
-    public User() {
-    }
-
     /**
      * Constructs a User with device ID, user name, a list of registered events, and a profile picture.
      *
@@ -49,7 +46,7 @@ public class User implements Parcelable {
      * @param phoneNumber     The user's phone number.
      */
     User(String deviceID, String userName, String profilePicture, String firstName, String lastName,
-         String email, String phoneNumber) {
+         String email, String phoneNumber, String homepage) {
         this.deviceID = deviceID;
         this.userName = userName;
         this.profilePicture = profilePicture;
@@ -57,6 +54,7 @@ public class User implements Parcelable {
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.homepage = homepage;
     }
 
     /**
@@ -143,6 +141,30 @@ public class User implements Parcelable {
      */
     public String getFirstName() {
         return firstName;
+    }
+    /**
+     * Gets the homepage of the user.
+     *
+     * @return The homepage.
+     */
+    public String getHomepage(){
+        return homepage;
+    }
+
+    /**
+     * Sets the homepage of the user.
+     * @param homepage The homepage.
+     */
+    public void setHomepage(String homepage){
+        this.homepage = homepage;
+    }
+
+    /**
+     * Checks if the user is an Administrator of the app
+     * @return true if the user is an admin, false otherwise
+     */
+    public boolean isAdmin(){
+        return isAdmin;
     }
 
     /**

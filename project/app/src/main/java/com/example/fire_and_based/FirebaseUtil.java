@@ -13,6 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import androidx.annotation.Nullable;
 
 import com.google.firebase.firestore.*;
+import com.google.type.DateTime;
 
 import java.util.ArrayList;
 
@@ -68,9 +69,16 @@ public class FirebaseUtil {
                         String eventDescription = doc.getString("eventDescription");
                         String eventBanner = doc.getString("eventBanner");
                         String qrCode = doc.getString("QRcode");
+                        long eventStart = doc.getLong("eventStart");
+                        long eventEnd = doc.getLong("eventEnd");
+                        String location = doc.getString("location");
+                        String bannerQR = doc.getString("bannerQR");
+                        ArrayList<Integer> milestones = (ArrayList<Integer>) doc.get("milestones");
+                        int maxAttendees = Math.toIntExact(doc.getLong("maxAttendees"));
+                        boolean trackLocation = doc.getBoolean("trackLocation");
                         Log.d("Firestore", String.format("Event(%s, %s) fetched", eventName,
                                 qrCode));
-                        eventsList.add(new Event(eventName, eventDescription, eventBanner, qrCode));
+                        eventsList.add(new Event(eventName, eventDescription, eventBanner, qrCode, eventStart, eventEnd, location, bannerQR, milestones, maxAttendees, trackLocation));
                     }
                     Log.d("Firestore", String.format("Fetched %d events", eventsList.size()));
                     callback.onCallback(eventsList);
@@ -230,9 +238,17 @@ public class FirebaseUtil {
                 String eventDescription = doc.getString("eventDescription");
                 String eventBanner = doc.getString("eventBanner");
                 String qrCode = doc.getString("QRcode");
+                long eventStart = doc.getLong("eventStart");
+                long eventEnd = doc.getLong("eventEnd");
+                String location = doc.getString("location");
+                String bannerQR = doc.getString("bannerQR");
+                ArrayList<Integer> milestones = (ArrayList<Integer>) doc.get("milestones");
+                int maxAttendees = Math.toIntExact(doc.getLong("maxAttendees"));
+                boolean trackLocation = doc.getBoolean("trackLocation");
+
                 Log.d("Firestore", String.format("Event(%s, %s) fetched", eventName,
                         qrCode));
-                Event event = new Event(eventName, eventDescription, eventBanner, qrCode);
+                Event event = new Event(eventName, eventDescription, eventBanner, qrCode, eventStart, eventEnd, location, bannerQR, milestones, maxAttendees, trackLocation);
                 successListener.onSuccess(event);
             } else { //document not found, does not exist
                 failureListener.onFailure(new Exception("Event document not found"));
@@ -309,6 +325,7 @@ public class FirebaseUtil {
         updates.put("lastName", user.getLastName());
         updates.put("email", user.getEmail());
         updates.put("phoneNumber", user.getPhoneNumber());
+        updates.put("homepage", user.getHomepage());
         db.collection("users").document(user.getDeviceID())
                 .update(updates)
                 .addOnSuccessListener(successListener)
@@ -347,43 +364,19 @@ public class FirebaseUtil {
                 if (eventIDs != null && !eventIDs.isEmpty()) {
                     for (String qrCode : eventIDs) {
                         if (qrCode.equals(eventQRCode)) {
-                            String docID = cleanDocumentId(qrCode);
-                            db.collection("events").document(docID).get().addOnSuccessListener(document -> {
-                                String eventName = document.getString("eventName");
-                                String eventDescription = document.getString("eventDescription");
-                                String eventBanner = document.getString("eventBanner");
-                                Event event = new Event(eventName, eventDescription, eventBanner, qrCode);
-                                Log.println(Log.DEBUG, "FirebaseUtil", "User already in event");
-                                callback.onEventFound(event);
-                            }).addOnFailureListener(callback::onError);
+                            getEvent(db, eventQRCode, callback::onEventFound, callback::onError);
                             return;
                         }
                     }
                     Log.println(Log.DEBUG, "FirebaseUtil", "User not in event, searching for event...");
                     //IF EVENT NOT FOUND WE STILL NEED IT
-                    String docID = cleanDocumentId(eventQRCode);
-                    db.collection("events").document(docID).get().addOnSuccessListener(document -> {
-                        String eventName = document.getString("eventName");
-                        String eventDescription = document.getString("eventDescription");
-                        String eventBanner = document.getString("eventBanner");
-                        Event event = new Event(eventName, eventDescription, eventBanner, eventQRCode);
-                        Log.println(Log.DEBUG, "FirebaseUtil", "Found event the user isnt in!");
-                        callback.onEventNotFound(event);
-                    }).addOnFailureListener(callback::onError);
+                    getEvent(db, eventQRCode, callback::onEventNotFound, callback::onError);
                     return;
                 } else {
                     Log.println(Log.DEBUG, "FirebaseUtil", "User not in ANY event, searching for event...");
                     //IF EVENT NOT FOUND WE STILL NEED IT
-                    String docID = cleanDocumentId(eventQRCode);
-                    Log.println(Log.DEBUG, "FirebaseUtil", "User not in ANY event, searching for event... " + docID);
-                    db.collection("events").document(docID).get().addOnSuccessListener(document -> {
-                        String eventName = document.getString("eventName");
-                        String eventDescription = document.getString("eventDescription");
-                        String eventBanner = document.getString("eventBanner");
-                        Event event = new Event(eventName, eventDescription, eventBanner, eventQRCode);
-                        Log.println(Log.DEBUG, "FirebaseUtil", "Found event the user isnt in!" + eventName);
-                        callback.onEventNotFound(event);
-                    }).addOnFailureListener(callback::onError);
+                    Log.println(Log.DEBUG, "FirebaseUtil", "User not in ANY event, searching for event... " + eventQRCode);
+                    getEvent(db, eventQRCode, callback::onEventNotFound, callback::onError);
                     return;
                 }
             } else {
