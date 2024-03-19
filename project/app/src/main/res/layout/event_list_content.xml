@@ -14,7 +14,7 @@
         android:layout_marginTop="16dp"
         android:text="Event Name"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/previewImage"
+        app:layout_constraintBottom_toTopOf="@+id/event_banner_preview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.124"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +22,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
-        android:id="@+id/previewImage"
+        android:id="@+id/event_banner_preview"
         android:layout_width="426dp"
         android:layout_height="140dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -40,7 +40,7 @@
         app:layout_constraintEnd_toStartOf="@+id/dateText"
         app:layout_constraintHorizontal_bias="0.72"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/previewImage"
+        app:layout_constraintTop_toBottomOf="@+id/event_banner_preview"
         app:layout_constraintVertical_bias="0.015"
         app:srcCompat="@drawable/baseline_calendar_month_24" />
 
@@ -54,7 +54,7 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/previewImage"
+        app:layout_constraintTop_toBottomOf="@+id/event_banner_preview"
         app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

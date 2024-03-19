@@ -15,11 +15,6 @@
         android:largeHeap="true"
         android:hardwareAccelerated="false">
         <activity
-            android:name=".EventInfoActivity"
-            android:exported="false"
-            android:label="MainActivity"
-            android:theme="@style/Theme.Fireandbased.NoActionBar" />
-        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -28,9 +23,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EventCheckIn" />
-        <activity android:name=".TestQRCodeGenerator" />
-        <activity android:name=".QRCodeViewer" />
         <activity
             android:name=".UserActivity"
             android:exported="true" />
@@ -40,33 +32,11 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity
-            android:name=".Firebase">
+            android:name=".CreateEventActivity">
         </activity>
 
         <activity
-            android:name=".ViewEvent">
-        </activity>
-
-        <activity
-            android:name=".EventCreation">
-        </activity>
-
-        <activity
-            android:name=".ProfileActivity">
-        </activity>
-
-        <activity
-            android:name=".EventInfoForOrganizerActivity">
-        </activity>
-
-        <activity
-            android:name=".ImageUploader"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.PICK" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:name=".ViewProfileFragment">
         </activity>
 
 

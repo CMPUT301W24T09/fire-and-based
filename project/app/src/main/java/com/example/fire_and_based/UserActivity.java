@@ -1,30 +1,28 @@
 package com.example.fire_and_based;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 /**
- * This activity hosts the BrowseEventsFragment, AttendingEventsFragment, and OrganizingEventsFragment.
- * It is the main page for the entire app and provides different views for browsing events based on
- * whether a user is signed up for an event, organizing an event, etc.
+ * This activity hosts the EventListFragment, ViewProfileFragment, EventDetailsFragment, and AttendeeFragment.
+ * Holds the bottom navigation bar for the entire app.
+ * Requires a user to be passed in as an argument as a Parcelable with a key "user"
  */
 public class UserActivity extends AppCompatActivity {
-    private User currentUser;
+    private User user;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,49 +31,45 @@ public class UserActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            currentUser = getIntent().getParcelableExtra("currentUser");
+            user = getIntent().getParcelableExtra("user");
         }
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        ImageView createEventButton = findViewById(R.id.create_event_button);
+        createEventButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserActivity.this, CreateEventActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
+            }
+        });
 
         if (savedInstanceState == null) {
-            Bundle bundle = new Bundle();
-            BrowseEventsFragment fragment = new BrowseEventsFragment();
-            bundle.putParcelable("currentUser", currentUser);
-            fragment.setArguments(bundle);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container_view, fragment)
-                    .commit();
+            replaceEventListFragment("Browse");
         }
 
         NavigationBarView bottomNavigationView = findViewById(R.id.bottom_nav);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Bundle bundle = new Bundle();
-                if (item.getItemId() == R.id.browse_events_item) {
-                    BrowseEventsFragment fragment = new BrowseEventsFragment();
-                    bundle.putParcelable("currentUser", currentUser);
-                    fragment.setArguments(bundle);
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container_view, fragment)
-                            .commit();
+
+                if (item.getItemId() == R.id.browse_item) {
+                    replaceEventListFragment("Browse");
                 }
-                if (item.getItemId() == R.id.my_attended_events) {
-                    AttendingEventsFragment fragment = new AttendingEventsFragment();
-                    bundle.putParcelable("currentUser", currentUser);
-                    fragment.setArguments(bundle);
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container_view, fragment)
-                            .commit();
+                if (item.getItemId() == R.id.attending_item) {
+                    replaceEventListFragment("Attending");
                 }
-                if (item.getItemId() == R.id.my_organized_events) {
-                    OrganizingEventsFragment fragment = new OrganizingEventsFragment();
-                    bundle.putParcelable("currentUser", currentUser);
+                if (item.getItemId() == R.id.organizing_item) {
+                    replaceEventListFragment("Organizing");
+                }
+                if (item.getItemId() == R.id.profile_item) {
+                    ViewProfileFragment fragment = new ViewProfileFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("user", user);
                     fragment.setArguments(bundle);
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container_view, fragment)
+                            .setReorderingAllowed(true)
                             .commit();
                 }
                 return true;
@@ -83,20 +77,20 @@ public class UserActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.profile, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.profile_item) {
-            Intent intent = new Intent(UserActivity.this, ProfileActivity.class);
-            intent.putExtra("currentUser", currentUser);
-            startActivity(intent);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    /**
+     * Replaces the current fragment with a new instance of EventListFragment based on the specified mode.
+     *
+     * @param mode The mode to set as an argument for the new fragment
+     */
+    private void replaceEventListFragment(String mode) {
+        EventListFragment fragment = new EventListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("user", user);
+        bundle.putString("mode", mode);
+        fragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container_view, fragment)
+                .setReorderingAllowed(true)
+                .commit();
     }
 }
