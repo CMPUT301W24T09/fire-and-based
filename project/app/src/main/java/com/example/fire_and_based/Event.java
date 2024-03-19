@@ -3,17 +3,28 @@ package com.example.fire_and_based;
 import android.os.Parcel;
 import android.os.Parcelable;
 import androidx.annotation.NonNull;
+
+import com.google.type.DateTime;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Represents an event with a name, description, banner image, and a QR code.
  * This class implements Parcelable to allow event objects to be passed between activities.
  */
 public class Event implements Parcelable {
-    public String eventName;
-    public String eventDescription;
-    public String eventBanner;
-    public String QRcode;
+    private String eventName;
+    private String eventDescription;
+    private String eventBanner;
+    private String QRcode;
+    private DateTime eventStart;
+    private DateTime eventEnd;
+    private String location;
+    private String bannerQR;
+    private ArrayList<Integer> milestones;
+    private int maxAttendees;
+    private boolean trackLocation;
 
     /**
      * Constructs a new Event with the specified name, description, banner image, and QR code.
