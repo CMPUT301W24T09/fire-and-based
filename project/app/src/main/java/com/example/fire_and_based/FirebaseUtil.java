@@ -418,6 +418,11 @@ public class FirebaseUtil {
                     DocumentSnapshot userSnapshot = transaction.get(userDoc);
 
                     List<String> attendees = (List<String>) eventSnapshot.get("attendees");
+                    Integer maxAttendees = (Integer) eventSnapshot.get("maxAttendees");
+                    if (maxAttendees != null && maxAttendees <= attendees.size()){
+                        throw new IllegalArgumentException("Event reached max capacity");
+                    }
+
                     if (attendees == null) {
                         attendees = new ArrayList<>();
                     }
