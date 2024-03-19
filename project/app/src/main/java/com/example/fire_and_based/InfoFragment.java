@@ -1,0 +1,67 @@
+package com.example.fire_and_based;
+
+import android.icu.text.IDNA;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
+import java.util.Objects;
+
+/**
+ * This fragment is hosted by EventDetailsFragment.
+ * It displays the info for an event.
+ */
+public class InfoFragment extends Fragment {
+    private Event event;
+    private String mode;
+
+    /**
+     * Creates a new instance of the InfoFragment with the provided event data.
+     *
+     * @param event The Event object to be associated with the fragment.
+     * @param mode the mode ("Organizing" or "Attending")
+     * @return A new instance of InfoFragment with the specified event data.
+     */
+    public static InfoFragment newInstance(Event event, String mode) {
+        InfoFragment fragment = new InfoFragment();
+        Bundle args = new Bundle();
+        args.putParcelable("event", event);
+        args.putString("mode", mode);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.info_fragment, container, false);
+
+        if (getArguments() != null) {
+            event = getArguments().getParcelable("event");
+            mode = getArguments().getString("mode");
+        }
+
+        TextView eventDescription = view.findViewById(R.id.event_description);
+        eventDescription.setText(event.getEventDescription());
+
+        Button button = view.findViewById(R.id.additional_actions_button);
+        if (Objects.equals(mode, "Organizing")) {
+            button.setText("Event QR Code");
+        }
+        if (Objects.equals(mode, "Attending")) {
+            button.setText("Leave Event");
+            int resolvedColor = ContextCompat.getColor(requireContext(), R.color.red);
+            button.setBackgroundColor(resolvedColor);
+        }
+
+        return view;
+    }
+}

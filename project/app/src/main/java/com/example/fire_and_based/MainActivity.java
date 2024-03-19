@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, String.format("Username: %s UserID: %s", currentUser.getFirstName(), currentUser.getDeviceID()));
 
                         Intent intent = new Intent(MainActivity.this, UserActivity.class);
-                        intent.putExtra("currentUser", currentUser);
+                        intent.putExtra("user", currentUser);
                         startActivity(intent);
                     },
                     e -> {

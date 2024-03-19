@@ -4,16 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/pastel_purple"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:title="Events"
-        app:titleTextColor="@color/white" />
-
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container_view"
         android:layout_width="match_parent"
@@ -24,6 +14,18 @@
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:menu="@menu/event_list_bottom_nav" />
+        app:menu="@menu/bottom_nav"
+        app:labelVisibilityMode="labeled"
+        app:backgroundTint="@color/white">
+
+        <ImageView
+            android:id="@+id/create_event_button"
+            android:layout_width="98dp"
+            android:layout_height="75dp"
+            android:layout_gravity="center"
+            android:src="@drawable/create_event_image">
+        </ImageView>
+
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
 
 </LinearLayout>
