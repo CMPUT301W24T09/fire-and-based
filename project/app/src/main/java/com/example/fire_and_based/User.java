@@ -13,11 +13,12 @@ public class User implements Parcelable {
     private String deviceID;
     private String userName;
     private String profilePicture;
-    private ArrayList<Event> userEvents;
     private String firstName;
     private String lastName;
     private String phoneNumber;
     private String email;
+    private String homepage;
+    private boolean isAdmin = false;
 
     public User() {
     }
@@ -27,13 +28,11 @@ public class User implements Parcelable {
      *
      * @param deviceID        The unique identifier for the user's device.
      * @param userName        The user's chosen username.
-     * @param userRegisteredEvents A list of events the user has registered for.
      * @param profilePicture  The URL or path to the user's profile picture.
      */
-    User(String deviceID, String userName, ArrayList<Event> userRegisteredEvents, String profilePicture) {
+    User(String deviceID, String userName, String profilePicture) {
         this.deviceID = deviceID;
         this.userName = userName;
-        this.userEvents = userRegisteredEvents;
         this.profilePicture = profilePicture;
     }
 
@@ -43,18 +42,16 @@ public class User implements Parcelable {
      *
      * @param deviceID        The unique identifier for the user's device.
      * @param userName        The user's chosen username.
-     * @param userRegisteredEvents A list of events the user has registered for.
      * @param profilePicture  The URL or path to the user's profile picture.
      * @param firstName       The user's first name.
      * @param lastName        The user's last name.
      * @param email           The user's email address.
      * @param phoneNumber     The user's phone number.
      */
-    User(String deviceID, String userName, ArrayList<Event> userRegisteredEvents, String profilePicture, String firstName, String lastName,
+    User(String deviceID, String userName, String profilePicture, String firstName, String lastName,
          String email, String phoneNumber) {
         this.deviceID = deviceID;
         this.userName = userName;
-        this.userEvents = userRegisteredEvents;
         this.profilePicture = profilePicture;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -71,7 +68,6 @@ public class User implements Parcelable {
         deviceID = in.readString();
         userName = in.readString();
         profilePicture = in.readString();
-        userEvents = in.createTypedArrayList(Event.CREATOR);
         firstName = in.readString();
         lastName = in.readString();
         phoneNumber = in.readString();
@@ -114,15 +110,6 @@ public class User implements Parcelable {
     }
 
     /**
-     * Gets the list of events the user has registered for.
-     *
-     * @return A list of user events.
-     */
-    public ArrayList<Event> getUserEvents() {
-        return this.userEvents;
-    }
-
-    /**
      * Sets the device ID of the user.
      *
      * @param deviceID The new device ID.
@@ -141,30 +128,12 @@ public class User implements Parcelable {
     }
 
     /**
-     * Adds an event to the list of events the user has registered for.
-     *
-     * @param event The event to add.
-     */
-    public void addEvent(Event event) {
-        this.userEvents.add(event);
-    }
-
-    /**
      * Sets the profile picture of the user.
      *
      * @param profilePicture The new profile picture URL or path.
      */
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
-    }
-
-    /**
-     * Sets the list of events the user has registered for.
-     *
-     * @param eventList The new list of events.
-     */
-    public void setUserRegisteredEvents(ArrayList<Event> eventList) {
-        this.userEvents = eventList;
     }
 
     /**
@@ -260,7 +229,6 @@ public class User implements Parcelable {
         dest.writeString(deviceID);
         dest.writeString(userName);
         dest.writeString(profilePicture);
-        dest.writeTypedList(userEvents);
         dest.writeString(firstName);
         dest.writeString(lastName);
         dest.writeString(phoneNumber);

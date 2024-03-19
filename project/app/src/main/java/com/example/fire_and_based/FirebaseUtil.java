@@ -287,15 +287,8 @@ public class FirebaseUtil {
         db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 User user = documentSnapshot.toObject(User.class);
-                FirebaseUtil.getUserEvents(db, userID,
-                        events -> {
-                            user.setUserRegisteredEvents(events);
-                        },
-                        e -> {
-                            Log.d(TAG, e.toString());
-                        });
-                Log.d(TAG, String.format("Username: %s First: %s Last: %s Phone: %s Email: %s ID: %s Null: %s", user.getUserName(), user.getFirstName(), user.getLastName()
-                        , user.getPhoneNumber(), user.getEmail(), user.getDeviceID(), user.getUserEvents()));
+                Log.d(TAG, String.format("Username: %s First: %s Last: %s Phone: %s Email: %s ID: %s", user.getUserName(), user.getFirstName(), user.getLastName()
+                        , user.getPhoneNumber(), user.getEmail(), user.getDeviceID()));
                 successListener.onSuccess(user);
             } else {
                 failureListener.onFailure(new Exception("User document does not exist."));
