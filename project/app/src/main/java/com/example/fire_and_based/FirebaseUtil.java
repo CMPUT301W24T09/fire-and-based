@@ -536,7 +536,7 @@ public class FirebaseUtil {
      *
      * @param db       the database reference
      * @param eventId  the event ID to add and be added to
-     * @param organizer the user ID to add and be added to
+     * @param user the user ID to add and be added to
      */
     public static void addEventAndCheckedInUser(FirebaseFirestore db, String eventId, String user, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
         String docID = cleanDocumentId(eventId);
