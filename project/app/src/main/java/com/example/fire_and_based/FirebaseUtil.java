@@ -54,35 +54,31 @@ public class FirebaseUtil {
         ArrayList<Event> eventsList = new ArrayList<>();
 
         CollectionReference eventsRef = db.collection("events");
-        eventsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot querySnapshots,
-                                @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.e("Firestore", error.toString());
-                    return;
-                    //TODO wait no add a proper onFailure() thing to the callback
+        eventsRef.addSnapshotListener((querySnapshots, error) -> {
+            if (error != null) {
+                Log.e("Firestore", error.toString());
+                return;
+                //TODO wait no add a proper onFailure() thing to the callback
+            }
+            if (querySnapshots != null) {
+                for (QueryDocumentSnapshot doc : querySnapshots) {
+                    String eventName = doc.getString("eventName");
+                    String eventDescription = doc.getString("eventDescription");
+                    String eventBanner = doc.getString("eventBanner");
+                    String qrCode = doc.getString("QRcode");
+                    long eventStart = doc.getLong("eventStart");
+                    long eventEnd = doc.getLong("eventEnd");
+                    String location = doc.getString("location");
+                    String bannerQR = doc.getString("bannerQR");
+                    ArrayList<Integer> milestones = (ArrayList<Integer>) doc.get("milestones");
+                    int maxAttendees = Math.toIntExact(doc.getLong("maxAttendees"));
+                    boolean trackLocation = doc.getBoolean("trackLocation");
+                    Log.d("Firestore", String.format("Event(%s, %s) fetched", eventName,
+                            qrCode));
+                    eventsList.add(new Event(eventName, eventDescription, eventBanner, qrCode, eventStart, eventEnd, location, bannerQR, milestones, maxAttendees, trackLocation));
                 }
-                if (querySnapshots != null) {
-                    for (QueryDocumentSnapshot doc : querySnapshots) {
-                        String eventName = doc.getString("eventName");
-                        String eventDescription = doc.getString("eventDescription");
-                        String eventBanner = doc.getString("eventBanner");
-                        String qrCode = doc.getString("QRcode");
-                        long eventStart = doc.getLong("eventStart");
-                        long eventEnd = doc.getLong("eventEnd");
-                        String location = doc.getString("location");
-                        String bannerQR = doc.getString("bannerQR");
-                        ArrayList<Integer> milestones = (ArrayList<Integer>) doc.get("milestones");
-                        int maxAttendees = Math.toIntExact(doc.getLong("maxAttendees"));
-                        boolean trackLocation = doc.getBoolean("trackLocation");
-                        Log.d("Firestore", String.format("Event(%s, %s) fetched", eventName,
-                                qrCode));
-                        eventsList.add(new Event(eventName, eventDescription, eventBanner, qrCode, eventStart, eventEnd, location, bannerQR, milestones, maxAttendees, trackLocation));
-                    }
-                    Log.d("Firestore", String.format("Fetched %d events", eventsList.size()));
-                    callback.onCallback(eventsList);
-                }
+                Log.d("Firestore", String.format("Fetched %d events", eventsList.size()));
+                callback.onCallback(eventsList);
             }
         });
     }
