@@ -6,6 +6,9 @@
         <item>@font/crimson_pro_semibold</item>
         <item>@font/martel_bold</item>
         <item>@font/martel_semibold</item>
+        <item>@font/roboto</item>
+        <item>@font/roboto_black</item>
+        <item>@font/roboto_bold</item>
         <item>@font/roboto_slab</item>
     </array>
 </resources>
