@@ -435,7 +435,7 @@ public class FirebaseUtil {
                         }, failureListener);
                     }
                 } else {
-                    successListener.onSuccess(new ArrayList<User>());
+                    successListener.onSuccess(new HashMap<>());
                 }
             } else {
                 failureListener.onFailure(new Exception("User document not found"));
