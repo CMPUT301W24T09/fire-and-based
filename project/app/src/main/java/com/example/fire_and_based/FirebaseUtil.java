@@ -294,7 +294,7 @@ public class FirebaseUtil {
                         }, failureListener);
                     }
                 } else {
-                    failureListener.onFailure(new Exception("User exists but has no Events"));
+                    successListener.onSuccess(new ArrayList<Event>());
                 }
             } else {
                 failureListener.onFailure(new Exception("User document not found"));
@@ -303,7 +303,7 @@ public class FirebaseUtil {
     }
 
     /**
-     * Asynchronously get list of Events a user is attending
+     * Asynchronously get list of Events a user is organizing
      *
      * @param db       the database reference
      * @param userID   the ID of the user to get events of
@@ -329,7 +329,7 @@ public class FirebaseUtil {
                         }, failureListener);
                     }
                 } else {
-                    failureListener.onFailure(new Exception("User exists but has no Events"));
+                    successListener.onSuccess(new ArrayList<Event>());
                 }
             } else {
                 failureListener.onFailure(new Exception("User document not found"));
@@ -338,7 +338,7 @@ public class FirebaseUtil {
     }
 
     /**
-     * Asynchronously get list of Events a user is attending
+     * Asynchronously get list of Events a user is checked in to
      *
      * @param db       the database reference
      * @param userID   the ID of the user to get events of
@@ -364,13 +364,119 @@ public class FirebaseUtil {
                         }, failureListener);
                     }
                 } else {
-                    failureListener.onFailure(new Exception("User exists but has no Events"));
+                    successListener.onSuccess(new ArrayList<Event>());
                 }
             } else {
                 failureListener.onFailure(new Exception("User document not found"));
             }
         }).addOnFailureListener(failureListener);
     }
+
+
+
+
+    /**
+     * Asynchronously get list of Users attending an event
+     *
+     * @param db       the database reference
+     * @param eventQR   the ID of the event to get attendees of
+     * @param successListener what to do in case of success
+     * @param failureListener what to do in case of failure (database error)
+     * @see Event
+     * @see User
+     */
+    public static void getEventAttendees(FirebaseFirestore db, String eventQR, OnSuccessListener<ArrayList<User>> successListener, OnFailureListener failureListener) {
+        String docID = cleanDocumentId(eventQR);
+        db.collection("events").document(docID).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                List<String> userIDs = (List<String>) documentSnapshot.get("attendees");
+                if (userIDs != null && !userIDs.isEmpty()) {
+                    ArrayList<User> users = new ArrayList<>();
+                    for (String userID : userIDs) {
+                        getUserObject(db, userID, user -> {
+                            users.add(user);
+                            if (users.size() == userIDs.size()) {
+                                successListener.onSuccess(users);
+                            }
+                        }, failureListener);
+                    }
+                } else {
+                    successListener.onSuccess(new ArrayList<User>());
+                }
+            } else {
+                failureListener.onFailure(new Exception("User document not found"));
+            }
+        }).addOnFailureListener(failureListener);
+    }
+
+    /**
+     * Asynchronously get list of Users checked in to an event
+     *
+     * @param db       the database reference
+     * @param eventQR   the ID of the event to get attendees of
+     * @param successListener what to do in case of success
+     * @param failureListener what to do in case of failure (database error)
+     * @see Event
+     * @see User
+     */
+    public static void getEventCheckedInUsers(FirebaseFirestore db, String eventQR, OnSuccessListener<ArrayList<User>> successListener, OnFailureListener failureListener) {
+        String docID = cleanDocumentId(eventQR);
+        db.collection("events").document(docID).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                List<String> userIDs = (List<String>) documentSnapshot.get("checkedInUsers");
+                if (userIDs != null && !userIDs.isEmpty()) {
+                    ArrayList<User> users = new ArrayList<>();
+                    for (String userID : userIDs) {
+                        getUserObject(db, userID, user -> {
+                            users.add(user);
+                            if (users.size() == userIDs.size()) {
+                                successListener.onSuccess(users);
+                            }
+                        }, failureListener);
+                    }
+                } else {
+                    successListener.onSuccess(new ArrayList<User>());
+                }
+            } else {
+                failureListener.onFailure(new Exception("User document not found"));
+            }
+        }).addOnFailureListener(failureListener);
+    }
+
+    /**
+     * Asynchronously get list of Users organizing an event
+     *
+     * @param db       the database reference
+     * @param eventQR   the ID of the event to get attendees of
+     * @param successListener what to do in case of success
+     * @param failureListener what to do in case of failure (database error)
+     * @see Event
+     * @see User
+     */
+    public static void getEventOrganizers(FirebaseFirestore db, String eventQR, OnSuccessListener<ArrayList<User>> successListener, OnFailureListener failureListener) {
+        String docID = cleanDocumentId(eventQR);
+        db.collection("events").document(docID).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                List<String> userIDs = (List<String>) documentSnapshot.get("organizers");
+                if (userIDs != null && !userIDs.isEmpty()) {
+                    ArrayList<User> users = new ArrayList<>();
+                    for (String userID : userIDs) {
+                        getUserObject(db, userID, user -> {
+                            users.add(user);
+                            if (users.size() == userIDs.size()) {
+                                successListener.onSuccess(users);
+                            }
+                        }, failureListener);
+                    }
+                } else {
+                    successListener.onSuccess(new ArrayList<User>());
+                }
+            } else {
+                failureListener.onFailure(new Exception("User document not found"));
+            }
+        }).addOnFailureListener(failureListener);
+    }
+
 
 
 
