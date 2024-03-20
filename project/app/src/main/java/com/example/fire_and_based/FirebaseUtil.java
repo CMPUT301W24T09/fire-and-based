@@ -419,16 +419,16 @@ public class FirebaseUtil {
      * @see Event
      * @see User
      */
-    public static void getEventCheckedInUsers(FirebaseFirestore db, String eventQR, OnSuccessListener<ArrayList<User>> successListener, OnFailureListener failureListener) {
+    public static void getEventCheckedInUsers(FirebaseFirestore db, String eventQR, OnSuccessListener<Map<User, Integer>> successListener, OnFailureListener failureListener) {
         String docID = cleanDocumentId(eventQR);
         db.collection("events").document(docID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 Map<String, Integer> userIDs = (Map<String, Integer>) documentSnapshot.get("checkedInUsers");
                 if (userIDs != null && !userIDs.isEmpty()) {
-                    ArrayList<User> users = new ArrayList<>();
+                    Map<User, Integer> users = new HashMap<>();
                     for (String userID : userIDs.keySet()) {
                         getUserObject(db, userID, user -> {
-                            users.add(user);
+                            users.put(user, userIDs.get(userID));
                             if (users.size() == userIDs.size()) {
                                 successListener.onSuccess(users);
                             }
@@ -513,7 +513,7 @@ public class FirebaseUtil {
 
         void onError(Exception e);
     }
-    
+
     /**
      * Adds the eventID to the user's attended events field,
      * and the attendee ID to the event's attendees field.
