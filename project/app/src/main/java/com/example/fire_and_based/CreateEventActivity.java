@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
@@ -150,6 +153,8 @@ public class CreateEventActivity extends AppCompatActivity {
                 new Random().nextBytes(array);
                 QRCode = "fire_and_based_event:" + new String(array, StandardCharsets.UTF_8);
                 //TODO add a thing that previews the QR Code string? at least for debug?
+                Toast.makeText(getApplicationContext(), "Random QR Code Successfully Generated", Toast.LENGTH_SHORT).show();
+
                 //showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
             }
         });
@@ -222,7 +227,35 @@ public class CreateEventActivity extends AppCompatActivity {
 
                         // EVENT CREATION GOES HERE
                         // we can create the event object
-                        // Event newEvent = new Event(.....)
+                        Event newEvent = new Event(eventNameString, eventDescriptionString, null, QRCode);
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        toast("adding event to db  ) ");
+
+                        FirebaseUtil.addEventToDB(db, newEvent, new FirebaseUtil.AddEventCallback() {
+                            @Override
+                            public void onEventAdded() {
+                                toast("Event successfully added!");
+                                Log.println(Log.DEBUG, "EventCreation", "New event with id: " + QRCode + " added");
+                                //TODO exit out maybe?
+                            }
+
+                            @Override
+                            public void onEventExists() {
+                                toast("ERROR: Event with the same ID already exists in the database.");
+                                Log.println(Log.DEBUG, "EventCreation", "Event with id: " + QRCode + " found a duplicate");
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                toast("An internal error occurred, please try again later");
+                                Log.println(Log.ERROR, "EventCreation", e.toString());
+                            }
+                        });
+//                        this.eventName = eventName;
+//                        this.eventDescription = eventDescription;
+//                        this.eventBanner = eventBanner;
+//                        this.QRcode = QRcode;
+
 
                         // then pass to database
                         // user was passed into this activity it is a public User object named 'user'
