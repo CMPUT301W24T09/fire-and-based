@@ -227,7 +227,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
                         // EVENT CREATION GOES HERE
                         // we can create the event object
-                        Event newEvent = new Event(eventNameString, eventDescriptionString, null, QRCode);
+                        Event newEvent = new Event(eventNameString, eventDescriptionString, null, QRCode, timeSince1970, timeSince1970, "ur moms house",null, null, 0, false );
                         FirebaseFirestore db = FirebaseFirestore.getInstance();
                         toast("adding event to db  ) ");
 
