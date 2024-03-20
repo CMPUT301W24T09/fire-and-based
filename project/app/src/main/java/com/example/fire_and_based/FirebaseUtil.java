@@ -164,7 +164,7 @@ public class FirebaseUtil {
      * Delete event from database
      *
      * @param db    the database
-     * @param event the user
+     * @param event the event
      * @param successListener what to do in case of success
      * @param failureListener what to do in case of failure (database error)
      * @see Event
@@ -178,40 +178,54 @@ public class FirebaseUtil {
                 .addOnFailureListener(failureListener);
     }
 
-    //TODO add more update classes?
-
     /**
-     * Update an event's banner
+     * Delete user from database
      *
-     * @param db             the database
-     * @param event          the user
-     * @param newEventBanner the url to a new banner
+     * @param db    the database
+     * @param user the user
      * @param successListener what to do in case of success
      * @param failureListener what to do in case of failure (database error)
-     * @see Event
+     * @see User
      */
-    public static void updateEventBanner(FirebaseFirestore db, Event event, String newEventBanner, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
-        String docID = cleanDocumentId(event.getQRcode());
-        db.collection("events")
+    public static void deleteEvent(FirebaseFirestore db, User user, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
+        String docID = cleanDocumentId(user.getDeviceID());
+        db.collection("users")
                 .document(docID)
-                .update("eventBanner", newEventBanner)
+                .delete()
                 .addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);
     }
 
     /**
-     * Update user's pfp
+     * Update an event
      *
-     * @param db                the database
-     * @param user              the user
-     * @param profilePictureURL the url to a new pfp
+     * @param db             the database
+     * @param event          the new event
      * @param successListener what to do in case of success
      * @param failureListener what to do in case of failure (database error)
      * @see Event
      */
-    public static void updateUserProfileImageUrl(FirebaseFirestore db, User user, String profilePictureURL, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
+    public static void updateEvent(FirebaseFirestore db, Event event, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
+        String docID = cleanDocumentId(event.getQRcode());
+        db.collection("events")
+                .document(docID)
+                .set(event)
+                .addOnSuccessListener(successListener)
+                .addOnFailureListener(failureListener);
+    }
+
+    /**
+     * Update a user
+     *
+     * @param db                the database
+     * @param user              the user
+     * @param successListener what to do in case of success
+     * @param failureListener what to do in case of failure (database error)
+     * @see User
+     */
+    public static void updateUser(FirebaseFirestore db, User user, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
         db.collection("users").document(user.getDeviceID())
-                .update("profilePicture", profilePictureURL)
+                .set(user)
                 .addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);
     }
@@ -254,7 +268,7 @@ public class FirebaseUtil {
 
 
     /**
-     * Asynchronously get list of Events a user is in
+     * Asynchronously get list of Events a user is attending
      *
      * @param db       the database reference
      * @param userID   the ID of the user to get events of
@@ -307,27 +321,6 @@ public class FirebaseUtil {
             }
         }).addOnFailureListener(failureListener);
     }
-
-    /**
-     * Update a User object in the database
-     * @param db db reference
-     * @param user complete user object to be replaced
-     * @param successListener what to do in case of success
-     * @param failureListener what to do in case of failure (database error)
-     */
-    public static void updateProfileInfo(FirebaseFirestore db, User user, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("firstName", user.getFirstName());
-        updates.put("lastName", user.getLastName());
-        updates.put("email", user.getEmail());
-        updates.put("phoneNumber", user.getPhoneNumber());
-        updates.put("homepage", user.getHomepage());
-        db.collection("users").document(user.getDeviceID())
-                .update(updates)
-                .addOnSuccessListener(successListener)
-                .addOnFailureListener(failureListener);
-    }
-
 
     /**
      * Callback for checking if a given user is in a given event
@@ -392,7 +385,8 @@ public class FirebaseUtil {
      * @param attendee the user ID to add and be added to
      */
     public static void addEventAndAttendee(FirebaseFirestore db, String eventId, String attendee, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
-        DocumentReference eventDoc = db.collection("events").document(eventId);
+        String docID = cleanDocumentId(eventId);
+        DocumentReference eventDoc = db.collection("events").document(docID);
         DocumentReference userDoc = db.collection("users").document(attendee);
 
         db.runTransaction((Transaction.Function<Void>) transaction -> {
@@ -422,6 +416,58 @@ public class FirebaseUtil {
                     return null;
                 }).addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);
+    }
+
+    /**
+     * Adds the eventID to the user's organized events field,
+     * and the attendee ID to the event's organizers field.
+     * Both succeed or fail simultaneously
+     *
+     * @param db       the database reference
+     * @param eventId  the event ID to add and be added to
+     * @param organizer the user ID to add and be added to
+     */
+    public static void addEventAndOrganizer(FirebaseFirestore db, String eventId, String organizer, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
+        String docID = cleanDocumentId(eventId);
+        DocumentReference eventDoc = db.collection("events").document(docID);
+        DocumentReference userDoc = db.collection("users").document(organizer);
+
+        db.runTransaction((Transaction.Function<Void>) transaction -> {
+                    DocumentSnapshot eventSnapshot = transaction.get(eventDoc);
+                    DocumentSnapshot userSnapshot = transaction.get(userDoc);
+
+                    List<String> organizers = (List<String>) eventSnapshot.get("organizers");
+
+                    if (organizers == null) {
+                        organizers = new ArrayList<>();
+                    }
+                    organizers.add(organizer);
+                    transaction.update(eventDoc, "organizers", organizers);
+
+
+                    List<String> organizerEvents = (List<String>) userSnapshot.get("organizerEvents");
+                    if (organizerEvents == null) {
+                        organizerEvents = new ArrayList<>();
+                    }
+                    organizerEvents.add(eventId);
+                    transaction.update(userDoc, "organizerEvents", organizerEvents);
+
+                    return null;
+                }).addOnSuccessListener(successListener)
+                .addOnFailureListener(failureListener);
+    }
+
+
+    public static void getAnnouncements(FirebaseFirestore db, String eventID, OnSuccessListener<ArrayList<Announcement>> successListener, OnFailureListener failureListener){
+        String docID = cleanDocumentId(eventID);
+        db.collection("events").document(docID).get().addOnSuccessListener(doc -> {
+            if (doc.exists()) {
+                ArrayList<Announcement> announcements = (ArrayList<Announcement>)doc.get("announcements");
+                successListener.onSuccess(announcements);
+            } else {
+                failureListener.onFailure(new Exception("Event with id " + eventID + "not found"));
+            }
+        }).addOnFailureListener(failureListener);
     }
 
 
