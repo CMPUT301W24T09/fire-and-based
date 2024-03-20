@@ -18,13 +18,13 @@ public class Event implements Parcelable {
     private String eventDescription;
     private String eventBanner;
     private String QRcode;
-    private long startTimeStamp;
-    private long endTimeStamp;
+    private Long startTimeStamp;
+    private Long endTimeStamp;
     private String location;
     private String bannerQR;
     private ArrayList<Integer> milestones;
-    private int maxAttendees;
-    private boolean trackLocation;
+    private Long maxAttendees;
+    private Boolean trackLocation;
 
     /**
      * Constructs a new Event with the specified details.
@@ -41,7 +41,7 @@ public class Event implements Parcelable {
      * @param maxAttendees     The maximum number of attendees for the event.
      * @param trackLocation    Whether the event is tracking location.
      */
-    Event(String eventName, String eventDescription, String eventBanner, String QRcode, long startTimeStamp, long endTimeStamp, String location, String bannerQR, ArrayList<Integer> milestones, int maxAttendees, boolean trackLocation) {
+    Event(String eventName, String eventDescription, String eventBanner, String QRcode, Long startTimeStamp, Long endTimeStamp, String location, String bannerQR, ArrayList<Integer> milestones, Long maxAttendees, Boolean trackLocation) {
         this.eventName = eventName;
         this.eventDescription = eventDescription;
         this.eventBanner = eventBanner;
@@ -75,7 +75,7 @@ public class Event implements Parcelable {
         location = in.readString();
         bannerQR = in.readString();
         milestones = in.readArrayList(Integer.class.getClassLoader());
-        maxAttendees = in.readInt();
+        maxAttendees = in.readLong();
         trackLocation = in.readByte() != 0;  // trackLocation == true if byte != 0
     }
 
@@ -104,7 +104,7 @@ public class Event implements Parcelable {
      *
      * @return the start time of the event.
      */
-    public long getEventStart() {
+    public Long getEventStart() {
         return this.startTimeStamp;
     }
 
@@ -113,7 +113,7 @@ public class Event implements Parcelable {
      *
      * @param startTimeStamp the start time of the event.
      */
-    public void setEventStart(long startTimeStamp) {
+    public void setEventStart(Long startTimeStamp) {
         this.startTimeStamp = startTimeStamp;
     }
 
@@ -122,7 +122,7 @@ public class Event implements Parcelable {
      *
      * @return the end time of the event.
      */
-    public long getEventEnd() {
+    public Long getEventEnd() {
         return this.endTimeStamp;
     }
 
@@ -131,7 +131,7 @@ public class Event implements Parcelable {
      *
      * @param endTimeStamp the end time of the event.
      */
-    public void setEventEnd(long endTimeStamp) {
+    public void setEventEnd(Long endTimeStamp) {
         this.endTimeStamp = endTimeStamp;
     }
 
@@ -194,7 +194,7 @@ public class Event implements Parcelable {
      *
      * @return the maximum number of attendees for the event.
      */
-    public int getMaxAttendees() {
+    public Long getMaxAttendees() {
         return this.maxAttendees;
     }
 
@@ -203,7 +203,7 @@ public class Event implements Parcelable {
      *
      * @param maxAttendees the maximum number of attendees for the event.
      */
-    public void setMaxAttendees(int maxAttendees) {
+    public void setMaxAttendees(Long maxAttendees) {
         this.maxAttendees = maxAttendees;
     }
 
@@ -212,7 +212,7 @@ public class Event implements Parcelable {
      *
      * @return true if the event is tracking location, false otherwise.
      */
-    public boolean isTrackLocation() {
+    public Boolean isTrackLocation() {
         return this.trackLocation;
     }
 
@@ -221,7 +221,7 @@ public class Event implements Parcelable {
      *
      * @param trackLocation true if the event should track location, false otherwise.
      */
-    public void setTrackLocation(boolean trackLocation) {
+    public void setTrackLocation(Boolean trackLocation) {
         this.trackLocation = trackLocation;
     }
 
@@ -311,7 +311,7 @@ public class Event implements Parcelable {
         dest.writeString(location);
         dest.writeString(bannerQR);
         dest.writeList(milestones);
-        dest.writeInt(maxAttendees);
+        dest.writeLong(maxAttendees);
         dest.writeInt(trackLocation ? 1 : 0);  // write boolean as int
     }
 

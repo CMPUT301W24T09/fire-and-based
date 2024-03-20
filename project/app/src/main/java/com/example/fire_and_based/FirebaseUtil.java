@@ -66,13 +66,13 @@ public class FirebaseUtil {
                     String eventDescription = doc.getString("eventDescription");
                     String eventBanner = doc.getString("eventBanner");
                     String qrCode = doc.getString("QRcode");
-                    long eventStart = doc.getLong("eventStart");
-                    long eventEnd = doc.getLong("eventEnd");
+                    Long eventStart = doc.getLong("eventStart");
+                    Long eventEnd = doc.getLong("eventEnd");
                     String location = doc.getString("location");
                     String bannerQR = doc.getString("bannerQR");
                     ArrayList<Integer> milestones = (ArrayList<Integer>) doc.get("milestones");
-                    int maxAttendees = Math.toIntExact(doc.getLong("maxAttendees"));
-                    boolean trackLocation = doc.getBoolean("trackLocation");
+                    Long maxAttendees = doc.getLong("maxAttendees");
+                    Boolean trackLocation = doc.getBoolean("trackLocation");
                     Log.d("Firestore", String.format("Event(%s, %s) fetched", eventName,
                             qrCode));
                     eventsList.add(new Event(eventName, eventDescription, eventBanner, qrCode, eventStart, eventEnd, location, bannerQR, milestones, maxAttendees, trackLocation));
@@ -248,13 +248,13 @@ public class FirebaseUtil {
                 String eventDescription = doc.getString("eventDescription");
                 String eventBanner = doc.getString("eventBanner");
                 String qrCode = doc.getString("QRcode");
-                long eventStart = doc.getLong("eventStart");
-                long eventEnd = doc.getLong("eventEnd");
+                Long eventStart = doc.getLong("eventStart");
+                Long eventEnd = doc.getLong("eventEnd");
                 String location = doc.getString("location");
                 String bannerQR = doc.getString("bannerQR");
                 ArrayList<Integer> milestones = (ArrayList<Integer>) doc.get("milestones");
-                int maxAttendees = Math.toIntExact(doc.getLong("maxAttendees"));
-                boolean trackLocation = doc.getBoolean("trackLocation");
+                Long maxAttendees = doc.getLong("maxAttendees");
+                Boolean trackLocation = doc.getBoolean("trackLocation");
 
                 Log.d("Firestore", String.format("Event(%s, %s) fetched", eventName,
                         qrCode));

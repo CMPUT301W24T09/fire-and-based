@@ -18,7 +18,7 @@ public class User implements Parcelable {
     private String phoneNumber;
     private String email;
     private String homepage;
-    private boolean isAdmin = false;
+    private Boolean isAdmin = false;
 
     /**
      * Constructs a User with detailed personal information, including device ID, user name, registered events, profile picture,
@@ -35,7 +35,7 @@ public class User implements Parcelable {
      * @param isAdmin         Whether or not the user is an admin of the app
      */
     User(String deviceID, String userName, String profilePicture, String firstName, String lastName,
-         String phoneNumber, String email, String homepage, boolean isAdmin) {
+         String phoneNumber, String email, String homepage, Boolean isAdmin) {
         this.deviceID = deviceID;
         this.userName = userName;
         this.profilePicture = profilePicture;
@@ -45,6 +45,9 @@ public class User implements Parcelable {
         this.email = email;
         this.homepage = homepage;
         this.isAdmin = isAdmin;
+    }
+
+    public User() {
     }
 
     /**
@@ -155,7 +158,7 @@ public class User implements Parcelable {
      * Checks if the user is an Administrator of the app
      * @return true if the user is an admin, false otherwise
      */
-    public boolean isAdmin(){
+    public Boolean isAdmin(){
         return isAdmin;
     }
 
