@@ -303,6 +303,78 @@ public class FirebaseUtil {
     }
 
     /**
+     * Asynchronously get list of Events a user is attending
+     *
+     * @param db       the database reference
+     * @param userID   the ID of the user to get events of
+     * @param successListener what to do in case of success
+     * @param failureListener what to do in case of failure (database error)
+     * @see Event
+     * @see User
+     */
+    public static void getUserOrganizingEvents(FirebaseFirestore db, String userID, OnSuccessListener<ArrayList<Event>> successListener, OnFailureListener failureListener) {
+        db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                List<String> eventIDs = (List<String>) documentSnapshot.get("organizerEvents");
+                if (eventIDs != null && !eventIDs.isEmpty()) {
+                    ArrayList<String> eventCodes = new ArrayList<>(eventIDs);
+                    ArrayList<Event> events = new ArrayList<>();
+                    for (String eventCode : eventCodes) {
+                        String docID = cleanDocumentId(eventCode);
+                        getEvent(db, docID, event -> {
+                            events.add(event);
+                            if (events.size() == eventCodes.size()) {
+                                successListener.onSuccess(events);
+                            }
+                        }, failureListener);
+                    }
+                } else {
+                    failureListener.onFailure(new Exception("User exists but has no Events"));
+                }
+            } else {
+                failureListener.onFailure(new Exception("User document not found"));
+            }
+        }).addOnFailureListener(failureListener);
+    }
+
+    /**
+     * Asynchronously get list of Events a user is attending
+     *
+     * @param db       the database reference
+     * @param userID   the ID of the user to get events of
+     * @param successListener what to do in case of success
+     * @param failureListener what to do in case of failure (database error)
+     * @see Event
+     * @see User
+     */
+    public static void getUserCheckedInEvents(FirebaseFirestore db, String userID, OnSuccessListener<ArrayList<Event>> successListener, OnFailureListener failureListener) {
+        db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                List<String> eventIDs = (List<String>) documentSnapshot.get("checkedInEvents");
+                if (eventIDs != null && !eventIDs.isEmpty()) {
+                    ArrayList<String> eventCodes = new ArrayList<>(eventIDs);
+                    ArrayList<Event> events = new ArrayList<>();
+                    for (String eventCode : eventCodes) {
+                        String docID = cleanDocumentId(eventCode);
+                        getEvent(db, docID, event -> {
+                            events.add(event);
+                            if (events.size() == eventCodes.size()) {
+                                successListener.onSuccess(events);
+                            }
+                        }, failureListener);
+                    }
+                } else {
+                    failureListener.onFailure(new Exception("User exists but has no Events"));
+                }
+            } else {
+                failureListener.onFailure(new Exception("User document not found"));
+            }
+        }).addOnFailureListener(failureListener);
+    }
+
+
+
+    /**
      * Get a User object in the database from their ID
      * @param db db reference
      * @param userID the ID of the user
@@ -451,6 +523,45 @@ public class FirebaseUtil {
                     }
                     organizerEvents.add(eventId);
                     transaction.update(userDoc, "organizerEvents", organizerEvents);
+
+                    return null;
+                }).addOnSuccessListener(successListener)
+                .addOnFailureListener(failureListener);
+    }
+
+    /**
+     * Adds the eventID to the user's checked in events field,
+     * and the attendee ID to the event's organizers field.
+     * Both succeed or fail simultaneously
+     *
+     * @param db       the database reference
+     * @param eventId  the event ID to add and be added to
+     * @param organizer the user ID to add and be added to
+     */
+    public static void addEventAndCheckedInUser(FirebaseFirestore db, String eventId, String user, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
+        String docID = cleanDocumentId(eventId);
+        DocumentReference eventDoc = db.collection("events").document(docID);
+        DocumentReference userDoc = db.collection("users").document(user);
+
+        db.runTransaction((Transaction.Function<Void>) transaction -> {
+                    DocumentSnapshot eventSnapshot = transaction.get(eventDoc);
+                    DocumentSnapshot userSnapshot = transaction.get(userDoc);
+
+                    List<String> users = (List<String>) eventSnapshot.get("checkedInUsers");
+
+                    if (users == null) {
+                        users = new ArrayList<>();
+                    }
+                    users.add(user);
+                    transaction.update(eventDoc, "checkedInUsers", users);
+
+
+                    List<String> checkedInEvents = (List<String>) userSnapshot.get("checkedInEvents");
+                    if (checkedInEvents == null) {
+                        checkedInEvents = new ArrayList<>();
+                    }
+                    checkedInEvents.add(eventId);
+                    transaction.update(userDoc, "checkedInEvents", checkedInEvents);
 
                     return null;
                 }).addOnSuccessListener(successListener)
