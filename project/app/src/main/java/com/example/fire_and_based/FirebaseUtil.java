@@ -118,7 +118,7 @@ public class FirebaseUtil {
     }
 
     /**
-     * Adds an event to the Firestore database. If an event with the same ID already exists, it will not be added.
+     * Adds an event to the Firestore database. If an event with the same ID already exists, it will not be added, and the onEventExists function will be invoked
      *
      * @param db       The Firestore database instance.
      * @param event    The event to add.
@@ -182,12 +182,12 @@ public class FirebaseUtil {
      * Delete user from database
      *
      * @param db    the database
-     * @param user the user
+     * @param user  the user to delete
      * @param successListener what to do in case of success
      * @param failureListener what to do in case of failure (database error)
      * @see User
      */
-    public static void deleteEvent(FirebaseFirestore db, User user, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
+    public static void deleteUser(FirebaseFirestore db, User user, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
         String docID = cleanDocumentId(user.getDeviceID());
         db.collection("users")
                 .document(docID)
@@ -197,10 +197,10 @@ public class FirebaseUtil {
     }
 
     /**
-     * Update an event
+     * Update an event with the same QR Code
      *
      * @param db             the database
-     * @param event          the new event
+     * @param event          the new event data (will replace the one with the same qr code)
      * @param successListener what to do in case of success
      * @param failureListener what to do in case of failure (database error)
      * @see Event
@@ -215,10 +215,10 @@ public class FirebaseUtil {
     }
 
     /**
-     * Update a user
+     * Update a user with the same Device ID
      *
      * @param db                the database
-     * @param user              the user
+     * @param user              the user data to replace
      * @param successListener what to do in case of success
      * @param failureListener what to do in case of failure (database error)
      * @see User
@@ -338,7 +338,7 @@ public class FirebaseUtil {
     }
 
     /**
-     * Asynchronously get list of Events a user is checked in to
+     * Asynchronously get map of Events a user has checked in to and how many times they checked in
      *
      * @param db       the database reference
      * @param userID   the ID of the user to get events of
@@ -347,24 +347,24 @@ public class FirebaseUtil {
      * @see Event
      * @see User
      */
-    public static void getUserCheckedInEvents(FirebaseFirestore db, String userID, OnSuccessListener<ArrayList<Event>> successListener, OnFailureListener failureListener) {
+    public static void getUserCheckedInEvents(FirebaseFirestore db, String userID, OnSuccessListener<Map<Event, Integer>> successListener, OnFailureListener failureListener) {
         db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                List<String> eventIDs = (List<String>) documentSnapshot.get("checkedInEvents");
+                Map<String, Integer> eventIDs = (Map<String, Integer>) documentSnapshot.get("checkedInEvents");
                 if (eventIDs != null && !eventIDs.isEmpty()) {
-                    ArrayList<String> eventCodes = new ArrayList<>(eventIDs);
-                    ArrayList<Event> events = new ArrayList<>();
+                    ArrayList<String> eventCodes = new ArrayList<>(eventIDs.keySet());
+                    Map<Event, Integer> events = new HashMap<>();
                     for (String eventCode : eventCodes) {
                         String docID = cleanDocumentId(eventCode);
                         getEvent(db, docID, event -> {
-                            events.add(event);
+                            events.put(event, eventIDs.get(eventCode));
                             if (events.size() == eventCodes.size()) {
                                 successListener.onSuccess(events);
                             }
                         }, failureListener);
                     }
                 } else {
-                    successListener.onSuccess(new ArrayList<Event>());
+                    successListener.onSuccess(new HashMap<>());
                 }
             } else {
                 failureListener.onFailure(new Exception("User document not found"));
@@ -413,7 +413,7 @@ public class FirebaseUtil {
      * Asynchronously get list of Users checked in to an event
      *
      * @param db       the database reference
-     * @param eventQR   the ID of the event to get attendees of
+     * @param eventQR   the ID of the event to get users checked in of
      * @param successListener what to do in case of success
      * @param failureListener what to do in case of failure (database error)
      * @see Event
@@ -447,7 +447,7 @@ public class FirebaseUtil {
      * Asynchronously get list of Users organizing an event
      *
      * @param db       the database reference
-     * @param eventQR   the ID of the event to get attendees of
+     * @param eventQR   the ID of the event to get organizers of
      * @param successListener what to do in case of success
      * @param failureListener what to do in case of failure (database error)
      * @see Event
@@ -498,20 +498,6 @@ public class FirebaseUtil {
                 failureListener.onFailure(new Exception("User document does not exist."));
             }
         }).addOnFailureListener(failureListener);
-    }
-
-    /**
-     * Callback for checking if a given user is in a given event
-     *
-     * @see User
-     * @see Event
-     */
-    public interface UserEventQRCodeCallback {
-        void onEventFound(Event event);
-
-        void onEventNotFound(Event event);
-
-        void onError(Exception e);
     }
 
     /**
@@ -597,8 +583,7 @@ public class FirebaseUtil {
     }
 
     /**
-     * Adds the eventID to the user's checked in events field,
-     * and the attendee ID to the event's organizers field.
+     * Adds the eventID to the user's checked in events field and vice versa, or increment both values
      * Both succeed or fail simultaneously
      *
      * @param db       the database reference
@@ -625,11 +610,11 @@ public class FirebaseUtil {
                     transaction.update(eventDoc, "checkedInUsers", users);
 
 
-                    List<String> checkedInEvents = (List<String>) userSnapshot.get("checkedInEvents");
+                    Map<String, Integer> checkedInEvents = (Map<String, Integer>) userSnapshot.get("checkedInEvents");
                     if (checkedInEvents == null) {
-                        checkedInEvents = new ArrayList<>();
+                        checkedInEvents = new HashMap<>();
                     }
-                    checkedInEvents.add(eventId);
+                    checkedInEvents.merge(eventId, 1, Integer::sum);
                     transaction.update(userDoc, "checkedInEvents", checkedInEvents);
 
                     return null;
