@@ -21,19 +21,6 @@ public class User implements Parcelable {
     private boolean isAdmin = false;
 
     /**
-     * Constructs a User with device ID, user name, a list of registered events, and a profile picture.
-     *
-     * @param deviceID        The unique identifier for the user's device.
-     * @param userName        The user's chosen username.
-     * @param profilePicture  The URL or path to the user's profile picture.
-     */
-    User(String deviceID, String userName, String profilePicture) {
-        this.deviceID = deviceID;
-        this.userName = userName;
-        this.profilePicture = profilePicture;
-    }
-
-    /**
      * Constructs a User with detailed personal information, including device ID, user name, registered events, profile picture,
      * first name, last name, email, and phone number.
      *

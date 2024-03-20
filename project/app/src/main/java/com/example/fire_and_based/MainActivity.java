@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             uuid = UUID.randomUUID().toString();
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("uuid_key", uuid);
-            currentUser = new User(uuid, "", "");
+            currentUser = new User(uuid, "", "", "", "", "", "", "", false);
             FirebaseUtil.addUserToDB(db, currentUser,
                     aVoid -> {
                         // TODO user added successfully

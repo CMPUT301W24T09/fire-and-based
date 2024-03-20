@@ -9,9 +9,9 @@ import java.util.ArrayList;
 
 public class UserTest {
 
-    private User testUser = new User("FakeDeviceID", "FakeUserName", "FakeProfilePicture");
+    private User testUser = new User("FakeDeviceID", "FakeUserName", "FakeProfilePicture", "First", "Last", "a@b.c", "123", "www", false);
 
-    private Event testEvent = new Event("Test Event", "This is a test event", "TestBannerURL", "TestQRCode");
+    private Event testEvent = new Event("Default Event Name", "Default Event Description", "Default Banner URL", "DefaultQRCode", 0, 1, "Edmonton", "banner", new ArrayList<Integer>(), -1, false);
 
 
 
