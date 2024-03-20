@@ -306,7 +306,15 @@ public class Event implements Parcelable {
         dest.writeString(eventDescription);
         dest.writeString(eventBanner);
         dest.writeString(QRcode);
+        dest.writeLong(startTimeStamp);
+        dest.writeLong(endTimeStamp);
+        dest.writeString(location);
+        dest.writeString(bannerQR);
+        dest.writeList(milestones);
+        dest.writeInt(maxAttendees);
+        dest.writeInt(trackLocation ? 1 : 0);  // write boolean as int
     }
+
 
     @Override
     public boolean equals(Object o){

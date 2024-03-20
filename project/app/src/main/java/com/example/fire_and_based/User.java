@@ -42,19 +42,22 @@ public class User implements Parcelable {
      * @param profilePicture  The URL or path to the user's profile picture.
      * @param firstName       The user's first name.
      * @param lastName        The user's last name.
-     * @param email           The user's email address.
      * @param phoneNumber     The user's phone number.
+     * @param email           The user's email address.
+     * @param homepage        The user's homepage
+     * @param isAdmin         Whether or not the user is an admin of the app
      */
     User(String deviceID, String userName, String profilePicture, String firstName, String lastName,
-         String email, String phoneNumber, String homepage) {
+         String phoneNumber, String email, String homepage, boolean isAdmin) {
         this.deviceID = deviceID;
         this.userName = userName;
         this.profilePicture = profilePicture;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
         this.phoneNumber = phoneNumber;
+        this.email = email;
         this.homepage = homepage;
+        this.isAdmin = isAdmin;
     }
 
     /**
@@ -70,6 +73,8 @@ public class User implements Parcelable {
         lastName = in.readString();
         phoneNumber = in.readString();
         email = in.readString();
+        homepage = in.readString();
+        isAdmin = (in.readInt() == 1);
     }
 
     /**
@@ -244,7 +249,7 @@ public class User implements Parcelable {
      * Flatten this object in to a Parcel.
      *
      * @param dest  The Parcel in which the object should be written.
-     * @param flags Additional flags about how the object should be written. Generally zero.
+     * @param flags Additional flags about how the object should be written.
      */
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
@@ -255,7 +260,10 @@ public class User implements Parcelable {
         dest.writeString(lastName);
         dest.writeString(phoneNumber);
         dest.writeString(email);
+        dest.writeString(homepage);
+        dest.writeInt(isAdmin ? 1 : 0);  // write boolean as int
     }
+
 
     /**
      * Gets the profile picture of the user.
