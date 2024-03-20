@@ -457,7 +457,13 @@ public class FirebaseUtil {
                 .addOnFailureListener(failureListener);
     }
 
-
+    /**
+     * Get all announcements from the event
+     * @param db db reference
+     * @param eventID id of event
+     * @param successListener successfull completion of operation
+     * @param failureListener db error
+     */
     public static void getAnnouncements(FirebaseFirestore db, String eventID, OnSuccessListener<ArrayList<Announcement>> successListener, OnFailureListener failureListener){
         String docID = cleanDocumentId(eventID);
         db.collection("events").document(docID).get().addOnSuccessListener(doc -> {
@@ -468,6 +474,30 @@ public class FirebaseUtil {
                 failureListener.onFailure(new Exception("Event with id " + eventID + "not found"));
             }
         }).addOnFailureListener(failureListener);
+    }
+
+    /**
+     *
+     * @param db db reference
+     * @param eventID id of event
+     * @param announcement announcement to add
+     * @param successListener successful completion of operation
+     * @param failureListener db error
+     */
+    public static void saveAnnouncement(FirebaseFirestore db, String eventID, Announcement announcement, OnSuccessListener<Void> successListener, OnFailureListener failureListener){
+        String docID = cleanDocumentId(eventID);
+        DocumentReference eventDoc = db.collection("events").document(docID);
+        db.runTransaction((Transaction.Function<Void>) transaction -> {
+                    DocumentSnapshot eventSnapshot = transaction.get(eventDoc);
+                    List<Announcement> announcements = (List<Announcement>) eventSnapshot.get("announcements");
+                    if (announcements == null) {
+                        announcements = new ArrayList<>();
+                    }
+                    announcements.add(announcement);
+                    transaction.update(eventDoc, "organizers", announcements);
+                    return null;
+                }).addOnSuccessListener(successListener)
+                .addOnFailureListener(failureListener);
     }
 
 
