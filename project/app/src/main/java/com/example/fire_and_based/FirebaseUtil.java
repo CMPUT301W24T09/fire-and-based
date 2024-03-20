@@ -423,10 +423,10 @@ public class FirebaseUtil {
         String docID = cleanDocumentId(eventQR);
         db.collection("events").document(docID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                List<String> userIDs = (List<String>) documentSnapshot.get("checkedInUsers");
+                Map<String, Integer> userIDs = (Map<String, Integer>) documentSnapshot.get("checkedInUsers");
                 if (userIDs != null && !userIDs.isEmpty()) {
                     ArrayList<User> users = new ArrayList<>();
-                    for (String userID : userIDs) {
+                    for (String userID : userIDs.keySet()) {
                         getUserObject(db, userID, user -> {
                             users.add(user);
                             if (users.size() == userIDs.size()) {
@@ -513,46 +513,7 @@ public class FirebaseUtil {
 
         void onError(Exception e);
     }
-
-    /**
-     * Async checking if a given user is in a given event
-     *
-     * @param db          the database reference
-     * @param userID      the user ID
-     * @param eventQRCode the event ID
-     * @param callback    the callback
-     * @see User
-     * @see Event
-     */
-    public static void checkUserInEventByQRCode(FirebaseFirestore db, String userID, String eventQRCode, final UserEventQRCodeCallback callback) {
-        db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                List<String> eventIDs = (List<String>) documentSnapshot.get("events");
-                if (eventIDs != null && !eventIDs.isEmpty()) {
-                    for (String qrCode : eventIDs) {
-                        if (qrCode.equals(eventQRCode)) {
-                            getEvent(db, eventQRCode, callback::onEventFound, callback::onError);
-                            return;
-                        }
-                    }
-                    Log.println(Log.DEBUG, "FirebaseUtil", "User not in event, searching for event...");
-                    //IF EVENT NOT FOUND WE STILL NEED IT
-                    getEvent(db, eventQRCode, callback::onEventNotFound, callback::onError);
-                    return;
-                } else {
-                    Log.println(Log.DEBUG, "FirebaseUtil", "User not in ANY event, searching for event...");
-                    //IF EVENT NOT FOUND WE STILL NEED IT
-                    Log.println(Log.DEBUG, "FirebaseUtil", "User not in ANY event, searching for event... " + eventQRCode);
-                    getEvent(db, eventQRCode, callback::onEventNotFound, callback::onError);
-                    return;
-                }
-            } else {
-                callback.onError(new Exception("User document not found"));
-            }
-        }).addOnFailureListener(callback::onError);
-    }
-
-
+    
     /**
      * Adds the eventID to the user's attended events field,
      * and the attendee ID to the event's attendees field.
@@ -653,12 +614,14 @@ public class FirebaseUtil {
                     DocumentSnapshot eventSnapshot = transaction.get(eventDoc);
                     DocumentSnapshot userSnapshot = transaction.get(userDoc);
 
-                    List<String> users = (List<String>) eventSnapshot.get("checkedInUsers");
+                    Map<String, Integer> users = (Map<String, Integer>) eventSnapshot.get("checkedInUsers");
 
                     if (users == null) {
-                        users = new ArrayList<>();
+                        users = new HashMap<String, Integer>();
                     }
-                    users.add(user);
+
+                    users.merge(user, 1, Integer::sum);
+
                     transaction.update(eventDoc, "checkedInUsers", users);
 
 
