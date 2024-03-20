@@ -13,6 +13,11 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -26,7 +31,8 @@ import java.util.Date;
  */
 public class CreateEventActivity extends AppCompatActivity {
     private User user;
-    public Date newEventDate;
+    public String timeString;
+    public String dateString;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +58,8 @@ public class CreateEventActivity extends AppCompatActivity {
         int mYear = c.get(Calendar.YEAR); // current year
         int mMonth = c.get(Calendar.MONTH); // current month
         int mDay = c.get(Calendar.DAY_OF_MONTH); // current day
-        eventDate.setText(String.format("%d-%d-%d", mDay, mMonth + 1, mYear)); // Adding 1 to month as Calendar.MONTH is zero-based
+        dateString = String.format("%d %d %d", mDay, mMonth + 1, mYear);
+        eventDate.setText(String.format("%d %d %d", mDay, mMonth + 1, mYear)); // Adding 1 to month as Calendar.MONTH is zero-based
 
 
         // onclick for the event date that opens a calendar ui for them to select a date
@@ -67,8 +74,8 @@ public class CreateEventActivity extends AppCompatActivity {
                 // Date Picker Dialog
                 DatePickerDialog datePickerDialog = new DatePickerDialog(CreateEventActivity.this,
                         (view, year, monthOfYear, dayOfMonth) -> {
-
-                            eventDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                            dateString = String.format(dayOfMonth + " " + (monthOfYear + 1) + " " + year);
+                            eventDate.setText(dayOfMonth + " " + (monthOfYear + 1) + " " + year);
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
             }
@@ -87,6 +94,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 TimePickerDialog timePickerDialog = new TimePickerDialog(CreateEventActivity.this,
                         (view, hourOfDay, minute) -> {
                             String formattedTime = String.format("%02d:%02d", hourOfDay, minute);
+                            timeString = formattedTime;
                             eventTime.setText(formattedTime);
                         }, mHour, mMinute, false); // 'false' for 12-hour clock or 'true' for 24-hour clock
                 timePickerDialog.show();
@@ -138,18 +146,34 @@ public class CreateEventActivity extends AppCompatActivity {
                     // add more handling here if needed
 
                 } else {
-                    // we can create the event object
-                    // Event newEvent = new Event(.....)
 
-                    // then pass to database
-                    // user was passed into this activity it is a public User object named 'user'
-                    // use that to write to database and properly store in user events
-                    // also make sure that in the event the user is an organizer :salute:
+                    // convert the date to time since 1970 jan 1 to store in the database
+                    String combinedDateTime = dateString + " " + timeString;
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd M yyyy HH:mm");  // this is used for just how the string is formatted we could change this easily if we need to
+
+                    try {
+                        // Parse the string into a Date object
+                        Date date = sdf.parse(combinedDateTime);
+                        long timeSince1970 = date.getTime();  // this is the time we store n the database -> put in the event object when its created
+
+                        // EVENT CREATION GOES HERE
+                        // we can create the event object
+                        // Event newEvent = new Event(.....)
+
+                        // then pass to database
+                        // user was passed into this activity it is a public User object named 'user'
+                        // use that to write to database and properly store in user events
+                        // also make sure that in the event the user is an organizer :salute:
+
+
+
+
+                        Toast.makeText(getApplicationContext(), Long.toString(timeSince1970), Toast.LENGTH_SHORT).show();
+                    } catch (ParseException e) {
+                        // Handle the possibility that parsing fails
+                        Toast.makeText(getApplicationContext(), dateString + " " + timeString, Toast.LENGTH_SHORT).show();
+                    }
                 }
-
-
-
-
             }
         });
     }
