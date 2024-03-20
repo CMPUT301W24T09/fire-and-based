@@ -10,11 +10,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
+
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * This class is the activity for creating a new event.
@@ -27,6 +33,8 @@ import java.util.Date;
 public class CreateEventActivity extends AppCompatActivity {
     private User user;
     public Date newEventDate;
+
+    private String QRCode = null;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +114,58 @@ public class CreateEventActivity extends AppCompatActivity {
         });
 
 
+
+
+
+
+
+
+        //TODO The QR Code viewer class got deleted, up to you if/how you want to display it
+//        previewQRImage = findViewById(R.id.create_event_preview_qr_image);
+//        previewQRImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (QRCode != null){
+//                    displayQR(QRCode, eventName.getText().toString());
+//                } else {
+//                    toast("ERROR: QR Code not set");
+//                }
+//            }
+//        });
+
+        Button generateQRButton = findViewById(R.id.generateQR);
+        generateQRButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                byte[] array = new byte[7]; // length is bounded by 7
+                new Random().nextBytes(array);
+                QRCode = "fire_and_based_event:" + new String(array, StandardCharsets.UTF_8);
+                //TODO add a thing that previews the QR Code string? at least for debug?
+                //showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
+            }
+        });
+
+
+        Button reuseQRButton = findViewById(R.id.reuseQR);
+        reuseQRButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchQRScanner();
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
         // Create Event Submission
         Button createEventButton = findViewById(R.id.create_event_button);
         createEventButton.setOnClickListener(new View.OnClickListener() {
@@ -121,6 +181,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 String eventLocationString = eventLocation.getText().toString();
                 String eventMaxAttendeesString = eventMaxAttendees.getText().toString();
 
+
                 if (eventNameString.length() < 5){
                     Toast.makeText(getApplicationContext(), "Title not long enough", Toast.LENGTH_SHORT).show();
                 } else if (eventDescriptionString.length() < 5){
@@ -131,9 +192,11 @@ public class CreateEventActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "You need an event time", Toast.LENGTH_SHORT).show();
                 } else if (eventLocationString.length() < 5){
                     Toast.makeText(getApplicationContext(), "Your event needs a location", Toast.LENGTH_SHORT).show();
-                } else if (eventMaxAttendeesString.length() < 1){
+                } else if (eventMaxAttendeesString.length() < 1) {
                     Toast.makeText(getApplicationContext(), "Set the maximum number of attendees", Toast.LENGTH_SHORT).show();
-
+                } else if (QRCode == null){
+                    //TODO change above to toast function as well for readability?
+                    toast("You must generate or scan a QR Code");
                     // add handling for qr code and banner as well
                     // add more handling here if needed
 
@@ -153,4 +216,59 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
+
+//The QR Code viewer class got deleted, up to you if/how you want to display it
+//    /**
+//     * Brings up a screen with the event name and a scannable QR code to join it
+//     *
+//     * @param  content the QR Code ID string of an event
+//     * @param  name the name of the event
+//     */
+//    private void displayQR(String content, String name){
+//        Intent intent = new Intent(this, QRCodeViewer.class);
+//        Bundle extras = new Bundle();
+//        extras.putString("name", name);
+//        extras.putString("code", content);
+//        intent.putExtras(extras);
+//        startActivity(intent);
+//    }
+
+    /**
+     * Makes a toast popup
+     * @param text the text in the toast
+     */
+    private void toast(String text){
+        Toast.makeText(CreateEventActivity.this, text, Toast.LENGTH_LONG).show();
+    }
+
+    private final ActivityResultLauncher<ScanOptions> qrLauncher = registerForActivityResult(
+            new ScanContract(),
+            result -> {
+                if (result.getContents() != null) {
+                    // TODO remove debug confirmation maybe
+                    toast("Scanned: " + result.getContents());
+                    QRCode = result.getContents();
+                    //TODO again up to you if you want to display this
+                    //showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
+                }
+            }
+    );
+
+    /**
+     * Prepares the QR Code scanner
+     */
+    private void launchQRScanner() {
+        ScanOptions options = new ScanOptions();
+        options.setPrompt("Scan a QR Code");
+        options.setBeepEnabled(false);
+        options.setOrientationLocked(false);
+
+        // Launch the barcode scanner
+        qrLauncher.launch(options);
+    }
+
+
 }

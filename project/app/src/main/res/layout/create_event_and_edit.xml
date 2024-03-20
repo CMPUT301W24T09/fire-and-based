@@ -276,7 +276,7 @@
                 >
 
                 <Button
-                    android:id="@+id/buttonLeft"
+                    android:id="@+id/reuseQR"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -290,7 +290,7 @@
                     android:layout_weight="0.6" />
 
                 <Button
-                    android:id="@+id/buttonRight"
+                    android:id="@+id/generateQR"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
