@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import com.google.firebase.firestore.*;
 import com.google.type.DateTime;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import java.util.HashMap;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 /**
  * This class has all the functions for accessing the necessary data from the firebase
@@ -91,6 +93,66 @@ public class FirebaseUtil {
     public interface getAllEventsCallback {
         void onCallback(List<Event> list);
     }
+
+
+    /**
+     * Asynchronously get all events in the database that the given user is not registered for or orgaizing
+     *
+     * @param db       the database reference
+     * @param callback the callback function
+     * @see getAllEventsCallback
+     * @see Event
+     */
+    public static void getAllEventsUserIsNotIn(FirebaseFirestore db, String userID, getAllEventsCallback callback) {
+        ArrayList<Event> eventsList = new ArrayList<>();
+        getUserEvents(db, userID, events1 -> {
+            ArrayList<String> qrCodes1 = events1.stream()
+                    .map(Event::getQRcode)
+                    .collect(Collectors.toCollection(ArrayList::new));
+            getUserOrganizingEvents(db, userID, events2 -> {
+                ArrayList<String> qrCodes2 = events2.stream()
+                        .map(Event::getQRcode)
+                        .collect(Collectors.toCollection(ArrayList::new));
+                CollectionReference eventsRef = db.collection("events");
+                eventsRef.addSnapshotListener((querySnapshots, error) -> {
+                    if (error != null) {
+                        Log.e("FirebaseUtil", error.toString());
+                        return;
+                    }
+                    if (querySnapshots != null) {
+                        for (QueryDocumentSnapshot doc : querySnapshots) {
+                            String qrCode = doc.getString("QRcode");
+                            if(qrCodes1.contains(qrCode) || qrCodes2.contains(qrCode)){
+                                continue;
+                            }
+                            String eventName = doc.getString("eventName");
+                            String eventDescription = doc.getString("eventDescription");
+                            String eventBanner = doc.getString("eventBanner");
+                            long eventStart = doc.getLong("eventStart");
+                            long eventEnd = doc.getLong("eventEnd");
+                            String location = doc.getString("location");
+                            String bannerQR = doc.getString("bannerQR");
+                            ArrayList<Integer> milestones = (ArrayList<Integer>) doc.get("milestones");
+                            int maxAttendees = Math.toIntExact(doc.getLong("maxAttendees"));
+                            boolean trackLocation = doc.getBoolean("trackLocation");
+                            Log.d("Firestore", String.format("Event(%s, %s) fetched", eventName,
+                                    qrCode));
+                            eventsList.add(new Event(eventName, eventDescription, eventBanner, qrCode, eventStart, eventEnd, location, bannerQR, milestones, maxAttendees, trackLocation));
+                        }
+                        Log.d("Firestore", String.format("Fetched %d events", eventsList.size()));
+                        callback.onCallback(eventsList);
+                    }
+                });
+            }, e -> {
+                Log.println(Log.ERROR, "FirebaseUtil", e.getMessage());
+            });
+        }, e -> {
+            Log.println(Log.ERROR, "FirebaseUtil", e.getMessage());
+        });
+
+
+    }
+
 
 
     /**
