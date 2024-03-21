@@ -3,14 +3,18 @@ package com.example.fire_and_based;
 public class Announcement {
     private String title;
     private String content;
-    private long timestamp;
+    private Long timestamp;
     private String sender;
+    private String eventID;
+    private Boolean sent;
 
-    public Announcement(String title, String content, long timestamp, String sender) {
+    public Announcement(String title, String content, long timestamp, String sender, String eventID, Boolean sent) {
         this.title = title;
         this.content = content;
         this.timestamp = timestamp;
         this.sender = sender;
+        this.eventID = eventID;
+        this.sent = sent;
     }
 
     public String getTitle() {
@@ -27,5 +31,13 @@ public class Announcement {
 
     public String getSender() {
         return sender;
+    }
+
+    public String getEventID(){
+        return eventID;
+    }
+
+    public Boolean getSent(){
+        return sent;
     }
 }

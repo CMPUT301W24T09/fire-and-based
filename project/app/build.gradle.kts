@@ -36,13 +36,15 @@ android {
 }
 
 dependencies {
-    //Firebase firestore and storage functionality
+    //Firebase
     //Core dependency
     implementation(platform("com.google.firebase:firebase-bom:32.7.3"))
     //Firestore (NoSQL Database, stores users and events data)
     implementation("com.google.firebase:firebase-firestore")
     //Storage stores image assets
     implementation("com.google.firebase:firebase-storage:20.3.0")
+    //push notifications
+    implementation("com.google.firebase:firebase-admin:7.1.0")
 
     //UI and navigation elements
     implementation("androidx.appcompat:appcompat:1.6.1")
