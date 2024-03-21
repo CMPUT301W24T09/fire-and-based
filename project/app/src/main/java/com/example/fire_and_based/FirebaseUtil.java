@@ -133,7 +133,7 @@ public class FirebaseUtil {
                             String location = doc.getString("location");
                             String bannerQR = doc.getString("bannerQR");
                             ArrayList<Integer> milestones = (ArrayList<Integer>) doc.get("milestones");
-                            int maxAttendees = Math.toIntExact(doc.getLong("maxAttendees"));
+                            Long maxAttendees = (doc.getLong("maxAttendees"));
                             boolean trackLocation = doc.getBoolean("trackLocation");
                             Log.d("Firestore", String.format("Event(%s, %s) fetched", eventName,
                                     qrCode));
