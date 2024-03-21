@@ -15,9 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.ArrayList;
 
 /**
  * This activity hosts the EventListFragment, ViewProfileFragment, EventDetailsFragment, and AttendeeFragment.
@@ -37,28 +34,13 @@ public class UserActivity extends AppCompatActivity {
             user = getIntent().getParcelableExtra("user");
         }
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         ImageView createEventButton = findViewById(R.id.create_event_button);
         createEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseUtil.addEventToDB(db, new Event("My Special Event", "An amazing gathering", "Beautiful Venue", "ABC123", 1625126400000L, 1625184000000L, "Central Park", "XYZ456", new ArrayList<>(), 200L, true), new FirebaseUtil.AddEventCallback() {
-                    @Override
-                    public void onEventAdded() {
-
-                    }
-
-                    @Override
-                    public void onEventExists() {
-
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-
-                    }
-                });
+                Intent intent = new Intent(UserActivity.this, CreateEventActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
             }
         });
 
