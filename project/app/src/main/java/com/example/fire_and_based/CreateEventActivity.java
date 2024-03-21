@@ -227,7 +227,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
                         // EVENT CREATION GOES HERE
                         // we can create the event object
-                        Event newEvent = new Event(eventNameString, eventDescriptionString, null, QRCode, timeSince1970, timeSince1970, "ur moms house",null, null, 0L, false );
+                        Event newEvent = new Event(eventNameString, eventDescriptionString, null, QRCode, timeSince1970, timeSince1970, eventLocationString,null, null, 0L, false );
                         FirebaseFirestore db = FirebaseFirestore.getInstance();
                         toast("adding event to db  ) ");
 
@@ -236,6 +236,9 @@ public class CreateEventActivity extends AppCompatActivity {
                             public void onEventAdded() {
                                 toast("Event successfully added!");
                                 Log.println(Log.DEBUG, "EventCreation", "New event with id: " + QRCode + " added");
+                                Intent intent = new Intent(CreateEventActivity.this, UserActivity.class);
+                                intent.putExtra("user", user);
+                                startActivity(intent);
                                 //TODO exit out maybe?
                             }
 
