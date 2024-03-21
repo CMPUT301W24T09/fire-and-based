@@ -481,13 +481,13 @@ public class FirebaseUtil {
      * @see Event
      * @see User
      */
-    public static void getEventCheckedInUsers(FirebaseFirestore db, String eventQR, OnSuccessListener<Map<User, Integer>> successListener, OnFailureListener failureListener) {
+    public static void getEventCheckedInUsers(FirebaseFirestore db, String eventQR, OnSuccessListener<Map<User, Long>> successListener, OnFailureListener failureListener) {
         String docID = cleanDocumentId(eventQR);
         db.collection("events").document(docID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                Map<String, Integer> userIDs = (Map<String, Integer>) documentSnapshot.get("checkedInUsers");
+                Map<String, Long> userIDs = (Map<String, Long>) documentSnapshot.get("checkedInUsers");
                 if (userIDs != null && !userIDs.isEmpty()) {
-                    Map<User, Integer> users = new HashMap<>();
+                    Map<User, Long> users = new HashMap<>();
                     for (String userID : userIDs.keySet()) {
                         getUserObject(db, userID, user -> {
                             users.put(user, userIDs.get(userID));
