@@ -11,7 +11,7 @@ public class UserTest {
 
     private User testUser = new User("FakeDeviceID", "FakeUserName", "FakeProfilePicture", "First", "Last", "a@b.c", "123", "www", false);
 
-    private Event testEvent = new Event("Default Event Name", "Default Event Description", "Default Banner URL", "DefaultQRCode", 0, 1, "Edmonton", "banner", new ArrayList<Integer>(), -1, false);
+    private Event testEvent = new Event("Default Event Name", "Default Event Description", "Default Banner URL", "DefaultQRCode", 0L, 1L, "Edmonton", "banner", new ArrayList<Integer>(), -1L, false);
 
 
 
