@@ -12,8 +12,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import static org.hamcrest.CoreMatchers.anything;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 
 import android.content.Intent;
 
@@ -27,7 +25,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
 
 /**
  * Tests for verifying the functionality of the UserActivity screen.
@@ -138,12 +135,4 @@ public class UserActivityTest {
                 .perform(click());
         onView(withText("Join Event")).check(matches(isDisplayed()));
     }
-
-
-    @Before
-    public void setup() {
-        // Initialize Mockito
-        MockitoAnnotations.openMocks(this);
-    }
-
 }
