@@ -5,22 +5,24 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
@@ -38,31 +40,36 @@ import java.util.Random;
  * 2. AIDEN: run the app and click the blue plus in middle of screen -> you see the white rectangle at the top, its an imageview, i want you to set an onclick for image uploading there
  * 3. ILYA: run the app and see the two QR code buttons, there is zero code for them and no id's either go to create_event_and_edit.xml and connect those buttons to the qr code upload / generate functionality
  */
-public class CreateEventActivity extends AppCompatActivity {
+public class CreateEventFragment extends Fragment {
     private User user;
     public Date newEventDate;
 
     private String QRCode = null;
     public String timeString;
     public String dateString;
+    @Nullable
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_event_and_edit);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.create_event_and_edit_fragment, container, false);
+
+        NavigationBarView bottomNavigationView = getActivity().findViewById(R.id.bottom_nav);
+        bottomNavigationView.setVisibility(View.GONE);
 
         // get user being passed into activity
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            user = getIntent().getParcelableExtra("user");
+
+
+
+        if (getArguments() != null) {
+            user = getArguments().getParcelable("user");
         }
 
         // get all textfields
-        EditText eventName = findViewById(R.id.event_name_editable);
-        EditText eventDescription = findViewById(R.id.event_description_editable);
-        EditText eventDate = findViewById(R.id.event_date_editable); // Make sure to replace 'your_date_button_id' with the actual ID of your button in the layout
-        EditText eventTime = findViewById(R.id.event_time_editable); // Initialize it as per your actual layout component
-        EditText eventLocation = findViewById(R.id.event_location_editable);
-        EditText eventMaxAttendees = findViewById(R.id.event_maximum_attendees_editable);
+        EditText eventName = view.findViewById(R.id.event_name_editable);
+        EditText eventDescription = view.findViewById(R.id.event_description_editable);
+        EditText eventDate = view.findViewById(R.id.event_date_editable); // Make sure to replace 'your_date_button_id' with the actual ID of your button in the layout
+        EditText eventTime = view.findViewById(R.id.event_time_editable); // Initialize it as per your actual layout component
+        EditText eventLocation = view.findViewById(R.id.event_location_editable);
+        EditText eventMaxAttendees = view.findViewById(R.id.event_maximum_attendees_editable);
 
 
         // set textfield to the current date ( for making things more obvious and easier for them to click )
@@ -84,7 +91,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 int mDay = c.get(Calendar.DAY_OF_MONTH); // current day
 
                 // Date Picker Dialog
-                DatePickerDialog datePickerDialog = new DatePickerDialog(CreateEventActivity.this,
+                DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
                         (view, year, monthOfYear, dayOfMonth) -> {
                             dateString = String.format(dayOfMonth + " " + (monthOfYear + 1) + " " + year);
                             eventDate.setText(dayOfMonth + " " + (monthOfYear + 1) + " " + year);
@@ -103,7 +110,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 int mMinute = c.get(Calendar.MINUTE); // current minute
 
                 // Time Picker Dialog
-                TimePickerDialog timePickerDialog = new TimePickerDialog(CreateEventActivity.this,
+                TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(),
                         (view, hourOfDay, minute) -> {
                             String formattedTime = String.format("%02d:%02d", hourOfDay, minute);
                             timeString = formattedTime;
@@ -115,15 +122,15 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
         // Cancel Button in the top left -> goes back to browse IDK where else to go kekw - seems ok for now
-        TextView cancelButton = findViewById(R.id.cancel_event_creation);
+        TextView cancelButton = view.findViewById(R.id.cancel_event_creation);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CreateEventActivity.this, UserActivity.class);
-                intent.putExtra("user", user);
-                startActivity(intent);
+                getParentFragmentManager().popBackStack();
             }
         });
+
+
 
 
 
@@ -145,7 +152,7 @@ public class CreateEventActivity extends AppCompatActivity {
 //            }
 //        });
 
-        Button generateQRButton = findViewById(R.id.generateQR);
+        Button generateQRButton = view.findViewById(R.id.generateQR);
         generateQRButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,14 +160,14 @@ public class CreateEventActivity extends AppCompatActivity {
                 new Random().nextBytes(array);
                 QRCode = "fire_and_based_event:" + new String(array, StandardCharsets.UTF_8);
                 //TODO add a thing that previews the QR Code string? at least for debug?
-                Toast.makeText(getApplicationContext(), "Random QR Code Successfully Generated", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Random QR Code Successfully Generated", Toast.LENGTH_SHORT).show();
 
                 //showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
             }
         });
 
 
-        Button reuseQRButton = findViewById(R.id.reuseQR);
+        Button reuseQRButton = view.findViewById(R.id.reuseQR);
         reuseQRButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -181,7 +188,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
         // Create Event Submission
-        Button createEventButton = findViewById(R.id.create_event_button);
+        Button createEventButton = view.findViewById(R.id.create_event_button);
         createEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,17 +204,17 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
                 if (eventNameString.length() < 5){
-                    Toast.makeText(getApplicationContext(), "Title not long enough", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Title not long enough", Toast.LENGTH_SHORT).show();
                 } else if (eventDescriptionString.length() < 5){
-                    Toast.makeText(getApplicationContext(), "Desciption not long enough", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Desciption not long enough", Toast.LENGTH_SHORT).show();
                 } else if (eventDateString.length() < 1){
-                    Toast.makeText(getApplicationContext(), "You need an event Date", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "You need an event Date", Toast.LENGTH_SHORT).show();
                 } else if (eventTimeString.length() < 1){
-                    Toast.makeText(getApplicationContext(), "You need an event time", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "You need an event time", Toast.LENGTH_SHORT).show();
                 } else if (eventLocationString.length() < 5){
-                    Toast.makeText(getApplicationContext(), "Your event needs a location", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Your event needs a location", Toast.LENGTH_SHORT).show();
                 } else if (eventMaxAttendeesString.length() < 1) {
-                    Toast.makeText(getApplicationContext(), "Set the maximum number of attendees", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Set the maximum number of attendees", Toast.LENGTH_SHORT).show();
                 } else if (QRCode == null){
                     //TODO change above to toast function as well for readability?
                     toast("You must generate or scan a QR Code");
@@ -236,9 +243,10 @@ public class CreateEventActivity extends AppCompatActivity {
                             public void onEventAdded() {
                                 toast("Event successfully added!");
                                 Log.println(Log.DEBUG, "EventCreation", "New event with id: " + QRCode + " added");
-                                Intent intent = new Intent(CreateEventActivity.this, UserActivity.class);
-                                intent.putExtra("user", user);
-                                startActivity(intent);
+                                getParentFragmentManager().popBackStack();
+
+
+
                                 //TODO exit out maybe?
                             }
 
@@ -268,14 +276,18 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
 
-                        Toast.makeText(getApplicationContext(), Long.toString(timeSince1970), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), Long.toString(timeSince1970), Toast.LENGTH_SHORT).show();
                     } catch (ParseException e) {
                         // Handle the possibility that parsing fails
-                        Toast.makeText(getApplicationContext(), dateString + " " + timeString, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), dateString + " " + timeString, Toast.LENGTH_SHORT).show();
                     }
                 }
             }
         });
+
+
+
+        return view;
     }
 
 
@@ -302,7 +314,7 @@ public class CreateEventActivity extends AppCompatActivity {
      * @param text the text in the toast
      */
     private void toast(String text){
-        Toast.makeText(CreateEventActivity.this, text, Toast.LENGTH_LONG).show();
+        Toast.makeText(requireContext(), text, Toast.LENGTH_LONG).show();
     }
 
     private final ActivityResultLauncher<ScanOptions> qrLauncher = registerForActivityResult(
@@ -329,6 +341,12 @@ public class CreateEventActivity extends AppCompatActivity {
 
         // Launch the barcode scanner
         qrLauncher.launch(options);
+    }
+
+    public void onDestroyView() {
+        NavigationBarView bottomNavigationView = getActivity().findViewById(R.id.bottom_nav);
+        bottomNavigationView.setVisibility(View.VISIBLE);
+        super.onDestroyView();
     }
 
 

@@ -32,7 +32,7 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity
-            android:name=".CreateEventActivity">
+            android:name=".CreateEventFragment">
         </activity>
 
         <activity

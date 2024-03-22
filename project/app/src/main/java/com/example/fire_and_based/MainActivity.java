@@ -59,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
             FirebaseUtil.addUserToDB(db, currentUser,
                     aVoid -> {
                         // TODO user added successfully
+                        Intent intent = new Intent(MainActivity.this, UserActivity.class);
+                        intent.putExtra("user", currentUser);  // we can switch activities now that a user has been created
+                        startActivity(intent);
                     },
                     e -> {
                         // TODO handle database error
