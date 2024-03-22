@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         String uuid = sharedPref.getString("uuid_key", "");
         if (TextUtils.isEmpty(uuid)) {
             uuid = UUID.randomUUID().toString();
@@ -58,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
             currentUser = new User(uuid, "", new ArrayList<Event>(), "");
             FirebaseUtil.addUserToDB(db, currentUser);
             editor.commit();
+            Intent intent = new Intent(MainActivity.this, UserActivity.class);
+            intent.putExtra("user", currentUser);
+            startActivity(intent);
         }
         else {
             FirebaseUtil.getUserObject(db, uuid, new FirebaseUtil.UserObjectCallback() {

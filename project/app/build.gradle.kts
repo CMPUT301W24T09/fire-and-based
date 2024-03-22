@@ -64,4 +64,5 @@ dependencies {
     implementation("com.google.zxing:core:3.4.1")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
 
+    implementation("de.hdodenhof:circleimageview:2.1.0")
 }

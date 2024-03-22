@@ -57,6 +57,9 @@ public class Event implements Parcelable {
         }
     };
 
+    Event() {
+    }
+
 
     // GETTERS AND SETTERS
 
