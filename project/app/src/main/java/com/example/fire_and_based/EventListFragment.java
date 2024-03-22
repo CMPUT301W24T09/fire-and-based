@@ -135,21 +135,15 @@ public class EventListFragment extends Fragment {
         }
 
         if (Objects.equals(mode, "Attending")) {
-            FirebaseUtil.getUserEvents(db, user.getDeviceID(), new FirebaseUtil.UserEventsAndFetchCallback() {
-                @Override
-                public void onEventsFetched(ArrayList<Event> events) {
+            FirebaseUtil.getUserEvents(db, user.getDeviceID(), events -> {
                     dataList.clear();
                     for (Event event : events) {
                         dataList.add(event);
                         eventAdapter.notifyDataSetChanged();
                     }
-                }
-
-                @Override
-                public void onError(Exception e) {
+                }, e -> {
                     Log.e("FirebaseError", "Error fetching user events: " + e.getMessage());
-                }
-            });
+                });
         }
 
         if (Objects.equals(mode, "Organizing")) {

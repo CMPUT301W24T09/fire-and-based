@@ -17,10 +17,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 /**
  * This fragment is hosted by UserActivity.
  * It can be accessed by clicking the "Attendee List" button in EventDetailsFragment when the fragment is in organizing mode.
- * It also hosts the AllAttendeesFragment and CheckedInAttendeesFragment.
- * To-do (Firebase):
- * 1. Need function that returns list of attendees for a given event
- * 2. Need function that returns list of attendees that are checked in to a given event
+ * It also hosts the AttendeeListFragment.
  * To-do (UI):
  * 1. Fix up toolbar, need back button and count of attendees.
  * 2. When Firebase steps done, need to make a UserArrayAdapter
