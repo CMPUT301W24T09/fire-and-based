@@ -9,9 +9,9 @@ import java.util.ArrayList;
 
 public class UserTest {
 
-    private User testUser = new User("FakeDeviceID", "FakeUserName", new ArrayList<Event>(), "FakeProfilePicture");
+    private User testUser = new User("FakeDeviceID", "FakeUserName", "FakeProfilePicture", "First", "Last", "a@b.c", "123", "www", false);
 
-    private Event testEvent = new Event("Test Event", "This is a test event", "TestBannerURL", "TestQRCode");
+    private Event testEvent = new Event("Default Event Name", "Default Event Description", "Default Banner URL", "DefaultQRCode", 0L, 1L, "Edmonton", "banner", new ArrayList<Integer>(), -1L, false);
 
 
 
@@ -23,11 +23,6 @@ public class UserTest {
     @Test
     public void getUserNameTest() {
         assertEquals("FakeUserName", testUser.getUserName());
-    }
-
-    @Test
-    public void getUserEventsTest() {
-        assertTrue(testUser.getUserEvents().isEmpty());
     }
 
     @Test
@@ -43,24 +38,9 @@ public class UserTest {
     }
 
     @Test
-    public void addEventTest() {
-        testUser.addEvent(testEvent);
-        assertEquals(1, testUser.getUserEvents().size());
-        assertEquals(testEvent, testUser.getUserEvents().get(0));
-    }
-
-    @Test
     public void setProfilePictureTest() {
         testUser.setProfilePicture("NewProfilePictureURL");
         assertEquals("NewProfilePictureURL", testUser.getProfilePicture());
-    }
-
-    @Test
-    public void setUserRegisteredEventsTest() {
-        ArrayList<Event> newEventsList = new ArrayList<>();
-        newEventsList.add(testEvent);
-        testUser.setUserRegisteredEvents(newEventsList);
-        assertEquals(newEventsList, testUser.getUserEvents());
     }
 
     @Test
