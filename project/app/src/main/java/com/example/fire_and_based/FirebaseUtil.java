@@ -599,22 +599,22 @@ public class FirebaseUtil {
                     DocumentSnapshot eventSnapshot = transaction.get(eventDoc);
                     DocumentSnapshot userSnapshot = transaction.get(userDoc);
 
-                    Map<String, Integer> users = (Map<String, Integer>) eventSnapshot.get("checkedInUsers");
+                    Map<String, Long> users = (Map<String, Long>) eventSnapshot.get("checkedInUsers");
 
                     if (users == null) {
-                        users = new HashMap<String, Integer>();
+                        users = new HashMap<String, Long>();
                     }
 
-                    users.merge(user, 1, Integer::sum);
+                    users.merge(user, 1L, Long::sum);
 
                     transaction.update(eventDoc, "checkedInUsers", users);
 
 
-                    Map<String, Integer> checkedInEvents = (Map<String, Integer>) userSnapshot.get("checkedInEvents");
+                    Map<String, Long> checkedInEvents = (Map<String, Long>) userSnapshot.get("checkedInEvents");
                     if (checkedInEvents == null) {
                         checkedInEvents = new HashMap<>();
                     }
-                    checkedInEvents.merge(eventId, 1, Integer::sum);
+                    checkedInEvents.merge(eventId, 1L, Long::sum);
                     transaction.update(userDoc, "checkedInEvents", checkedInEvents);
 
                     return null;
