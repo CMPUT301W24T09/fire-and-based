@@ -1,5 +1,9 @@
 package com.example.fire_and_based;
 
+/**
+ * Represents an announcement (for an event).
+ * @author Ilya
+ */
 public class Announcement {
     private String title;
     private String content;

@@ -1,9 +1,11 @@
 package com.example.fire_and_based;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,12 +13,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 /**
  * This fragment is hosted by UserActivity.
  * This fragment may be accessed by clicking on an event in the list from EventListFragment, when in the browsing tab.
  * It displays the event details for a "browser", i.e. someone who is not registered in the event.
  * Requires a user to be passed in as an argument as a Parcelable with a key "user"
  * Also requires an event to be passed in as an argument as a Parcelable with a key "event"
+ * @author Sumayya
+ * To-do (UI):
+ * 1. Weird looking event banner ImageView needs to be fixed.
+ * 2. Joining event causes an error -> ask Ilya
  */
 public class EventDetailsBrowserFragment extends Fragment {
     private User user;
@@ -38,6 +46,8 @@ public class EventDetailsBrowserFragment extends Fragment {
         TextView eventDescription = view.findViewById(R.id.event_description_browser);
         eventDescription.setText(event.getEventDescription());
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         /* we will add this when event banner gets fixed in xml
 
         ImageView imagePreview = view.findViewById(R.id.banner_image);
@@ -51,6 +61,21 @@ public class EventDetailsBrowserFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 getParentFragmentManager().popBackStack();
+            }
+        });
+
+        Button joinEventButton = view.findViewById(R.id.join_event_button);
+        joinEventButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*
+                FirebaseUtil.addEventAndAttendee(db, event.getQRcode(), user.getDeviceID(), aVoid -> {
+                    Log.d("Firebase Success", "User registered successfully");
+                }, e -> {
+                    Log.e("FirebaseError", "Error fetching organizing events: " + e.getMessage());
+                });
+
+                 */
             }
         });
 

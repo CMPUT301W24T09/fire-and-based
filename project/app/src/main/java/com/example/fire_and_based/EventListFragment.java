@@ -30,11 +30,9 @@ import java.util.Objects;
  * Requires a user to be passed in as an argument as a Parcelable with a key "user"
  * Also requires a mode to be passed in as an argument as a String with a key "mode"
  * Note that a mode may be "Browse", "Attending", or "Organizing"
- * To-do (Firebase):
- * 1. need a function that gets all events, EXCEPT those events that the user is organizing or is attending.
- * 2. need a function that gets all events that the user is organizing
+ * @author Sumayya, Ilya
  * To-do (UI):
- * 1. Ask Ilya about QR code scanner, see below
+ * 1. Need to actually do something after QRcode is scanned.
  */
 
 public class EventListFragment extends Fragment {
@@ -46,7 +44,6 @@ public class EventListFragment extends Fragment {
     protected String mode;
     protected FirebaseFirestore db;
 
-    // ask Ilya what to do about this
     private final ActivityResultLauncher<ScanOptions> qrLauncher = registerForActivityResult(
             new ScanContract(),
             result -> {
@@ -122,7 +119,7 @@ public class EventListFragment extends Fragment {
      */
     public void updateEventList() {
         if (Objects.equals(mode, "Browse")) {
-            FirebaseUtil.getAllEvents(db, new FirebaseUtil.getAllEventsCallback() {
+            FirebaseUtil.getAllEventsUserIsNotIn(db, user.getDeviceID(), new FirebaseUtil.getAllEventsCallback() {
                 @Override
                 public void onCallback(List<Event> list) {
                     dataList.clear();
@@ -147,16 +144,14 @@ public class EventListFragment extends Fragment {
         }
 
         if (Objects.equals(mode, "Organizing")) {
-            // must be updated when we have the Firebase function to get list of events user is organizing
-            FirebaseUtil.getAllEvents(db, new FirebaseUtil.getAllEventsCallback() {
-                @Override
-                public void onCallback(List<Event> list) {
-                    dataList.clear();
-                    for (Event event : list) {
-                        dataList.add(event);
-                        eventAdapter.notifyDataSetChanged();
-                    }
+            FirebaseUtil.getUserOrganizingEvents(db, user.getDeviceID(), events -> {
+                dataList.clear();
+                for (Event event : events) {
+                    dataList.add(event);
+                    eventAdapter.notifyDataSetChanged();
                 }
+            }, e -> {
+                Log.e("FirebaseError", "Error fetching organizing events: " + e.getMessage());
             });
         }
     }

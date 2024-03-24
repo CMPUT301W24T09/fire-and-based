@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 /**
  * This class has all the functions for accessing the necessary data from the firebase
  * or storing the necessary data in the firebase.
+ * @author Ilya
  */
 
 public class FirebaseUtil {
@@ -96,7 +97,7 @@ public class FirebaseUtil {
 
 
     /**
-     * Asynchronously get all events in the database that the given user is not registered for or orgaizing
+     * Asynchronously get all events in the database that the given user is not registered for or organizing
      *
      * @param db       the database reference
      * @param callback the callback function

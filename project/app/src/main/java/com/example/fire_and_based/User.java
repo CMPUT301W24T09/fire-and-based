@@ -8,6 +8,7 @@ import java.util.ArrayList;
 /**
  * Represents a user in the application, including their personal information and events they are associated with.
  * Implements Parcelable to enable passing User objects between activities.
+ * @author Tyler, Ilya, Carson
  */
 public class User implements Parcelable {
     private String deviceID;
@@ -68,6 +69,26 @@ public class User implements Parcelable {
         email = in.readString();
         homepage = in.readString();
         isAdmin = (in.readInt() == 1);
+    }
+
+
+    /**
+     * Flatten this object in to a Parcel.
+     *
+     * @param dest  The Parcel in which the object should be written.
+     * @param flags Additional flags about how the object should be written.
+     */
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(deviceID);
+        dest.writeString(userName);
+        dest.writeString(profilePicture);
+        dest.writeString(firstName);
+        dest.writeString(lastName);
+        dest.writeString(phoneNumber);
+        dest.writeString(email);
+        dest.writeString(homepage);
+        dest.writeInt(isAdmin ? 1 : 0);  // write boolean as int
     }
 
     /**
@@ -236,25 +257,6 @@ public class User implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
-    }
-
-    /**
-     * Flatten this object in to a Parcel.
-     *
-     * @param dest  The Parcel in which the object should be written.
-     * @param flags Additional flags about how the object should be written.
-     */
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeString(deviceID);
-        dest.writeString(userName);
-        dest.writeString(profilePicture);
-        dest.writeString(firstName);
-        dest.writeString(lastName);
-        dest.writeString(phoneNumber);
-        dest.writeString(email);
-        dest.writeString(homepage);
-        dest.writeInt(isAdmin ? 1 : 0);  // write boolean as int
     }
 
 
