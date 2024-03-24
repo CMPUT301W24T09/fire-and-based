@@ -97,4 +97,6 @@
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
     <string name="qr_code_display">Your QR Code will be:\n%s</string>
+    <string name="cancel">Cancel</string>
+    <string name="create_event">Create Event</string>
 </resources>

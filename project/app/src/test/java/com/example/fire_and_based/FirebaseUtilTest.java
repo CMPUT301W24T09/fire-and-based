@@ -86,7 +86,7 @@ public class FirebaseUtilTest {
         when(mockQDSIterator.hasNext()).thenReturn(true, false);
         when(mockQDSIterator.next()).thenReturn(mockQueryDocumentSnapshot);
 
-        Event mockEvent = new Event("eventName", "eventDescription", "eventBanner", "QRcode", 0, 1, "Edmonton", "banner", new ArrayList<Integer>(), -1, false);
+        Event mockEvent = new Event("eventName", "eventDescription", "eventBanner", "QRcode", 0L, 1L, "Edmonton", "banner", new ArrayList<Integer>(), -1L, false);
         List<Event> expectedEvents = new ArrayList<>();
         expectedEvents.add(mockEvent);
 
@@ -121,8 +121,8 @@ public class FirebaseUtilTest {
         when(mockQDSIterator.hasNext()).thenReturn(true, true, false);
         when(mockQDSIterator.next()).thenReturn(mockQueryDocumentSnapshot);
 
-        Event mockEvent1 = new Event("eventName1", "eventDescription1", "eventBanner1", "QRcode1", 0L, 1L, "Edmonton", "banner1", null, -1, false);
-        Event mockEvent2 = new Event("eventName2", "eventDescription2", "eventBanner2", "QRcode2", 5L, 10L, "Vancouver", "banner2", null, 100, true);
+        Event mockEvent1 = new Event("eventName1", "eventDescription1", "eventBanner1", "QRcode1", 0L, 1L, "Edmonton", "banner1", null, -1L, false);
+        Event mockEvent2 = new Event("eventName2", "eventDescription2", "eventBanner2", "QRcode2", 5L, 10L, "Vancouver", "banner2", null, 100L, true);
         List<Event> expectedEvents = new ArrayList<>();
         expectedEvents.add(mockEvent1);
         expectedEvents.add(mockEvent2);
@@ -237,7 +237,7 @@ public class FirebaseUtilTest {
         }).when(mockCallback).onError(any());
 
         // Call the method to test
-        Event event = new Event("name", "desc", "no", "abcd", 0, 0, null, null, null, 0, false);
+        Event event = new Event("name", "desc", "no", "abcd", 0L, 0L, null, null, null, 0L, false);
         addEventToDB(mockFirestore, event, mockCallback);
 
         // Wait for the async callback
@@ -287,7 +287,7 @@ public class FirebaseUtilTest {
         }).when(mockCallback).onError(any());
 
         // Call the method to test
-        Event event = new Event("name", "desc", "no", "abcd", 0, 0, null, null, null, 0, false);
+        Event event = new Event("name", "desc", "no", "abcd", 0L, 0L, null, null, null, 0L, false);
         addEventToDB(mockFirestore, event, mockCallback);
 
         // Wait for the async callback
@@ -337,7 +337,7 @@ public class FirebaseUtilTest {
         }).when(mockCallback).onError(any());
 
         // Call the method to test
-        Event event = new Event("name", "desc", "no", "abcd", 0, 0, null, null, null, 0, false);
+        Event event = new Event("name", "desc", "no", "abcd", 0L, 0L, null, null, null, 0L, false);
         addEventToDB(mockFirestore, event, mockCallback);
 
         // Wait for the async callback
@@ -387,7 +387,7 @@ public class FirebaseUtilTest {
         }).when(mockCallback).onError(any());
 
         // Call the method to test
-        Event event = new Event("name", "desc", "no", "abcd", 0, 0, null, null, null, 0, false);
+        Event event = new Event("name", "desc", "no", "abcd", 0L, 0L, null, null, null, 0L, false);
         addEventToDB(mockFirestore, event, mockCallback);
 
         // Wait for the async callback

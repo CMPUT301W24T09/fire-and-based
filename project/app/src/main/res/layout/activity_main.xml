@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="28dp"
-        android:fontFamily="@font/abeezee"
+        android:fontFamily="@font/roboto"
         android:text="Fire and Based"
         android:textSize="40sp"
         app:layout_constraintBottom_toBottomOf="parent"
