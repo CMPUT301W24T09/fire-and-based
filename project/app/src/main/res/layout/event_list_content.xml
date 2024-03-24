@@ -48,8 +48,8 @@
         android:id="@+id/imageView5"
         android:layout_width="79dp"
         android:layout_height="71dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="36dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/event_box_background" />
