@@ -16,6 +16,7 @@ import java.util.ArrayList;
 /**
  * This class is the adapter for the events. It displays each event in the list.
  * Used by EventListFragment.
+ * @author Sumayya
  */
 public class EventArrayAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;

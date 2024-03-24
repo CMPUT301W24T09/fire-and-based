@@ -31,6 +31,8 @@ import java.util.stream.Collectors;
  * This class has all the functions for accessing the necessary data from the firebase
  * or storing the necessary data in the firebase.
  * @author Ilya
+ * To-do:
+ * 1. Create event doesn't set up properly, geteventattendees doesnt work if you create an event in the app
  */
 
 public class FirebaseUtil {

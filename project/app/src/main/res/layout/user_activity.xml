@@ -14,17 +14,16 @@
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:menu="@menu/bottom_nav"
+        app:backgroundTint="@color/white"
         app:labelVisibilityMode="labeled"
-        app:backgroundTint="@color/white">
+        app:menu="@menu/bottom_nav">
 
         <ImageView
             android:id="@+id/create_event_button"
             android:layout_width="98dp"
             android:layout_height="75dp"
             android:layout_gravity="center"
-            android:src="@drawable/create_event_image">
-        </ImageView>
+            android:src="@drawable/create_event_image"></ImageView>
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 

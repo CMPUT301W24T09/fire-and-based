@@ -38,7 +38,6 @@ import java.util.UUID;
 /**
  * This class is the main activity. It displays the loading page for the app
  * while the app fetches the user info. It then sends you to UserActivity.
- *
  * @author Tyler, Carson, Ilya
  */
 public class MainActivity extends AppCompatActivity {

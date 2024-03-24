@@ -21,9 +21,9 @@ import java.util.Objects;
 /**
  * This class is a fragment hosted by the AttendeeFragment.
  * It displays the list of attendees for the All Attendees tab and the Checked In tab.
- * To-do (Firebase):
- * 1. Need function that returns list of attendees for a given event
- * 2. Need function that returns list of attendees that are checked in to a given event
+ * @author Sumayya
+ * To-do (UI):
+ * 1. Set listener on attendee list to show attendee profiles
  */
 public class AttendeeListFragment extends Fragment {
     private Event event;

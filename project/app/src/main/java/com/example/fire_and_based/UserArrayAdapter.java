@@ -13,6 +13,11 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
+/**
+ * This class is the adapter for the users. It displays each attendee for an event.
+ * Used by AttendeeListFragment.
+ * @author Sumayya
+ */
 public class UserArrayAdapter extends ArrayAdapter<User> {
     private ArrayList<User> users;
     private Context context;

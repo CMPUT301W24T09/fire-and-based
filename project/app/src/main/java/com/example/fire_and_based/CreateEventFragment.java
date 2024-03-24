@@ -35,8 +35,9 @@ import java.util.Random;
 /**
  * This class is the activity for creating a new event.
  * It can be accessed by clicking the create event button on UserActivity.
- * To-do (Firebase):
- * 1. (I think?) FirebaseUtil.addEventToDB needs to be updated to add event to user's list of organizing events
+ * @author Tyler, Ilya, Sumayya
+ * To-do:
+ * 1. creating event Firebase needs some reworking
  * 2. AIDEN: run the app and click the blue plus in middle of screen -> you see the white rectangle at the top, its an imageview, i want you to set an onclick for image uploading there
  * 3. ILYA: run the app and see the two QR code buttons, there is zero code for them and no id's either go to create_event_and_edit.xml and connect those buttons to the qr code upload / generate functionality
  */
@@ -245,6 +246,11 @@ public class CreateEventFragment extends Fragment {
                                 Log.println(Log.DEBUG, "EventCreation", "New event with id: " + QRCode + " added");
                                 getParentFragmentManager().popBackStack();
 
+                                FirebaseUtil.addEventAndOrganizer(db, newEvent.getQRcode(), user.getDeviceID(), aVoid -> {
+                                    Log.d("Firebase Success", "User registered successfully");
+                                }, e -> {
+                                    Log.e("FirebaseError", "Error setting up organizer of event " + e.getMessage());
+                                });
 
 
                                 //TODO exit out maybe?

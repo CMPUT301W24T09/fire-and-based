@@ -24,10 +24,17 @@ import java.util.Objects;
  * It displays the event details for an attendee or an organizer (depends on the mode)
  * This fragment may be accessed by clicking on an event in the list from EventListFragment, when in the attending or organizing tab.
  * It also hosts InfoFragment, NotificationsFragment, and MapFragment.
+ *
  * Requires a user to be passed in as an argument as a Parcelable with a key "user"
  * Also requires an event to be passed in as an argument as a Parcelable with a key "event"
  * Also requires a mode to be passed in as an argument as a String with a key "mode"
  * Note that mode may be either "Attending" or "Organizing"
+ *
+ * To-do (UI):
+ * 1. Fix checked-in "button"
+ * 2. Make edit details button functional
+ *
+ * @author Sumayya
  */
 public class EventDetailsFragment extends Fragment {
     private User user;
