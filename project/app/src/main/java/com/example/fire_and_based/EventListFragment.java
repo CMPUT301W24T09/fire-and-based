@@ -25,11 +25,11 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * This class is a fragment hosted by the UserActivity.
- * It displays the list of events for the Browse tab, the Attending tab, and the Organizing tab.
+ * This class is a fragment hosted by the UserActivity and/or Admin Activity
+ * It displays the list of events.
  * Requires a user to be passed in as an argument as a Parcelable with a key "user"
  * Also requires a mode to be passed in as an argument as a String with a key "mode"
- * Note that a mode may be "Browse", "Attending", or "Organizing"
+ * Note that a mode may be "Browse", "Attending", "Organizing", or "Admin"
  * @author Sumayya, Ilya
  * To-do (UI):
  * 1. Need to actually do something after QRcode is scanned.
@@ -67,15 +67,23 @@ public class EventListFragment extends Fragment {
         }
 
         TextView toolbarTitle = view.findViewById(R.id.event_list_toolbar_title);
-        toolbarTitle.setText(String.format("%s Events", mode));
+        if (Objects.equals(mode, "Admin")) {
+            toolbarTitle.setText("Browse Events");
+        } else {
+            toolbarTitle.setText(String.format("%s Events", mode));
+        }
 
         ImageView qrscannerButton = view.findViewById(R.id.qr_code_scanner);
-        qrscannerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchQRScanner();
-            }
-        });
+        if (Objects.equals(mode, "Admin")) {
+            qrscannerButton.setVisibility(View.GONE);
+        } else {
+            qrscannerButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    launchQRScanner();
+                }
+            });
+        }
 
         dataList = new ArrayList<>();
         eventList = view.findViewById(R.id.event_list);
@@ -152,6 +160,19 @@ public class EventListFragment extends Fragment {
                 }
             }, e -> {
                 Log.e("FirebaseError", "Error fetching organizing events: " + e.getMessage());
+            });
+        }
+
+        if (Objects.equals(mode, "Admin")) {
+            FirebaseUtil.getAllEvents(db, new FirebaseUtil.getAllEventsCallback() {
+                @Override
+                public void onCallback(List<Event> list) {
+                    dataList.clear();
+                    for (Event event: list) {
+                        dataList.add(event);
+                        eventAdapter.notifyDataSetChanged();
+                    }
+                }
             });
         }
     }

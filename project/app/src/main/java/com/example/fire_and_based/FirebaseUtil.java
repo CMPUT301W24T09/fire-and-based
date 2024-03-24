@@ -10,12 +10,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import androidx.annotation.Nullable;
 
 import com.google.firebase.firestore.*;
-import com.google.type.DateTime;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import java.util.HashMap;
@@ -30,9 +27,9 @@ import java.util.stream.Collectors;
 /**
  * This class has all the functions for accessing the necessary data from the firebase
  * or storing the necessary data in the firebase.
- * @author Ilya
+ * @author Ilya, Sumayya
  * To-do:
- * 1. Create event doesn't set up properly, geteventattendees doesnt work if you create an event in the app
+ * 1. addEventToDB and addEventAndOrganizer causing LOTS of problems
  */
 
 public class FirebaseUtil {
@@ -95,6 +92,56 @@ public class FirebaseUtil {
      */
     public interface getAllEventsCallback {
         void onCallback(List<Event> list);
+    }
+
+    /**
+     * Asynchronously get all users in the database (who are not admins)
+     *
+     * @param db       the database reference
+     * @param callback the callback function
+     * @see getAllUsersCallback
+     * @see User
+     */
+    public static void getAllNonAdminUsers(FirebaseFirestore db, getAllUsersCallback callback) {
+        ArrayList<User> usersList = new ArrayList<>();
+
+        CollectionReference eventsRef = db.collection("users");
+        eventsRef.addSnapshotListener((querySnapshots, error) -> {
+            if (error != null) {
+                Log.e("Firestore", error.toString());
+                return;
+                //TODO wait no add a proper onFailure() thing to the callback
+            }
+            if (querySnapshots != null) {
+                for (QueryDocumentSnapshot doc : querySnapshots) {
+                    if (!doc.getBoolean("admin")) {
+                        String deviceID = doc.getString("deviceID");
+                        String userName = doc.getString("userName");
+                        String profilePicture = doc.getString("profilePicture");
+                        String firstName = doc.getString("firstName");
+                        String lastName = doc.getString("lastName");
+                        String phoneNumber = doc.getString("phoneNumber");
+                        String email = doc.getString("email");
+                        String homepage = doc.getString("homepage");
+                        Boolean admin = false;
+                        Log.d("Firestore", String.format("Event(%s, %s) fetched", userName,
+                                deviceID));
+                        usersList.add(new User(deviceID, userName, profilePicture, firstName, lastName, phoneNumber, email, homepage, admin));
+                    }
+                }
+                Log.d("Firestore", String.format("Fetched %d events", usersList.size()));
+                callback.onCallback(usersList);
+            }
+        });
+    }
+
+    /**
+     * Callback interface to get list of all users
+     *
+     * @see User
+     */
+    public interface getAllUsersCallback {
+        void onCallback(List<User> list);
     }
 
 
@@ -556,6 +603,9 @@ public class FirebaseUtil {
         db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 User user = documentSnapshot.toObject(User.class);
+                if (user != null) {
+                    user.setAdmin(documentSnapshot.getBoolean("admin"));
+                }
                 Log.d(TAG, String.format("Username: %s First: %s Last: %s Phone: %s Email: %s ID: %s", user.getUserName(), user.getFirstName(), user.getLastName()
                         , user.getPhoneNumber(), user.getEmail(), user.getDeviceID()));
                 successListener.onSuccess(user);

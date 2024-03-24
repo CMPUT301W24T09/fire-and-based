@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -15,8 +14,6 @@ import androidx.fragment.app.Fragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * This class is a fragment hosted by the AttendeeFragment.
@@ -30,7 +27,7 @@ public class AttendeeListFragment extends Fragment {
     private boolean checkedIn;
     private ArrayList<User> dataList;
     private ListView attendeeList;
-    private UserArrayAdapter attendeeAdapter;
+    private AttendeeArrayAdapter attendeeAdapter;
     private FirebaseFirestore db;
 
     /**
@@ -62,7 +59,7 @@ public class AttendeeListFragment extends Fragment {
         dataList = new ArrayList<>();
         attendeeList = view.findViewById(R.id.attendee_list);
 
-        attendeeAdapter = new UserArrayAdapter(requireContext(), dataList);
+        attendeeAdapter = new AttendeeArrayAdapter(requireContext(), dataList);
         attendeeList.setAdapter(attendeeAdapter);
 
         db = FirebaseFirestore.getInstance();

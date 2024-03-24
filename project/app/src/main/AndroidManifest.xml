@@ -39,6 +39,10 @@
             android:name=".ViewProfileFragment">
         </activity>
 
+        <activity
+            android:name=".AdminActivity">
+        </activity>
+
 
 </application>
 

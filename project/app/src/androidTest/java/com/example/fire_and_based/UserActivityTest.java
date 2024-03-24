@@ -31,6 +31,7 @@ import org.junit.runner.RunWith;
  * This class performs tests to ensure that different UI components such as
  * bottom navigation, browsing list, attendee list, organizing list, and event creation button
  * are displayed correctly within the UserActivity.
+ * @author Tyler, Sumayya
  */
 @RunWith(AndroidJUnit4.class)
 public class UserActivityTest {
