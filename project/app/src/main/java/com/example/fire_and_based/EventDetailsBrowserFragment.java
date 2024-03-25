@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -68,14 +69,11 @@ public class EventDetailsBrowserFragment extends Fragment {
         joinEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
                 FirebaseUtil.addEventAndAttendee(db, event.getQRcode(), user.getDeviceID(), aVoid -> {
                     Log.d("Firebase Success", "User registered successfully");
                 }, e -> {
-                    Log.e("FirebaseError", "Error fetching organizing events: " + e.getMessage());
+                    Toast.makeText(requireContext(), "Event is full", Toast.LENGTH_LONG).show();
                 });
-
-                 */
             }
         });
 

@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  * @author Ilya, Sumayya
  * To-do:
  * 1. Need a function that gets all images from the database
- * 2. addEventToDB and addEventAndOrganizer causing LOTS of problems
+ * 2. getAllEventsUserNotIn has issues. see below for more details.
  */
 
 public class FirebaseUtil {
@@ -100,10 +100,10 @@ public class FirebaseUtil {
      *
      * @param db       the database reference
      * @param callback the callback function
-     * @see getAllUsersCallback
+     * @see getAllNonAdminUsersCallback
      * @see User
      */
-    public static void getAllNonAdminUsers(FirebaseFirestore db, getAllUsersCallback callback) {
+    public static void getAllNonAdminUsers(FirebaseFirestore db, getAllNonAdminUsersCallback callback) {
         ArrayList<User> usersList = new ArrayList<>();
 
         CollectionReference eventsRef = db.collection("users");
@@ -141,13 +141,14 @@ public class FirebaseUtil {
      *
      * @see User
      */
-    public interface getAllUsersCallback {
+    public interface getAllNonAdminUsersCallback {
         void onCallback(List<User> list);
     }
 
 
     /**
      * Asynchronously get all events in the database that the given user is not registered for or organizing
+     * Issues: Does not eliminate the events that a user is registered in
      *
      * @param db       the database reference
      * @param callback the callback function
@@ -156,6 +157,7 @@ public class FirebaseUtil {
      */
     public static void getAllEventsUserIsNotIn(FirebaseFirestore db, String userID, getAllEventsCallback callback) {
         ArrayList<Event> eventsList = new ArrayList<>();
+        // there is an issue here, events1 list ends up being a list of null qr codes
         getUserEvents(db, userID, events1 -> {
             ArrayList<String> qrCodes1 = events1.stream()
                     .map(Event::getQRcode)
@@ -172,7 +174,7 @@ public class FirebaseUtil {
                     }
                     if (querySnapshots != null) {
                         for (QueryDocumentSnapshot doc : querySnapshots) {
-                            String qrCode = doc.getString("QRcode");
+                            String qrCode = doc.getId();
                             if(qrCodes1.contains(qrCode) || qrCodes2.contains(qrCode)){
                                 continue;
                             }
@@ -635,14 +637,15 @@ public class FirebaseUtil {
                     DocumentSnapshot userSnapshot = transaction.get(userDoc);
 
                     List<String> attendees = (List<String>) eventSnapshot.get("attendees");
-                    Integer maxAttendees = (Integer) eventSnapshot.get("maxAttendees");
+                    if (attendees == null) {
+                        attendees = new ArrayList<>();
+                    }
+
+                    Long maxAttendees = (Long) eventSnapshot.get("maxAttendees");
                     if (maxAttendees != null && maxAttendees <= attendees.size()){
                         throw new IllegalArgumentException("Event reached max capacity");
                     }
 
-                    if (attendees == null) {
-                        attendees = new ArrayList<>();
-                    }
                     attendees.add(attendee);
                     transaction.update(eventDoc, "attendees", attendees);
 

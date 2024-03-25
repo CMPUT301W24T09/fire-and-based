@@ -43,7 +43,7 @@ public class UserListFragment extends Fragment {
         userList.setAdapter(userAdapter);
 
         db = FirebaseFirestore.getInstance();
-        FirebaseUtil.getAllNonAdminUsers(db, new FirebaseUtil.getAllUsersCallback() {
+        FirebaseUtil.getAllNonAdminUsers(db, new FirebaseUtil.getAllNonAdminUsersCallback() {
             @Override
             public void onCallback(List<User> list) {
                 dataList.clear();

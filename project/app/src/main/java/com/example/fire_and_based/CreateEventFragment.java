@@ -233,7 +233,7 @@ public class CreateEventFragment extends Fragment {
 
                         // EVENT CREATION GOES HERE
                         // we can create the event object
-                        Event newEvent = new Event(eventNameString, eventDescriptionString, null, QRCode, timeSince1970, timeSince1970, eventLocationString,null, null, 0L, false );
+                        Event newEvent = new Event(eventNameString, eventDescriptionString, null, QRCode, timeSince1970, timeSince1970, eventLocationString,null, null, Long.parseLong(eventMaxAttendeesString), false );
                         FirebaseFirestore db = FirebaseFirestore.getInstance();
                         toast("adding event to db  ) ");
 
