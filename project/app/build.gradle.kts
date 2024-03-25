@@ -45,7 +45,6 @@ dependencies {
     implementation("com.google.firebase:firebase-storage:20.3.0")
     //push notifications
     implementation("com.google.firebase:firebase-messaging:23.4.1")
-    implementation("com.google.firebase:firebase-admin:7.1.0") //idk if we need this actually
 
     //UI and navigation elements
     implementation("androidx.appcompat:appcompat:1.6.1")

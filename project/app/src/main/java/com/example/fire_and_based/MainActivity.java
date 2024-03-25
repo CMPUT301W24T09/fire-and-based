@@ -65,14 +65,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
+        Log.d("MainActivity", "Getting UUID");
         String uuid = sharedPref.getString("uuid_key", "");
+        Log.d("MainActivity", "UUID is: " + uuid);
         if (TextUtils.isEmpty(uuid)) {
+            Log.d("MainActivity", "No UUID found, generating...");
             uuid = UUID.randomUUID().toString();
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("uuid_key", uuid);
 
             String finalUuid = uuid;
+
+            Log.d(TAG, "Getting FCM Token");
             FirebaseMessaging.getInstance().getToken()
                     .addOnCompleteListener(new OnCompleteListener<String>() {
                         @Override
@@ -86,10 +90,10 @@ public class MainActivity extends AppCompatActivity {
                             currentUser = new User(finalUuid, "", "", "", "", "", "", "", false, token);
                             FirebaseUtil.addUserToDB(db, currentUser,
                                     aVoid -> {
-                                        // TODO user added successfully
+                                        Log.d(TAG, "User added successfully");
                                     },
                                     e -> {
-                                        // TODO handle database error
+                                        Log.d("Failed to add user: ", e.getMessage());
                                     });
                             editor.commit();
                         }
@@ -98,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
         else {
+            Log.d("MainActivity", "Found UUID, getting user...");
             FirebaseUtil.getUserObject(db, uuid,
                     user -> {
                         currentUser = user;
