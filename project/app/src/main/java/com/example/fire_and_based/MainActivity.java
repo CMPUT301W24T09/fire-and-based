@@ -56,32 +56,35 @@ public class MainActivity extends AppCompatActivity {
             uuid = UUID.randomUUID().toString();
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("uuid_key", uuid);
-            currentUser = new User(uuid, "", new ArrayList<Event>(), "");
-            FirebaseUtil.addUserToDB(db, currentUser);
+            currentUser = new User(uuid, "", "", "", "", "", "", "", false);
+            FirebaseUtil.addUserToDB(db, currentUser,
+                    aVoid -> {
+                        // TODO user added successfully
+                        Intent intent = new Intent(MainActivity.this, UserActivity.class);
+                        intent.putExtra("user", currentUser);  // we can switch activities now that a user has been created
+                        startActivity(intent);
+                    },
+                    e -> {
+                        // TODO handle database error
+                    });
             editor.commit();
             Intent intent = new Intent(MainActivity.this, UserActivity.class);
             intent.putExtra("user", currentUser);
             startActivity(intent);
         }
         else {
-            String finalUuid = uuid;
-            FirebaseUtil.getUserObject(db, uuid, new FirebaseUtil.UserObjectCallback() {
-                @Override
-                public void onUserFetched(User user) {
-                    currentUser = user;
-                    Log.d(TAG, String.format("Username: %s UserID: %s", currentUser.getFirstName(), currentUser.getDeviceID()));
+            FirebaseUtil.getUserObject(db, uuid,
+                    user -> {
+                        currentUser = user;
+                        Log.d(TAG, String.format("Username: %s UserID: %s", currentUser.getFirstName(), currentUser.getDeviceID()));
 
-                    Intent intent = new Intent(MainActivity.this, UserActivity.class);
-                    intent.putExtra("user", currentUser);
-                    startActivity(intent);
-                }
-                @Override
-                public void onError(Exception e) {
-
-                    Log.w(TAG, e.toString());
-                    Log.d(TAG, finalUuid);
-                }
-            });
+                        Intent intent = new Intent(MainActivity.this, UserActivity.class);
+                        intent.putExtra("user", currentUser);
+                        startActivity(intent);
+                    },
+                    e -> {
+                        Log.d(TAG, e.toString());
+                    });
         }
     }
 

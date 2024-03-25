@@ -13,29 +13,12 @@ public class User implements Parcelable {
     private String deviceID;
     private String userName;
     private String profilePicture;
-    private ArrayList<Event> userEvents;
     private String firstName;
     private String lastName;
     private String phoneNumber;
     private String email;
-
-    public User() {
-    }
-
-    /**
-     * Constructs a User with device ID, user name, a list of registered events, and a profile picture.
-     *
-     * @param deviceID        The unique identifier for the user's device.
-     * @param userName        The user's chosen username.
-     * @param userRegisteredEvents A list of events the user has registered for.
-     * @param profilePicture  The URL or path to the user's profile picture.
-     */
-    User(String deviceID, String userName, ArrayList<Event> userRegisteredEvents, String profilePicture) {
-        this.deviceID = deviceID;
-        this.userName = userName;
-        this.userEvents = userRegisteredEvents;
-        this.profilePicture = profilePicture;
-    }
+    private String homepage;
+    private Boolean isAdmin = false;
 
     /**
      * Constructs a User with detailed personal information, including device ID, user name, registered events, profile picture,
@@ -43,25 +26,33 @@ public class User implements Parcelable {
      *
      * @param deviceID        The unique identifier for the user's device.
      * @param userName        The user's chosen username.
-     * @param userRegisteredEvents A list of events the user has registered for.
      * @param profilePicture  The URL or path to the user's profile picture.
      * @param firstName       The user's first name.
      * @param lastName        The user's last name.
-     * @param email           The user's email address.
      * @param phoneNumber     The user's phone number.
+     * @param email           The user's email address.
+     * @param homepage        The user's homepage
+     * @param isAdmin         Whether or not the user is an admin of the app
      */
-    User(String deviceID, String userName, ArrayList<Event> userRegisteredEvents, String profilePicture, String firstName, String lastName,
-         String email, String phoneNumber) {
+    User(String deviceID, String userName, String profilePicture, String firstName, String lastName,
+         String phoneNumber, String email, String homepage, Boolean isAdmin) {
         this.deviceID = deviceID;
         this.userName = userName;
-        this.userEvents = userRegisteredEvents;
         this.profilePicture = profilePicture;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
         this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.homepage = homepage;
+        this.isAdmin = isAdmin;
     }
 
+    public User() {
+    }
+
+    public User(String deviceID){
+        this.deviceID = deviceID;
+    }
     /**
      * Constructs a User instance from a Parcel, enabling the class to be parcelable.
      *
@@ -71,11 +62,12 @@ public class User implements Parcelable {
         deviceID = in.readString();
         userName = in.readString();
         profilePicture = in.readString();
-        userEvents = in.createTypedArrayList(Event.CREATOR);
         firstName = in.readString();
         lastName = in.readString();
         phoneNumber = in.readString();
         email = in.readString();
+        homepage = in.readString();
+        isAdmin = (in.readInt() == 1);
     }
 
     /**
@@ -114,15 +106,6 @@ public class User implements Parcelable {
     }
 
     /**
-     * Gets the list of events the user has registered for.
-     *
-     * @return A list of user events.
-     */
-    public ArrayList<Event> getUserEvents() {
-        return this.userEvents;
-    }
-
-    /**
      * Sets the device ID of the user.
      *
      * @param deviceID The new device ID.
@@ -141,15 +124,6 @@ public class User implements Parcelable {
     }
 
     /**
-     * Adds an event to the list of events the user has registered for.
-     *
-     * @param event The event to add.
-     */
-    public void addEvent(Event event) {
-        this.userEvents.add(event);
-    }
-
-    /**
      * Sets the profile picture of the user.
      *
      * @param profilePicture The new profile picture URL or path.
@@ -159,21 +133,36 @@ public class User implements Parcelable {
     }
 
     /**
-     * Sets the list of events the user has registered for.
-     *
-     * @param eventList The new list of events.
-     */
-    public void setUserRegisteredEvents(ArrayList<Event> eventList) {
-        this.userEvents = eventList;
-    }
-
-    /**
      * Gets the first name of the user.
      *
      * @return The first name.
      */
     public String getFirstName() {
         return firstName;
+    }
+    /**
+     * Gets the homepage of the user.
+     *
+     * @return The homepage.
+     */
+    public String getHomepage(){
+        return homepage;
+    }
+
+    /**
+     * Sets the homepage of the user.
+     * @param homepage The homepage.
+     */
+    public void setHomepage(String homepage){
+        this.homepage = homepage;
+    }
+
+    /**
+     * Checks if the user is an Administrator of the app
+     * @return true if the user is an admin, false otherwise
+     */
+    public Boolean isAdmin(){
+        return isAdmin;
     }
 
     /**
@@ -253,19 +242,21 @@ public class User implements Parcelable {
      * Flatten this object in to a Parcel.
      *
      * @param dest  The Parcel in which the object should be written.
-     * @param flags Additional flags about how the object should be written. Generally zero.
+     * @param flags Additional flags about how the object should be written.
      */
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(deviceID);
         dest.writeString(userName);
         dest.writeString(profilePicture);
-        dest.writeTypedList(userEvents);
         dest.writeString(firstName);
         dest.writeString(lastName);
         dest.writeString(phoneNumber);
         dest.writeString(email);
+        dest.writeString(homepage);
+        dest.writeInt(isAdmin ? 1 : 0);  // write boolean as int
     }
+
 
     /**
      * Gets the profile picture of the user.

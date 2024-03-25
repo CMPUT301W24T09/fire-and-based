@@ -2,13 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-             android:layout_height="match_parent">
+    android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/button3"
+    <TextView
+        android:id="@+id/attendee_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create Event"
-        tools:layout_editor_absoluteX="125dp"
-        tools:layout_editor_absoluteY="407dp" />
+        android:text="TextView"
+        tools:layout_editor_absoluteX="201dp"
+        tools:layout_editor_absoluteY="98dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
