@@ -31,8 +31,6 @@ import java.util.Objects;
  * Also requires a mode to be passed in as an argument as a String with a key "mode"
  * Note that a mode may be "Browse", "Attending", "Organizing", or "Admin"
  * @author Sumayya, Ilya
- * To-do (UI):
- * 1. Need to actually do something after QRcode is scanned.
  */
 
 public class EventListFragment extends Fragment {
@@ -50,7 +48,12 @@ public class EventListFragment extends Fragment {
                 if (result.getContents() == null) {
                     Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(requireContext(), "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                    db = FirebaseFirestore.getInstance();
+                    FirebaseUtil.addEventAndCheckedInUser(db, result.getContents(), user.getDeviceID(), aVoid -> {
+                        Toast.makeText(requireContext(), "Checked in!" + result.getContents(), Toast.LENGTH_LONG).show();
+                    }, e -> {
+                        Toast.makeText(requireContext(), "Failed " + result.getContents(), Toast.LENGTH_LONG).show();
+                    });
                 }
             }
     );

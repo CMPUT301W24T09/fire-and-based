@@ -148,7 +148,6 @@ public class FirebaseUtil {
 
     /**
      * Asynchronously get all events in the database that the given user is not registered for or organizing
-     * Issues: Does not eliminate the events that a user is registered in
      *
      * @param db       the database reference
      * @param callback the callback function
@@ -157,7 +156,8 @@ public class FirebaseUtil {
      */
     public static void getAllEventsUserIsNotIn(FirebaseFirestore db, String userID, getAllEventsCallback callback) {
         ArrayList<Event> eventsList = new ArrayList<>();
-        // there is an issue here, events1 list ends up being a list of null qr codes
+        // there is an issue here, does not get qr code of event properly. i suspect it has something
+        // to do with qr code being doc id and not a field.
         getUserEvents(db, userID, events1 -> {
             ArrayList<String> qrCodes1 = events1.stream()
                     .map(Event::getQRcode)
@@ -462,13 +462,13 @@ public class FirebaseUtil {
      * @see Event
      * @see User
      */
-    public static void getUserCheckedInEvents(FirebaseFirestore db, String userID, OnSuccessListener<Map<Event, Integer>> successListener, OnFailureListener failureListener) {
+    public static void getUserCheckedInEvents(FirebaseFirestore db, String userID, OnSuccessListener<Map<Event, Long>> successListener, OnFailureListener failureListener) {
         db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                Map<String, Integer> eventIDs = (Map<String, Integer>) documentSnapshot.get("checkedInEvents");
+                Map<String, Long> eventIDs = (Map<String, Long>) documentSnapshot.get("checkedInEvents");
                 if (eventIDs != null && !eventIDs.isEmpty()) {
                     ArrayList<String> eventCodes = new ArrayList<>(eventIDs.keySet());
-                    Map<Event, Integer> events = new HashMap<>();
+                    Map<Event, Long> events = new HashMap<>();
                     for (String eventCode : eventCodes) {
                         String docID = cleanDocumentId(eventCode);
                         getEvent(db, docID, event -> {

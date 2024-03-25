@@ -16,6 +16,8 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Objects;
+
 /**
  * This fragment is hosted by UserActivity.
  * This fragment may be accessed by clicking on an event in the list from EventListFragment, when in the browsing tab.
@@ -25,7 +27,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * @author Sumayya
  * To-do (UI):
  * 1. Weird looking event banner ImageView needs to be fixed.
- * 2. Joining event causes an error -> ask Ilya
  */
 public class EventDetailsBrowserFragment extends Fragment {
     private User user;
@@ -70,7 +71,19 @@ public class EventDetailsBrowserFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FirebaseUtil.addEventAndAttendee(db, event.getQRcode(), user.getDeviceID(), aVoid -> {
-                    Log.d("Firebase Success", "User registered successfully");
+                    Toast.makeText(requireContext(), "Successfully joined event", Toast.LENGTH_LONG).show();
+                    getParentFragmentManager().popBackStack();
+                    EventDetailsFragment fragment = new EventDetailsFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("user", user);
+                    bundle.putParcelable("event", event);
+                    bundle.putString("mode", "Attending");
+                    fragment.setArguments(bundle);
+                    getParentFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container_view, fragment)
+                            .setReorderingAllowed(true)
+                            .addToBackStack(null)
+                            .commit();
                 }, e -> {
                     Toast.makeText(requireContext(), "Event is full", Toast.LENGTH_LONG).show();
                 });

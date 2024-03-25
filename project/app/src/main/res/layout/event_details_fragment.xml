@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="?attr/colorPrimary"
-        android:text="Checked In" />
+        android:text="Not checked In" />
 
     <Button
         android:id="@+id/edit_details_button"

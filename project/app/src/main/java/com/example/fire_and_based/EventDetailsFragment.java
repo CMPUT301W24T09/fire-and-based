@@ -1,6 +1,7 @@
 package com.example.fire_and_based;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,9 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -31,7 +34,7 @@ import java.util.Objects;
  * Note that mode may be either "Attending" or "Organizing"
  *
  * To-do (UI):
- * 1. Fix checked-in "button"
+ * 1. Checked in status is not displaying properly
  * 2. Make edit details button functional
  *
  * @author Sumayya
@@ -57,6 +60,8 @@ public class EventDetailsFragment extends Fragment {
         TextView eventTitle = view.findViewById(R.id.event_title);
         eventTitle.setText(event.getEventName());
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         /* we will add this when event banner gets fixed in xml
 
         ImageView imagePreview = view.findViewById(R.id.banner_image);
@@ -80,6 +85,15 @@ public class EventDetailsFragment extends Fragment {
         if (Objects.equals(mode, "Attending")) {
             editDetailsButton.setVisibility(View.GONE);
             attendeeListButton.setVisibility(View.GONE);
+            FirebaseUtil.getUserCheckedInEvents(db, user.getDeviceID(), eventLongMap -> {
+                for (Map.Entry<Event, Long> entry: eventLongMap.entrySet()) {
+                    if (Objects.equals(entry.getKey().getQRcode(), event.getQRcode())) {
+                        checkedInButton.setText("Checked in");
+                    }
+                }
+            }, e -> {
+                Log.e("FirebaseError", "Error fetching user checked in events: " + e.getMessage());
+            });
         }
         if (Objects.equals(mode, "Organizing")) {
             checkedInButton.setVisibility(View.GONE);
