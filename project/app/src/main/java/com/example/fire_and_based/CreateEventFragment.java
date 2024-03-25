@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +48,8 @@ public class CreateEventFragment extends Fragment {
     private String QRCode = null;
     public String timeString;
     public String dateString;
+
+    public  String imageUrl;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -177,11 +180,18 @@ public class CreateEventFragment extends Fragment {
 
 
 
+        ImageView bannerImage = view.findViewById(R.id.roundedImageView);
 
-
-
-
-
+        bannerImage.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v)
+           {
+               //AS PER TYLER'S INSTRUCTIONS ;)
+               imageUrl = "events/" + QRCode;
+               ImageUploader imageUploader = new ImageUploader(bannerImage, imageUrl);
+               imageUploader.uploadImage();
+           }
+        });
 
 
 
@@ -234,7 +244,9 @@ public class CreateEventFragment extends Fragment {
 
                         // EVENT CREATION GOES HERE
                         // we can create the event object
-                        Event newEvent = new Event(eventNameString, eventDescriptionString, null, QRCode, timeSince1970, timeSince1970, eventLocationString,null, null, 0L, false );
+
+
+                        Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, timeSince1970, eventLocationString,null, null, 0L, false );
                         FirebaseFirestore db = FirebaseFirestore.getInstance();
                         toast("adding event to db  ) ");
 
