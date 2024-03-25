@@ -26,6 +26,7 @@ import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -227,7 +228,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
                         // EVENT CREATION GOES HERE
                         // we can create the event object
-                        Event newEvent = new Event(eventNameString, eventDescriptionString, null, QRCode, timeSince1970, timeSince1970, eventLocationString,null, null, 0L, false );
+                        Event newEvent = new Event(eventNameString, eventDescriptionString, null, QRCode, timeSince1970, timeSince1970, eventLocationString,null, new ArrayList<>(), 0L, false, new ArrayList<>());
                         FirebaseFirestore db = FirebaseFirestore.getInstance();
                         toast("adding event to db  ) ");
 

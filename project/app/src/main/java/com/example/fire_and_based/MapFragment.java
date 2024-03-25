@@ -1,9 +1,12 @@
 package com.example.fire_and_based;
 
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +21,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.model.GeocodingResult;
+
+import java.io.IOException;
+import java.util.List;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap mMap;
@@ -57,37 +63,54 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         // Add markers or other map features here
         // Example: Add a marker at Sydney
-        LatLng sydney = new LatLng(-34, 151);
         String eventAddress = event.getLocation();
         LatLng eventCoords = geocodeAddress(eventAddress);
-        mMap.addMarker(new MarkerOptions().position(eventCoords).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(eventCoords));
+        float zoomLevel = 13.0f;  // higher == more zoom
+        mMap.addMarker(new MarkerOptions().position(eventCoords).title(event.getEventName()));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(eventCoords, zoomLevel));
     }
 
     public LatLng geocodeAddress(String address) {
-        String api = "AIzaSyA7KifextDr3K6nGzosM-EJDDaHpPyRHqs";
+        List<Address> addressList = null;
+        String eventLocation = event.getLocation();
         try {
-            GeoApiContext context = new GeoApiContext.Builder()
-                    .apiKey(api)
-                    .build();
-            GeocodingResult[] results = GeocodingApi.geocode(context, address).await();
-            // Assuming the address is valid and results are returned
-            if (results.length > 0) {
-                double lat = results[0].geometry.location.lat;
-                double lng = results[0].geometry.location.lng;
-                LatLng addressCords = new LatLng(lat, lng);
 
-                return addressCords;
+            Geocoder geocoder = new Geocoder(getContext());
+            addressList = geocoder.getFromLocationName(eventLocation, 1);
+
+            if (addressList != null && !addressList.isEmpty()) {
+                // Get the first address from the list
+                Address location = addressList.get(0);
+                // Create a LatLng object from the Address
+                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                return latLng;
+
             } else {
+                // Handle case where no address was found -> Default to edmonton
+                Toast.makeText(getContext(), "No location found for the address provided.", Toast.LENGTH_LONG).show();
+                LatLng edmonton = new LatLng(53.5, -113.5); // Your default coordinates
+                return edmonton;
 
-                return null;
             }
-        } catch (Exception e) {
-            // just return edmonton cordinates if error happens
-            LatLng edmonton = new LatLng(53.5, -113.5);
+        } catch (IOException e) {
+            // Handle the exception
+            e.printStackTrace();
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "Error finding address. Using default location.", Toast.LENGTH_LONG).show());
+            }
+            // defaults to edmonton alberta
+            LatLng edmonton = new LatLng(53.5, -113.5); // Your default coordinates
             return edmonton;
         }
 
+         catch (Exception e) {
+            // Show a Toast message when an exception occurs
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "Error finding address. Using default location.", Toast.LENGTH_LONG).show());
+            }
+            // defaults to edmonton alberta
+            LatLng edmonton = new LatLng(53.5, -113.5); // Your default coordinates
+            return edmonton;
+        }
     }
-
 }

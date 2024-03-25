@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import com.google.type.DateTime;
+import com.google.type.LatLng;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class Event implements Parcelable {
     private ArrayList<Integer> milestones;
     private Long maxAttendees;
     private Boolean trackLocation;
+    private ArrayList<LatLng> checkInLocations;
 
     /**
      * Constructs a new Event with the specified details.
@@ -41,7 +43,7 @@ public class Event implements Parcelable {
      * @param maxAttendees     The maximum number of attendees for the event.
      * @param trackLocation    Whether the event is tracking location.
      */
-    Event(String eventName, String eventDescription, String eventBanner, String QRcode, Long startTimeStamp, Long endTimeStamp, String location, String bannerQR, ArrayList<Integer> milestones, Long maxAttendees, Boolean trackLocation) {
+    Event(String eventName, String eventDescription, String eventBanner, String QRcode, Long startTimeStamp, Long endTimeStamp, String location, String bannerQR, ArrayList<Integer> milestones, Long maxAttendees, Boolean trackLocation, ArrayList<LatLng> checkInLocations) {
         this.eventName = eventName;
         this.eventDescription = eventDescription;
         this.eventBanner = eventBanner;
@@ -53,6 +55,7 @@ public class Event implements Parcelable {
         this.milestones = milestones;
         this.maxAttendees = maxAttendees;
         this.trackLocation = trackLocation;
+        this.checkInLocations = checkInLocations;
     }
 
     /**

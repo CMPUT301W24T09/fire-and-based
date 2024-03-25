@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 
 import com.google.firebase.firestore.*;
 import com.google.type.DateTime;
+import com.google.type.LatLng;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -75,9 +76,10 @@ public class FirebaseUtil {
                     ArrayList<Integer> milestones = (ArrayList<Integer>) doc.get("milestones");
                     Long maxAttendees = doc.getLong("maxAttendees");
                     Boolean trackLocation = doc.getBoolean("trackLocation");
+                    ArrayList<LatLng> checkInLocations = (ArrayList<LatLng>) doc.get("checkInLocations");
                     Log.d("Firestore", String.format("Event(%s, %s) fetched", eventName,
                             qrCode));
-                    eventsList.add(new Event(eventName, eventDescription, eventBanner, qrCode, eventStart, eventEnd, location, bannerQR, milestones, maxAttendees, trackLocation));
+                    eventsList.add(new Event(eventName, eventDescription, eventBanner, qrCode, eventStart, eventEnd, location, bannerQR, milestones, maxAttendees, trackLocation, checkInLocations));
                 }
                 Log.d("Firestore", String.format("Fetched %d events", eventsList.size()));
                 callback.onCallback(eventsList);
@@ -135,9 +137,10 @@ public class FirebaseUtil {
                             ArrayList<Integer> milestones = (ArrayList<Integer>) doc.get("milestones");
                             Long maxAttendees = (doc.getLong("maxAttendees"));
                             boolean trackLocation = doc.getBoolean("trackLocation");
+                            ArrayList<LatLng> checkInLocations = (ArrayList<LatLng>) doc.get("checkInLocations");
                             Log.d("Firestore", String.format("Event(%s, %s) fetched", eventName,
                                     qrCode));
-                            eventsList.add(new Event(eventName, eventDescription, eventBanner, qrCode, eventStart, eventEnd, location, bannerQR, milestones, maxAttendees, trackLocation));
+                            eventsList.add(new Event(eventName, eventDescription, eventBanner, qrCode, eventStart, eventEnd, location, bannerQR, milestones, maxAttendees, trackLocation, checkInLocations));
                         }
                         Log.d("Firestore", String.format("Fetched %d events", eventsList.size()));
                         callback.onCallback(eventsList);
@@ -317,10 +320,12 @@ public class FirebaseUtil {
                 ArrayList<Integer> milestones = (ArrayList<Integer>) doc.get("milestones");
                 Long maxAttendees = doc.getLong("maxAttendees");
                 Boolean trackLocation = doc.getBoolean("trackLocation");
+                ArrayList<LatLng> checkInLocations = (ArrayList<LatLng>) doc.get("checkInLocations");
 
                 Log.d("Firestore", String.format("Event(%s, %s) fetched", eventName,
                         qrCode));
-                Event event = new Event(eventName, eventDescription, eventBanner, qrCode, eventStart, eventEnd, location, bannerQR, milestones, maxAttendees, trackLocation);
+
+                Event event = new Event(eventName, eventDescription, eventBanner, qrCode, eventStart, eventEnd, location, bannerQR, milestones, maxAttendees, trackLocation, checkInLocations);
                 successListener.onSuccess(event);
             } else { //document not found, does not exist
                 failureListener.onFailure(new Exception("Event document not found"));
