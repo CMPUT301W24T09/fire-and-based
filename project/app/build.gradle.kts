@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -64,5 +65,11 @@ dependencies {
     //QR Code core dependency and android-specific implementation
     implementation("com.google.zxing:core:3.4.1")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+
+    //Google Maps API
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+
+    // For geocoding
+    implementation("com.google.maps:google-maps-services:0.9.0")
 
 }
