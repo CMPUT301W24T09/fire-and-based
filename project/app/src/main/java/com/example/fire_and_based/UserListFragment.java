@@ -20,6 +20,8 @@ import java.util.List;
  * This class is a fragment hosted by Admin Activity
  * It displays the list of users.
  * @author Sumayya
+ * To-do (UI):
+ * 1. Set up listener to click on a user and display the user profile (waiting on XML from Carson)
  */
 public class UserListFragment extends Fragment {
     protected ListView userList;

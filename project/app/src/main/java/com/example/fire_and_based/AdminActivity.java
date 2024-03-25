@@ -2,6 +2,8 @@ package com.example.fire_and_based;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,22 +13,29 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 /**
- * This activity hosts the EventListFragment
+ * This activity hosts the EventListFragment and the UserListFragment.
  * Holds the bottom navigation bar for admin view of app.
- * Requires a user to be passed in as an argument as a Parcelable with a key "user"
  * @author Sumayya
+ * To-do:
+ * 1. Need function that returns ALL images in the app
+ * 2. Need to make the images tab once firebase function done
  */
 public class AdminActivity extends AppCompatActivity {
-    private User user;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_activity);
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            user = getIntent().getParcelableExtra("user");
+        if (savedInstanceState == null) {
+            EventListFragment fragment = new EventListFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("mode", "Admin");
+            fragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container_view_admin, fragment)
+                    .setReorderingAllowed(true)
+                    .commit();
         }
 
         NavigationBarView bottomNavigationView = findViewById(R.id.bottom_nav_admin);
@@ -37,7 +46,6 @@ public class AdminActivity extends AppCompatActivity {
                 if (item.getItemId() == R.id.events_item) {
                     EventListFragment fragment = new EventListFragment();
                     Bundle bundle = new Bundle();
-                    bundle.putParcelable("user", user);
                     bundle.putString("mode", "Admin");
                     fragment.setArguments(bundle);
                     getSupportFragmentManager().beginTransaction()

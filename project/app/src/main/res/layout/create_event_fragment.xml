@@ -256,13 +256,14 @@
 
         <!-- Bottom Buttons -> QR CODES AND CREATE EVENT -->
         <LinearLayout
+            android:id="@+id/create_event_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="bottom"
             android:layout_gravity="bottom"
             android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp">
+            android:layout_marginEnd="10dp"
+            android:gravity="bottom"
+            android:orientation="vertical">
 
 
             <!-- QR Code Buttons-->
@@ -272,8 +273,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center|center_vertical"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/reuseQR"
@@ -300,15 +300,15 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/create_event_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/create_event_button"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
                 android:text="@string/create_event"
-                app:cornerRadius="10dp"
-                app:strokeWidth="0.25dp"
                 android:textSize="22dp"
-                android:layout_marginTop="10dp"/>
+                app:cornerRadius="10dp"
+                app:strokeWidth="0.25dp" />
 
 
         </LinearLayout>

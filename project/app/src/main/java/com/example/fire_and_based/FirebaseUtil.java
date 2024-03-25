@@ -29,7 +29,8 @@ import java.util.stream.Collectors;
  * or storing the necessary data in the firebase.
  * @author Ilya, Sumayya
  * To-do:
- * 1. addEventToDB and addEventAndOrganizer causing LOTS of problems
+ * 1. Need a function that gets all images from the database
+ * 2. addEventToDB and addEventAndOrganizer causing LOTS of problems
  */
 
 public class FirebaseUtil {

@@ -99,22 +99,7 @@ public class EventListFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 lastClickedIndex = position;
                 Event clickedEvent = dataList.get(lastClickedIndex);
-                Fragment fragment = null;
-                if (Objects.equals(mode, "Browse")) {
-                    fragment = new EventDetailsBrowserFragment();
-                } else {
-                    fragment = new EventDetailsFragment();
-                }
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("user", user);
-                bundle.putParcelable("event", clickedEvent);
-                bundle.putString("mode", mode);
-                fragment.setArguments(bundle);
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container_view, fragment)
-                        .setReorderingAllowed(true)
-                        .addToBackStack(null)
-                        .commit();
+                executeFragmentTransaction(clickedEvent);
             }
         });
 
@@ -174,6 +159,43 @@ public class EventListFragment extends Fragment {
                     }
                 }
             });
+        }
+    }
+
+    /**
+     * Executes a fragment transaction based on the provided event and mode.
+     * Depending on the mode, it replaces the current fragment with the appropriate event details fragment.
+     *
+     * @param clickedEvent The event associated with the clicked item.
+     */
+    private void executeFragmentTransaction(Event clickedEvent) {
+        if (Objects.equals(mode, "Admin")) {
+            Fragment fragment = new AdminEventDetailsFragment();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("event", clickedEvent);
+            fragment.setArguments(bundle);
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container_view_admin, fragment)
+                    .setReorderingAllowed(true)
+                    .addToBackStack(null)
+                    .commit();
+        } else {
+            Fragment fragment = null;
+            if (Objects.equals(mode, "Browse")) {
+                fragment = new EventDetailsBrowserFragment();
+            } else {
+                fragment = new EventDetailsFragment();
+            }
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            bundle.putParcelable("event", clickedEvent);
+            bundle.putString("mode", mode);
+            fragment.setArguments(bundle);
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container_view, fragment)
+                    .setReorderingAllowed(true)
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 
