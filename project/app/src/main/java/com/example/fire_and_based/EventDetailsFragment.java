@@ -34,7 +34,7 @@ import java.util.Objects;
  * Note that mode may be either "Attending" or "Organizing"
  *
  * To-do (UI):
- * 1. Checked in status is not displaying properly
+ * 1. Delay in displaying checked in status
  * 2. Make edit details button functional
  *
  * @author Sumayya
@@ -70,14 +70,6 @@ public class EventDetailsFragment extends Fragment {
 
          */
 
-        ImageView backArrow = view.findViewById(R.id.back_arrow);
-        backArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getParentFragmentManager().popBackStack();
-            }
-        });
-
         Button checkedInButton = view.findViewById(R.id.checked_in_button);
         Button editDetailsButton = view.findViewById(R.id.edit_details_button);
         Button attendeeListButton = view.findViewById(R.id.attendee_list_button);
@@ -112,6 +104,15 @@ public class EventDetailsFragment extends Fragment {
                 }
             });
         }
+
+        ImageView backArrow = view.findViewById(R.id.back_arrow);
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getParentFragmentManager().popBackStack();
+            }
+        });
+
 
         viewPager = view.findViewById(R.id.event_details_viewpager);
         adapter = new EventDetailsAdapter(this, event, mode);

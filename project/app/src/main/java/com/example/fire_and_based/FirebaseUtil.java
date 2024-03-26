@@ -362,7 +362,7 @@ public class FirebaseUtil {
                 String eventName = doc.getString("eventName");
                 String eventDescription = doc.getString("eventDescription");
                 String eventBanner = doc.getString("eventBanner");
-                String qrCode = doc.getString("QRcode");
+                String qrCode = doc.getId();
                 Long eventStart = doc.getLong("eventStart");
                 Long eventEnd = doc.getLong("eventEnd");
                 String location = doc.getString("location");
@@ -717,6 +717,11 @@ public class FirebaseUtil {
         db.runTransaction((Transaction.Function<Void>) transaction -> {
                     DocumentSnapshot eventSnapshot = transaction.get(eventDoc);
                     DocumentSnapshot userSnapshot = transaction.get(userDoc);
+
+                    List<String> attendees = (List<String>) eventSnapshot.get("attendees");
+                    if (attendees == null || !attendees.contains(user)) {
+                        throw new FirebaseFirestoreException("User is not registered for the event", FirebaseFirestoreException.Code.ABORTED);
+                    }
 
                     Map<String, Long> users = (Map<String, Long>) eventSnapshot.get("checkedInUsers");
 

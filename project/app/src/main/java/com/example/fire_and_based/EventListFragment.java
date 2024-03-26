@@ -31,6 +31,7 @@ import java.util.Objects;
  * Also requires a mode to be passed in as an argument as a String with a key "mode"
  * Note that a mode may be "Browse", "Attending", "Organizing", or "Admin"
  * @author Sumayya, Ilya
+ * Issue: if you can a qr code for an event you're not registered in, it takes a long, long time for a failure message to pop up
  */
 
 public class EventListFragment extends Fragment {
@@ -50,9 +51,14 @@ public class EventListFragment extends Fragment {
                 } else {
                     db = FirebaseFirestore.getInstance();
                     FirebaseUtil.addEventAndCheckedInUser(db, result.getContents(), user.getDeviceID(), aVoid -> {
-                        Toast.makeText(requireContext(), "Checked in!" + result.getContents(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(requireContext(), "Checked in!", Toast.LENGTH_LONG).show();
+                        FirebaseUtil.getEvent(db, result.getContents(), event -> {
+                            executeFragmentTransaction(event, "Attending");
+                        }, e -> {
+                            Log.e("FirebaseError", "Error fetching event: " + e.getMessage());
+                        });
                     }, e -> {
-                        Toast.makeText(requireContext(), "Failed " + result.getContents(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(requireContext(), "Failed. Make sure you are registered.", Toast.LENGTH_LONG).show();
                     });
                 }
             }
@@ -102,7 +108,7 @@ public class EventListFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 lastClickedIndex = position;
                 Event clickedEvent = dataList.get(lastClickedIndex);
-                executeFragmentTransaction(clickedEvent);
+                executeFragmentTransaction(clickedEvent, mode);
             }
         });
 
@@ -170,8 +176,9 @@ public class EventListFragment extends Fragment {
      * Depending on the mode, it replaces the current fragment with the appropriate event details fragment.
      *
      * @param clickedEvent The event associated with the clicked item.
+     * @param mode the mode ("Browse", "Attending", "Organizing", "Admin")
      */
-    private void executeFragmentTransaction(Event clickedEvent) {
+    private void executeFragmentTransaction(Event clickedEvent, String mode) {
         if (Objects.equals(mode, "Admin")) {
             Fragment fragment = new AdminEventDetailsFragment();
             Bundle bundle = new Bundle();
