@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class EventTest {
 
-    Event event = new Event("Default Event Name", "Default Event Description", "Default Banner URL", "DefaultQRCode", 0, 1, "Edmonton", "banner", new ArrayList<Integer>(), -1, false);
+    Event event = new Event("Default Event Name", "Default Event Description", "Default Banner URL", "DefaultQRCode", 0L, 1L, "Edmonton", "banner", new ArrayList<Integer>(), -1L, false);
 
     @Test
     public void getEventNameTest() {
