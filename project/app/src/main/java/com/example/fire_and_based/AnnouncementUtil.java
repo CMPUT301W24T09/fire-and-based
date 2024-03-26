@@ -19,17 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class AnnouncementUtil {
 
-    public static String SERVER_KEY; //temporary workaround
-
-
-    /**
-     * subscribes a user to a given topic
-     * @param messageID user's FCM ID
-     * @param topic topic to subscribe to
-     */
-    public static void subscribeToTopic(String messageID, String topic){
-
-    }
+    public static String SERVER_KEY;
 
     /**
      * Can be used to send a message to a given user or all users subscribed to a topic
@@ -61,6 +51,10 @@ public class AnnouncementUtil {
         }
     }
 
+    /**
+     * subscribes the current user to a given topic
+     * @param topic topic to subscribe to
+     */
     public static void subscribeToTopic(String topic){
         FirebaseMessaging.getInstance().subscribeToTopic(topic)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
