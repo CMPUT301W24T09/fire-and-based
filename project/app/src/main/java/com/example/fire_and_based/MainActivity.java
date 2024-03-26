@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
                             FirebaseUtil.addUserToDB(db, currentUser,
                                     aVoid -> {
                                         Log.d(TAG, "User added successfully");
+                                        AnnouncementUtil.subscribeToTopic("system");
                                     },
                                     e -> {
                                         Log.d("Failed to add user: ", e.getMessage());
