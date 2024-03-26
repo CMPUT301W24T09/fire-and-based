@@ -4,6 +4,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -33,7 +34,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public static MapFragment newInstance(Event event) {
         MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
-        args.putParcelable("event", event); // Make sure your Event class implements Parcelable
+        args.putParcelable("event", event);
         fragment.setArguments(args);
         return fragment;
     }
