@@ -19,8 +19,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class AnnouncementUtil {
 
-    public static String SERVER_KEY;
-
     /**
      * Can be used to send a message to a given user or all users subscribed to a topic
      * @param recipient a users device ID, or a topic prefixed with /topics/
@@ -35,7 +33,7 @@ public class AnnouncementUtil {
                 .url("https://fcm.googleapis.com/fcm/send")
                 .post(body)
                 .addHeader("content-type", "application/json")
-                .addHeader("authorization", "key=" + SERVER_KEY)
+                .addHeader("authorization", "key=" + BuildConfig.API_KEY)
                 .build();
         try {
             Response response = client.newCall(request).execute();
