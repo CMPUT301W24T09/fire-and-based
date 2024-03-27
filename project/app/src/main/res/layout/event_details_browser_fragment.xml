@@ -1,49 +1,109 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/back_arrow_browser"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/baseline_arrow_back_24" />
-
-    <ImageView
-        android:id="@+id/banner_image_browser"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <TextView
         android:id="@+id/event_title_browser"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="24sp" />
+        android:layout_width="369dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="112dp"
+        android:layout_marginEnd="24dp"
+        android:fontFamily="@font/roboto_bold"
+        android:text="Minecraft Club"
+        android:textSize="40sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/event_date_browser"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto"
         android:text="March 22, 2024 @ 6PM"
-        android:textSize="18sp" />
+        android:textColor="#808080"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/event_location_browser"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.265"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_title_browser"
+        app:layout_constraintVertical_bias="0.7" />
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/event_location_browser"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:fontFamily="@font/roboto"
         android:text="ETLC 1-013"
-        android:textSize="18sp" />
+        android:textColor="#808080"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/location_icon_browser"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_title_browser"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/join_event_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="135dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="52dp"
         android:backgroundTint="?attr/colorPrimary"
-        android:text="Join Event" />
+        android:text="Join Event"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.889"
+        app:layout_constraintStart_toEndOf="@+id/event_location_browser"
+        app:layout_constraintTop_toBottomOf="@+id/event_title_browser" />
 
     <TextView
         android:id="@+id/event_description_browser"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_width="385dp"
+        android:layout_height="147dp"
+        android:layout_marginTop="28dp"
+        android:fontFamily="@font/roboto"
+        android:text="TextView"
+        android:textSize="23sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_location_browser" />
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/calendar_icon_browser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        app:layout_constraintEnd_toStartOf="@+id/event_date_browser"
+        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_title_browser"
+        app:srcCompat="@drawable/baseline_calendar_month_24" />
+
+    <ImageView
+        android:id="@+id/location_icon_browser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toStartOf="@+id/event_location_browser"
+        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calendar_icon_browser"
+        app:srcCompat="@drawable/location_gray" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/back_arrow_browser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="4dp"
+        android:clickable="true"
+        app:backgroundTint="#808080"
+        app:fabCustomSize="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#FFFFFF"
+        app:srcCompat="@drawable/back_gray" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

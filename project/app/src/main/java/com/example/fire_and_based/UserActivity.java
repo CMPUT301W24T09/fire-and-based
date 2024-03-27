@@ -1,13 +1,12 @@
 package com.example.fire_and_based;
 
+import static android.app.PendingIntent.getActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-
-import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,13 +33,21 @@ public class UserActivity extends AppCompatActivity {
             user = getIntent().getParcelableExtra("user");
         }
 
+
         ImageView createEventButton = findViewById(R.id.create_event_button);
         createEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(UserActivity.this, CreateEventActivity.class);
-                intent.putExtra("user", user);
-                startActivity(intent);
+                CreateEventFragment fragment = new CreateEventFragment();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("user", user);
+                fragment.setArguments(bundle);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container_view, fragment)
+                        .setReorderingAllowed(true)
+                        .addToBackStack(null)
+                        .commit();
+
             }
         });
 
@@ -93,4 +100,6 @@ public class UserActivity extends AppCompatActivity {
                 .setReorderingAllowed(true)
                 .commit();
     }
+
+
 }

@@ -87,7 +87,9 @@
                             android:id="@+id/roundedImageView"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:scaleType="centerCrop" />
+                            android:scaleType="centerCrop"
+                            android:contentDescription="image" />
+
 
                         <Button
                             android:layout_width="30dp"
@@ -99,6 +101,7 @@
                             android:text="Real"
                             android:layout_marginTop="4dp"
                             android:layout_marginEnd="2dp"
+                            android:id="@+id/imageButton"
                             />
 <!--                        IDK WHY THE FUCKING BUTTON IS NOT CHANGING -->
                         <!-- android:layout_marginTop="-15dp"-->
