@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,9 +19,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
  * This fragment is hosted by UserActivity.
  * It can be accessed by clicking the "Attendee List" button in EventDetailsFragment when the fragment is in organizing mode.
  * It also hosts the AttendeeListFragment.
- * To-do (UI):
- * 1. Fix up toolbar, need back button and count of attendees.
- * 2. When Firebase steps done, need to make a UserArrayAdapter
+ * @author Sumayya
  */
 public class AttendeeFragment extends Fragment {
     private Event event;
@@ -39,6 +38,14 @@ public class AttendeeFragment extends Fragment {
         viewPager = view.findViewById(R.id.attendee_list_viewpager);
         adapter = new AttendeeListAdapter(this, event);
         viewPager.setAdapter(adapter);
+
+        ImageView backArrow = view.findViewById(R.id.back_arrow_attendee_fragment);
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getParentFragmentManager().popBackStack();
+            }
+        });
 
         TabLayout tabLayout = view.findViewById(R.id.attendee_list_tablayout);
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {

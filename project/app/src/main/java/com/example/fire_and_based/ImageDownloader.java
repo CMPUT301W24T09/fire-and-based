@@ -15,6 +15,7 @@ import com.google.firebase.storage.StorageReference;
 
 /**
  * This class implements the functionality for downloading images.
+ * @author Aiden
  */
 public class ImageDownloader
 {

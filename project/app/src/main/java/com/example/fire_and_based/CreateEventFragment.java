@@ -55,10 +55,10 @@ import java.util.Random;
 /**
  * This class is the activity for creating a new event.
  * It can be accessed by clicking the create event button on UserActivity.
- * To-do (Firebase):
- * 1. (I think?) FirebaseUtil.addEventToDB needs to be updated to add event to user's list of organizing events
- * 2. AIDEN: run the app and click the blue plus in middle of screen -> you see the white rectangle at the top, its an imageview, i want you to set an onclick for image uploading there
- * 3. ILYA: run the app and see the two QR code buttons, there is zero code for them and no id's either go to create_event_and_edit.xml and connect those buttons to the qr code upload / generate functionality
+ * @author Tyler, Ilya, Sumayya
+ * To-do:
+ * 1. AIDEN: run the app and click the blue plus in middle of screen -> you see the white rectangle at the top, its an imageview, i want you to set an onclick for image uploading there
+ * 2. ILYA: run the app and see the two QR code buttons, there is zero code for them and no id's either go to create_event_and_edit.xml and connect those buttons to the qr code upload / generate functionality
  */
 public class CreateEventFragment extends Fragment {
     private User user;
@@ -79,9 +79,8 @@ public class CreateEventFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
-    {
-        View view = inflater.inflate(R.layout.create_event_and_edit_fragment, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.create_event_fragment, container, false);
 
         NavigationBarView bottomNavigationView = getActivity().findViewById(R.id.bottom_nav);
         bottomNavigationView.setVisibility(View.GONE);
@@ -94,7 +93,7 @@ public class CreateEventFragment extends Fragment {
         }
 
         // get all textfields
-        EditText eventName = view.findViewById(R.id.event_name_editable);
+        EditText eventName = view.findViewById(R.id.announcement_editable);
         EditText eventDescription = view.findViewById(R.id.event_description_editable);
         EditText eventDate = view.findViewById(R.id.event_date_editable); // Make sure to replace 'your_date_button_id' with the actual ID of your button in the layout
         EditText eventTime = view.findViewById(R.id.event_time_editable); // Initialize it as per your actual layout component
@@ -292,6 +291,7 @@ public class CreateEventFragment extends Fragment {
                     Date date = sdf.parse(combinedDateTime);
                     long timeSince1970 = date.getTime();  // this is the time we store n the database -> put in the event object when its created
 
+
                     String imageUrl = "events/" + QRCode;
 
                     //IMAGE UPLOAD TO FIREBASE
@@ -309,7 +309,7 @@ public class CreateEventFragment extends Fragment {
                     });
                     // EVENT CREATION GOES HERE
                     // we can create the event object
-                    Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, timeSince1970, eventLocationString, null, null, 0L, false, null);
+                    Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, timeSince1970, eventLocationString, imageUrl, null, 0L, false);
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
                     toast("adding event to db  ) ");
 
@@ -320,6 +320,11 @@ public class CreateEventFragment extends Fragment {
                             Log.println(Log.DEBUG, "EventCreation", "New event with id: " + QRCode + " added");
                             getParentFragmentManager().popBackStack();
 
+                                FirebaseUtil.addEventAndOrganizer(db, newEvent.getQRcode(), user.getDeviceID(), aVoid -> {
+                                    Log.d("Firebase Success", "User registered successfully");
+                                }, e -> {
+                                    Log.e("FirebaseError", "Error setting up organizer of event " + e.getMessage());
+                                });
 
                             //TODO exit out maybe?
                         }

@@ -44,6 +44,7 @@ import java.util.UUID;
 /**
  * This class is the main activity. It displays the loading page for the app
  * while the app fetches the user info. It then sends you to UserActivity.
+ * @author Tyler, Carson, Sumayya, Ilya
  */
 public class MainActivity extends AppCompatActivity {
     private static User currentUser;
@@ -112,9 +113,14 @@ public class MainActivity extends AppCompatActivity {
                         currentUser = user;
                         Log.d(TAG, String.format("Username: %s UserID: %s", currentUser.getFirstName(), currentUser.getDeviceID()));
 
-                        Intent intent = new Intent(MainActivity.this, UserActivity.class);
-                        intent.putExtra("user", currentUser);
-                        startActivity(intent);
+                        if (user.isAdmin()) {
+                            Intent intent = new Intent(MainActivity.this, AdminActivity.class);
+                            startActivity(intent);
+                        } else {
+                            Intent intent = new Intent(MainActivity.this, UserActivity.class);
+                            intent.putExtra("user", currentUser);
+                            startActivity(intent);
+                        }
                     },
                     e -> {
                         Log.d(TAG, e.toString());

@@ -16,9 +16,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 /**
- * This activity hosts the EventListFragment, ViewProfileFragment, EventDetailsFragment, and AttendeeFragment.
+ * This activity hosts the EventListFragment, ViewProfileFragment, EventDetailsFragment, EventDetailsBrowserFragment, CreateEventFragment, and AttendeeFragment.
  * Holds the bottom navigation bar for the entire app.
  * Requires a user to be passed in as an argument as a Parcelable with a key "user"
+ * @author Sumayya, Tyler
+ * To-do (UI):
+ * 1. Fix ugly plus button
+ * 2. Highlight title in addition to icon when tab is selected in bottom nav.
  */
 public class UserActivity extends AppCompatActivity {
     private User user;
@@ -87,7 +91,7 @@ public class UserActivity extends AppCompatActivity {
     /**
      * Replaces the current fragment with a new instance of EventListFragment based on the specified mode.
      *
-     * @param mode The mode to set as an argument for the new fragment
+     * @param mode The mode to set as an argument for the new fragment ("Browse", "Attending", or "Organizing")
      */
     private void replaceEventListFragment(String mode) {
         EventListFragment fragment = new EventListFragment();

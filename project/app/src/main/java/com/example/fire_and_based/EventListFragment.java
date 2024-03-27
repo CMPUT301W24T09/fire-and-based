@@ -25,16 +25,13 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * This class is a fragment hosted by the UserActivity.
- * It displays the list of events for the Browse tab, the Attending tab, and the Organizing tab.
+ * This class is a fragment hosted by the UserActivity and/or Admin Activity
+ * It displays the list of events.
  * Requires a user to be passed in as an argument as a Parcelable with a key "user"
  * Also requires a mode to be passed in as an argument as a String with a key "mode"
- * Note that a mode may be "Browse", "Attending", or "Organizing"
- * To-do (Firebase):
- * 1. need a function that gets all events, EXCEPT those events that the user is organizing or is attending.
- * 2. need a function that gets all events that the user is organizing
- * To-do (UI):
- * 1. Ask Ilya about QR code scanner, see below
+ * Note that a mode may be "Browse", "Attending", "Organizing", or "Admin"
+ * @author Sumayya, Ilya
+ * Issue: if you can a qr code for an event you're not registered in, it takes a long, long time for a failure message to pop up
  */
 
 public class EventListFragment extends Fragment {
@@ -46,14 +43,23 @@ public class EventListFragment extends Fragment {
     protected String mode;
     protected FirebaseFirestore db;
 
-    // ask Ilya what to do about this
     private final ActivityResultLauncher<ScanOptions> qrLauncher = registerForActivityResult(
             new ScanContract(),
             result -> {
                 if (result.getContents() == null) {
                     Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(requireContext(), "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                    db = FirebaseFirestore.getInstance();
+                    FirebaseUtil.addEventAndCheckedInUser(db, result.getContents(), user.getDeviceID(), aVoid -> {
+                        Toast.makeText(requireContext(), "Checked in!", Toast.LENGTH_LONG).show();
+                        FirebaseUtil.getEvent(db, result.getContents(), event -> {
+                            executeFragmentTransaction(event, "Attending");
+                        }, e -> {
+                            Log.e("FirebaseError", "Error fetching event: " + e.getMessage());
+                        });
+                    }, e -> {
+                        Toast.makeText(requireContext(), "Failed. Make sure you are registered.", Toast.LENGTH_LONG).show();
+                    });
                 }
             }
     );
@@ -70,15 +76,23 @@ public class EventListFragment extends Fragment {
         }
 
         TextView toolbarTitle = view.findViewById(R.id.event_list_toolbar_title);
-        toolbarTitle.setText(String.format("%s Events", mode));
+        if (Objects.equals(mode, "Admin")) {
+            toolbarTitle.setText("Browse Events");
+        } else {
+            toolbarTitle.setText(String.format("%s Events", mode));
+        }
 
         ImageView qrscannerButton = view.findViewById(R.id.qr_code_scanner);
-        qrscannerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchQRScanner();
-            }
-        });
+        if (Objects.equals(mode, "Admin")) {
+            qrscannerButton.setVisibility(View.GONE);
+        } else {
+            qrscannerButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    launchQRScanner();
+                }
+            });
+        }
 
         dataList = new ArrayList<>();
         eventList = view.findViewById(R.id.event_list);
@@ -94,22 +108,7 @@ public class EventListFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 lastClickedIndex = position;
                 Event clickedEvent = dataList.get(lastClickedIndex);
-                Fragment fragment = null;
-                if (Objects.equals(mode, "Browse")) {
-                    fragment = new EventDetailsBrowserFragment();
-                } else {
-                    fragment = new EventDetailsFragment();
-                }
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("user", user);
-                bundle.putParcelable("event", clickedEvent);
-                bundle.putString("mode", mode);
-                fragment.setArguments(bundle);
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container_view, fragment)
-                        .setReorderingAllowed(true)
-                        .addToBackStack(null)
-                        .commit();
+                executeFragmentTransaction(clickedEvent, mode);
             }
         });
 
@@ -122,7 +121,7 @@ public class EventListFragment extends Fragment {
      */
     public void updateEventList() {
         if (Objects.equals(mode, "Browse")) {
-            FirebaseUtil.getAllEvents(db, new FirebaseUtil.getAllEventsCallback() {
+            FirebaseUtil.getAllEventsUserIsNotIn(db, user.getDeviceID(), new FirebaseUtil.getAllEventsCallback() {
                 @Override
                 public void onCallback(List<Event> list) {
                     dataList.clear();
@@ -147,17 +146,66 @@ public class EventListFragment extends Fragment {
         }
 
         if (Objects.equals(mode, "Organizing")) {
-            // must be updated when we have the Firebase function to get list of events user is organizing
+            FirebaseUtil.getUserOrganizingEvents(db, user.getDeviceID(), events -> {
+                dataList.clear();
+                for (Event event : events) {
+                    dataList.add(event);
+                    eventAdapter.notifyDataSetChanged();
+                }
+            }, e -> {
+                Log.e("FirebaseError", "Error fetching organizing events: " + e.getMessage());
+            });
+        }
+
+        if (Objects.equals(mode, "Admin")) {
             FirebaseUtil.getAllEvents(db, new FirebaseUtil.getAllEventsCallback() {
                 @Override
                 public void onCallback(List<Event> list) {
                     dataList.clear();
-                    for (Event event : list) {
+                    for (Event event: list) {
                         dataList.add(event);
                         eventAdapter.notifyDataSetChanged();
                     }
                 }
             });
+        }
+    }
+
+    /**
+     * Executes a fragment transaction based on the provided event and mode.
+     * Depending on the mode, it replaces the current fragment with the appropriate event details fragment.
+     *
+     * @param clickedEvent The event associated with the clicked item.
+     * @param mode the mode ("Browse", "Attending", "Organizing", "Admin")
+     */
+    private void executeFragmentTransaction(Event clickedEvent, String mode) {
+        if (Objects.equals(mode, "Admin")) {
+            Fragment fragment = new AdminEventDetailsFragment();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("event", clickedEvent);
+            fragment.setArguments(bundle);
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container_view_admin, fragment)
+                    .setReorderingAllowed(true)
+                    .addToBackStack(null)
+                    .commit();
+        } else {
+            Fragment fragment = null;
+            if (Objects.equals(mode, "Browse")) {
+                fragment = new EventDetailsBrowserFragment();
+            } else {
+                fragment = new EventDetailsFragment();
+            }
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            bundle.putParcelable("event", clickedEvent);
+            bundle.putString("mode", mode);
+            fragment.setArguments(bundle);
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container_view, fragment)
+                    .setReorderingAllowed(true)
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 

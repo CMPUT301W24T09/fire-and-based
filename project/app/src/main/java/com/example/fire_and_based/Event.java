@@ -11,8 +11,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Represents an event with a name, description, banner image, and a QR code.
+ * Represents an event.
  * This class implements Parcelable to allow event objects to be passed between activities.
+ * @author Ilya, Tyler
  */
 public class Event implements Parcelable {
     private String eventName;
@@ -26,7 +27,7 @@ public class Event implements Parcelable {
     private ArrayList<Integer> milestones;
     private Long maxAttendees;
     private Boolean trackLocation;
-    private ArrayList<LatLng> checkInLocations;
+
 
     /**
      * Constructs a new Event with the specified details.
@@ -43,7 +44,7 @@ public class Event implements Parcelable {
      * @param maxAttendees     The maximum number of attendees for the event.
      * @param trackLocation    Whether the event is tracking location.
      */
-    Event(String eventName, String eventDescription, String eventBanner, String QRcode, Long startTimeStamp, Long endTimeStamp, String location, String bannerQR, ArrayList<Integer> milestones, Long maxAttendees, Boolean trackLocation, ArrayList<LatLng> checkInLocations) {
+    Event(String eventName, String eventDescription, String eventBanner, String QRcode, Long startTimeStamp, Long endTimeStamp, String location, String bannerQR, ArrayList<Integer> milestones, Long maxAttendees, Boolean trackLocation) {
         this.eventName = eventName;
         this.eventDescription = eventDescription;
         this.eventBanner = eventBanner;
@@ -55,7 +56,6 @@ public class Event implements Parcelable {
         this.milestones = milestones;
         this.maxAttendees = maxAttendees;
         this.trackLocation = trackLocation;
-        this.checkInLocations = checkInLocations;
     }
 
     /**
