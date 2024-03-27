@@ -58,14 +58,11 @@ public class AnnouncementUtil {
      */
     public static void subscribeToTopic(String topic){
         FirebaseMessaging.getInstance().subscribeToTopic(topic)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NotNull Task<Void> task) {
-                        if (!task.isSuccessful()) {
-                            Log.e("AnnouncementUtil", "Failed to subscribe to " + topic);
-                        } else {
-                            Log.d("Announcement", "Subscribed to " + topic);
-                        }
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.e("AnnouncementUtil", "Failed to subscribe to " + topic);
+                    } else {
+                        Log.d("Announcement", "Subscribed to " + topic);
                     }
                 });
     }
