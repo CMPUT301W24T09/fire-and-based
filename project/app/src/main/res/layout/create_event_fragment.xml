@@ -122,7 +122,7 @@
                     android:textSize="18dp"/>
 
                 <EditText
-                    android:id="@+id/event_name_editable"
+                    android:id="@+id/notifcation_editable"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter Event name"

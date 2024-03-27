@@ -7,22 +7,22 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/event_name_editable"
-        android:layout_width="300dp"
-        android:layout_height="40dp"
+        android:id="@+id/notifcation_editable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         android:hint="Send a notification to your event"
         android:inputType="text"
         android:maxLength="50"
-        app:layout_constraintBottom_toTopOf="@+id/post"
+        app:layout_constraintBottom_toTopOf="@+id/post_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.64" />
 
     <ListView
-        android:id="@+id/listView"
-        android:layout_width="402dp"
-        android:layout_height="611dp"
+        android:id="@+id/announcements_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,24 +30,24 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/profile_picture_frag"
-        android:layout_width="54dp"
-        android:layout_height="55dp"
+        android:id="@+id/profile_picture_notif"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toStartOf="@+id/event_name_editable"
+        app:layout_constraintEnd_toStartOf="@+id/notifcation_editable"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/circle_white" />
 
     <Button
-        android:id="@+id/post"
-        android:layout_width="80dp"
-        android:layout_height="43dp"
+        android:id="@+id/post_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:text="Post"
-        app:layout_constraintBottom_toTopOf="@+id/listView"
+        app:layout_constraintBottom_toTopOf="@+id/announcements_list"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
