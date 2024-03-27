@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
@@ -7,6 +9,8 @@ android {
     namespace = "com.example.fire_and_based"
     compileSdk = 34
 
+    android.buildFeatures.buildConfig = true
+
     defaultConfig {
         applicationId = "com.example.fire_and_based"
         minSdk = 24
@@ -15,6 +19,13 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val getApiKey: String by lazy {
+            val properties = Properties()
+            properties.load(rootProject.file("local.properties").inputStream())
+            properties.getProperty("API_KEY")
+        }
+        buildConfigField("String", "API_KEY", "\"${getApiKey}\"")
     }
 
     buildTypes {
