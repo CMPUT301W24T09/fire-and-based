@@ -9,11 +9,13 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * This fragment is hosted by the EventDetailsFragment.
@@ -73,6 +75,11 @@ public class AnnouncementsFragment extends Fragment {
         }, e -> {
             Log.e("FirebaseError", "Error fetching user events: " + e.getMessage());
         });
+
+        ConstraintLayout newPost = view.findViewById(R.id.new_post);
+        if (Objects.equals(mode, "Attending")) {
+            newPost.setVisibility(View.GONE);
+        }
 
         return view;
     }
