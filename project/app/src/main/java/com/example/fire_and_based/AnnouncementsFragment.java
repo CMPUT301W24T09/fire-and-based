@@ -97,11 +97,12 @@ public class AnnouncementsFragment extends Fragment {
                     if (announcement_content.isEmpty()) {
                         Toast.makeText(requireContext(), "Notification may not be empty", Toast.LENGTH_LONG).show();
                     } else {
-                        Announcement announcement = new Announcement(event.getEventName(), announcement_content, System.currentTimeMillis(), user.getDeviceID(), event.getQRcode());
-                        FirebaseUtil.saveAnnouncement(db, event.getQRcode(), announcement, aVoid -> {
+                        AnnouncementUtil.newAnnouncement(db, announcement_content, event, aVoid -> {
                             announcement_textview.setText("");
+                            Toast.makeText(AnnouncementsFragment.this.getActivity(), "Announcement issued successfully", Toast.LENGTH_SHORT).show();
                         }, e -> {
-                            Log.e("FirebaseError", "Error saving announcement " + e.getMessage());
+                            Log.e("FirebaseError", "Error creating announcement" + e.getMessage());
+                            Toast.makeText(AnnouncementsFragment.this.getActivity(), "An error has occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         });
                     }
                 }
