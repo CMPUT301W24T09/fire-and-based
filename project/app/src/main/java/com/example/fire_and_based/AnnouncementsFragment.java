@@ -1,6 +1,8 @@
 package com.example.fire_and_based;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -103,7 +105,7 @@ public class AnnouncementsFragment extends Fragment {
                         }, e -> {
                             Log.e("FirebaseError", "Error creating announcement" + e.getMessage());
                             Toast.makeText(AnnouncementsFragment.this.getActivity(), "An error has occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        });
+                        }, new Handler(Looper.getMainLooper()));
                     }
                 }
             });

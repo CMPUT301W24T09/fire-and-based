@@ -20,6 +20,9 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.jetbrains.annotations.NotNull;
 
+import android.os.Handler;
+import android.os.Looper;
+
 public class AnnouncementUtil {
 
     protected static String key = BuildConfig.API_KEY;
@@ -69,16 +72,23 @@ public class AnnouncementUtil {
                 });
     }
 
-    public static void newAnnouncement(FirebaseFirestore db, String content, Event event, OnSuccessListener<Void> successListener, OnFailureListener failureListener){
+
+
+    public static void newAnnouncement(FirebaseFirestore db, String content, Event event, OnSuccessListener<Void> successListener, OnFailureListener failureListener, Handler handler){
         Announcement announcement = new Announcement(event.getEventName(), content, System.currentTimeMillis()/1000L, MainActivity.getDeviceID(), event.getQRcode());
         FirebaseUtil.saveAnnouncement(db, event.getQRcode(), announcement, aVoid -> {
-            boolean success = sendToRecipient(announcement, "/topics/"+event.getQRcode());
-            if (!success){
-                failureListener.onFailure(new Exception("Failed to send notification"));
-            } else {
-                successListener.onSuccess(null);
-            }
+            new Thread(() -> {
+                boolean success = sendToRecipient(announcement, "/topics/"+event.getQRcode());
+                handler.post(() -> {
+                    if (!success){
+                        failureListener.onFailure(new Exception("Failed to send notification"));
+                    } else {
+                        successListener.onSuccess(null);
+                    }
+                });
+            }).start();
         }, failureListener);
     }
+
 
 }
