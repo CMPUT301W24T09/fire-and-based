@@ -50,7 +50,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
             /**
              * Downloads event banner and displays
              */
-            ImageView imagePreview = view.findViewById(R.id.event_banner_preview);
+            ImageView imagePreview = view.findViewById(R.id.imageView5);
             if (event.getEventBanner() != null)
             {
                 imageDownloader.getBannerBitmap(event,imagePreview);

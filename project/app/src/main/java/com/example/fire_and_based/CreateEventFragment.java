@@ -1,10 +1,17 @@
 package com.example.fire_and_based;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,23 +21,35 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -49,17 +68,43 @@ public class CreateEventFragment extends Fragment {
     public String timeString;
     public String dateString;
 
-    public  String imageUrl;
+   // private ImageView previewBanner;
+    private Uri imageUri;
+    Context context = getContext();
+
+    StorageReference fireRef = FirebaseStorage.getInstance().getReference();
+
+//    ActivityResultLauncher<Intent> customActivityResultLauncher =
+//            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+//                    new ActivityResultCallback<ActivityResult>() {
+//        @Override
+//        public void onActivityResult(ActivityResult result)
+//        {//if (result.getResultCode() == RESULT_OK)
+//            try {
+//                if (result.getData() != null)
+//                {
+//                    imageUri = result.getData().getData();
+//                    //buttonUpload.setEnabled(true);
+//                    Glide.with(context).load(imageUri).into(previewBanner);
+//                }
+//            }
+//            catch(Exception e)
+//            {Toast.makeText(requireContext(), "Please Select An Image", Toast.LENGTH_LONG).show();}
+//        }
+//    });
+
+
+
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.create_event_and_edit_fragment, container, false);
 
         NavigationBarView bottomNavigationView = getActivity().findViewById(R.id.bottom_nav);
         bottomNavigationView.setVisibility(View.GONE);
 
         // get user being passed into activity
-
 
 
         if (getArguments() != null) {
@@ -104,7 +149,6 @@ public class CreateEventFragment extends Fragment {
         });
 
 
-
         // Onclick for the event time to open a clock ui for them to select a time
         eventTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,14 +178,6 @@ public class CreateEventFragment extends Fragment {
         });
 
 
-
-
-
-
-
-
-
-
         //TODO The QR Code viewer class got deleted, up to you if/how you want to display it
 //        previewQRImage = findViewById(R.id.create_event_preview_qr_image);
 //        previewQRImage.setOnClickListener(new View.OnClickListener() {
@@ -156,7 +192,8 @@ public class CreateEventFragment extends Fragment {
 //        });
 
         Button generateQRButton = view.findViewById(R.id.generateQR);
-        generateQRButton.setOnClickListener(new View.OnClickListener() {
+        generateQRButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View v) {
                 byte[] array = new byte[7]; // length is bounded by 7
@@ -168,141 +205,177 @@ public class CreateEventFragment extends Fragment {
                 //showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
             }
         });
-
-
         Button reuseQRButton = view.findViewById(R.id.reuseQR);
-        reuseQRButton.setOnClickListener(new View.OnClickListener() {
+        reuseQRButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 launchQRScanner();
             }
         });
 
+        Button imageButton = view.findViewById(R.id.imageButton);
+        ImageView previewBanner = view.findViewById(R.id.roundedImageView);
 
 
-        ImageView bannerImage = view.findViewById(R.id.roundedImageView);
-
-        bannerImage.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v)
-           {
-               //AS PER TYLER'S INSTRUCTIONS ;)
-               imageUrl = "events/" + QRCode;
-               ImageUploader imageUploader = new ImageUploader(bannerImage, imageUrl);
-               imageUploader.uploadImage();
-           }
-        });
-
-
-
-
-
-        // Create Event Submission
-        Button createEventButton = view.findViewById(R.id.create_event_button);
-        createEventButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // HANDLE SUBMIT
-                // CREATE EVENT
-                // CHECK THAT EACH PARAMETER IS PROPER
-                String eventNameString = eventName.getText().toString();
-                String eventDescriptionString = eventDescription.getText().toString();
-                String eventDateString = eventDate.getText().toString();
-                String eventTimeString = eventTime.getText().toString();
-                String eventLocationString = eventLocation.getText().toString();
-                String eventMaxAttendeesString = eventMaxAttendees.getText().toString();
-
-
-                if (eventNameString.length() < 5){
-                    Toast.makeText(requireContext(), "Title not long enough", Toast.LENGTH_SHORT).show();
-                } else if (eventDescriptionString.length() < 5){
-                    Toast.makeText(requireContext(), "Desciption not long enough", Toast.LENGTH_SHORT).show();
-                } else if (eventDateString.length() < 1){
-                    Toast.makeText(requireContext(), "You need an event Date", Toast.LENGTH_SHORT).show();
-                } else if (eventTimeString.length() < 1){
-                    Toast.makeText(requireContext(), "You need an event time", Toast.LENGTH_SHORT).show();
-                } else if (eventLocationString.length() < 5){
-                    Toast.makeText(requireContext(), "Your event needs a location", Toast.LENGTH_SHORT).show();
-                } else if (eventMaxAttendeesString.length() < 1) {
-                    Toast.makeText(requireContext(), "Set the maximum number of attendees", Toast.LENGTH_SHORT).show();
-                } else if (QRCode == null){
-                    //TODO change above to toast function as well for readability?
-                    toast("You must generate or scan a QR Code");
-                    // add handling for qr code and banner as well
-                    // add more handling here if needed
-
-                } else {
-
-                    // convert the date to time since 1970 jan 1 to store in the database
-                    String combinedDateTime = dateString + " " + timeString;
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd M yyyy HH:mm");  // this is used for just how the string is formatted we could change this easily if we need to
-
-                    try {
-                        // Parse the string into a Date object
-                        Date date = sdf.parse(combinedDateTime);
-                        long timeSince1970 = date.getTime();  // this is the time we store n the database -> put in the event object when its created
-
-                        // EVENT CREATION GOES HERE
-                        // we can create the event object
-
-
-                        Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, timeSince1970, eventLocationString,null, null, 0L, false );
-                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-                        toast("adding event to db  ) ");
-
-                        FirebaseUtil.addEventToDB(db, newEvent, new FirebaseUtil.AddEventCallback() {
-                            @Override
-                            public void onEventAdded() {
-                                toast("Event successfully added!");
-                                Log.println(Log.DEBUG, "EventCreation", "New event with id: " + QRCode + " added");
-                                getParentFragmentManager().popBackStack();
-
-
-
-                                //TODO exit out maybe?
-                            }
-
-                            @Override
-                            public void onEventExists() {
-                                toast("ERROR: Event with the same ID already exists in the database.");
-                                Log.println(Log.DEBUG, "EventCreation", "Event with id: " + QRCode + " found a duplicate");
-                            }
-
-                            @Override
-                            public void onError(Exception e) {
-                                toast("An internal error occurred, please try again later");
-                                Log.println(Log.ERROR, "EventCreation", e.toString());
-                            }
-                        });
-//                        this.eventName = eventName;
-//                        this.eventDescription = eventDescription;
-//                        this.eventBanner = eventBanner;
-//                        this.QRcode = QRcode;
-
-
-                        // then pass to database
-                        // user was passed into this activity it is a public User object named 'user'
-                        // use that to write to database and properly store in user events
-                        // also make sure that in the event the user is an organizer :salute:
-
-
-
-
-                        Toast.makeText(requireContext(), Long.toString(timeSince1970), Toast.LENGTH_SHORT).show();
-                    } catch (ParseException e) {
-                        // Handle the possibility that parsing fails
-                        Toast.makeText(requireContext(), dateString + " " + timeString, Toast.LENGTH_SHORT).show();
+        ActivityResultLauncher<Intent> customActivityResultLauncher =
+                registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                        new ActivityResultCallback<ActivityResult>() {
+                    @Override
+            public void onActivityResult(ActivityResult result)
+            {//if (result.getResultCode() == RESULT_OK)
+                try {
+                    if (result.getData() != null)
+                    {
+                        imageUri = result.getData().getData();
+                        Toast.makeText(requireContext(), "Uri Selected", Toast.LENGTH_LONG).show();
+                        //buttonUpload.setEnabled(true);
+                        //Glide.with(context).load(imageUri).into(previewBanner);
+                        previewBanner.setImageURI(imageUri);
                     }
                 }
+                catch(Exception e)
+                {Toast.makeText(requireContext(), "Please Select An Image", Toast.LENGTH_LONG).show();}
             }
         });
+        imageButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent imageIntent = new Intent(Intent.ACTION_PICK);
+                imageIntent.setType("image/*");
+                Toast.makeText(requireContext(), "Attempting", Toast.LENGTH_LONG).show();
+                customActivityResultLauncher.launch(imageIntent);
+
+//                InputStream inputStream = null;
+//                try {
+//                    inputStream = context.getContentResolver().openInputStream(imageUri);
+//                } catch (FileNotFoundException e) {
+//                    throw new RuntimeException(e);
+//                }
+//                BitmapFactory.Options options = new BitmapFactory.Options();
+//                options.inJustDecodeBounds = true;
+//                BitmapFactory.decodeStream(inputStream, null, options);
+
+
+            }});
 
 
 
-        return view;
+                // Create Event Submission
+        Button createEventButton = view.findViewById(R.id.create_event_button);
+        createEventButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+            // HANDLE SUBMIT
+            // CREATE EVENT
+            // CHECK THAT EACH PARAMETER IS PROPER
+            String eventNameString = eventName.getText().toString();
+            String eventDescriptionString = eventDescription.getText().toString();
+            String eventDateString = eventDate.getText().toString();
+            String eventTimeString = eventTime.getText().toString();
+            String eventLocationString = eventLocation.getText().toString();
+            String eventMaxAttendeesString = eventMaxAttendees.getText().toString();
+
+
+            if (eventNameString.length() < 5) {
+                Toast.makeText(requireContext(), "Title not long enough", Toast.LENGTH_SHORT).show();
+            } else if (eventDescriptionString.length() < 5) {
+                Toast.makeText(requireContext(), "Desciption not long enough", Toast.LENGTH_SHORT).show();
+            } else if (eventDateString.length() < 1) {
+                Toast.makeText(requireContext(), "You need an event Date", Toast.LENGTH_SHORT).show();
+            } else if (eventTimeString.length() < 1) {
+                Toast.makeText(requireContext(), "You need an event time", Toast.LENGTH_SHORT).show();
+            } else if (eventLocationString.length() < 5) {
+                Toast.makeText(requireContext(), "Your event needs a location", Toast.LENGTH_SHORT).show();
+            } else if (eventMaxAttendeesString.length() < 1) {
+                Toast.makeText(requireContext(), "Set the maximum number of attendees", Toast.LENGTH_SHORT).show();
+            } else if (QRCode == null) {
+                //TODO change above to toast function as well for readability?
+                toast("You must generate or scan a QR Code");
+                // add handling for qr code and banner as well
+                // add more handling here if needed
+
+            } else {
+
+                // convert the date to time since 1970 jan 1 to store in the database
+                String combinedDateTime = dateString + " " + timeString;
+                SimpleDateFormat sdf = new SimpleDateFormat("dd M yyyy HH:mm");  // this is used for just how the string is formatted we could change this easily if we need to
+
+                try {
+                    // Parse the string into a Date object
+                    Date date = sdf.parse(combinedDateTime);
+                    long timeSince1970 = date.getTime();  // this is the time we store n the database -> put in the event object when its created
+
+                    String imageUrl = "events/" + QRCode;
+
+                    //IMAGE UPLOAD TO FIREBASE
+                    StorageReference selectionRef = fireRef.child(imageUrl);
+                    selectionRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Toast.makeText(requireContext(), "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(requireContext(), "Image Upload Error", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    // EVENT CREATION GOES HERE
+                    // we can create the event object
+                    Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, timeSince1970, eventLocationString, null, null, 0L, false);
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    toast("adding event to db  ) ");
+
+                    FirebaseUtil.addEventToDB(db, newEvent, new FirebaseUtil.AddEventCallback() {
+                        @Override
+                        public void onEventAdded() {
+                            toast("Event successfully added!");
+                            Log.println(Log.DEBUG, "EventCreation", "New event with id: " + QRCode + " added");
+                            getParentFragmentManager().popBackStack();
+
+
+                            //TODO exit out maybe?
+                        }
+
+                        @Override
+                        public void onEventExists() {
+                            toast("ERROR: Event with the same ID already exists in the database.");
+                            Log.println(Log.DEBUG, "EventCreation", "Event with id: " + QRCode + " found a duplicate");
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            toast("An internal error occurred, please try again later");
+                            Log.println(Log.ERROR, "EventCreation", e.toString());
+                        }
+                    });
+                                    //this.eventName = eventName;
+                                    //this.eventDescription = eventDescription;
+                                    //this.eventBanner = eventBanner;
+                                    //this.QRcode = QRcode;
+
+
+                                    // then pass to database
+                                    // user was passed into this activity it is a public User object named 'user'
+                                    // use that to write to database and properly store in user events
+                                    // also make sure that in the event the user is an organizer :salute:
+
+
+                                    Toast.makeText(requireContext(), Long.toString(timeSince1970), Toast.LENGTH_SHORT).show();
+                                } catch (ParseException e) {
+                                    // Handle the possibility that parsing fails
+                                    Toast.makeText(requireContext(), dateString + " " + timeString, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    });
+                    return view;
     }
-
-
 
 
 //The QR Code viewer class got deleted, up to you if/how you want to display it
@@ -321,45 +394,64 @@ public class CreateEventFragment extends Fragment {
 //        startActivity(intent);
 //    }
 
+
+
+    private Pair<Integer, Integer> getDropboxIMGSize(Uri uri)
+    {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(new File(Objects.requireNonNull(uri.getPath())).getAbsolutePath(), options);
+        int imageHeight = options.outHeight;
+        int imageWidth = options.outWidth;
+        return new Pair<>(imageWidth, imageHeight);
+
+    }
+//    Pair<Integer, Integer> size = getDropboxIMGSize(imageUri);
+//    int width = size.first;
+//    int height = size.second;
     /**
      * Makes a toast popup
+     *
      * @param text the text in the toast
      */
-    private void toast(String text){
+    private void toast(String text)
+    {
         Toast.makeText(requireContext(), text, Toast.LENGTH_LONG).show();
     }
 
     private final ActivityResultLauncher<ScanOptions> qrLauncher = registerForActivityResult(
-            new ScanContract(),
-            result -> {
-                if (result.getContents() != null) {
-                    // TODO remove debug confirmation maybe
-                    toast("Scanned: " + result.getContents());
-                    QRCode = result.getContents();
-                    //TODO again up to you if you want to display this
-                    //showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
-                }
+        new ScanContract(),
+        result ->
+        {
+            if (result.getContents() != null)
+            {
+                // TODO remove debug confirmation maybe
+                toast("Scanned: " + result.getContents());
+                QRCode = result.getContents();
+                //TODO again up to you if you want to display this
+                //showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
             }
+        }
     );
 
-    /**
-     * Prepares the QR Code scanner
-     */
-    private void launchQRScanner() {
+            /**
+             * Prepares the QR Code scanner
+             */
+    private void launchQRScanner()
+    {
         ScanOptions options = new ScanOptions();
         options.setPrompt("Scan a QR Code");
         options.setBeepEnabled(false);
         options.setOrientationLocked(false);
-
         // Launch the barcode scanner
         qrLauncher.launch(options);
     }
 
-    public void onDestroyView() {
+    public void onDestroyView()
+    {
         NavigationBarView bottomNavigationView = getActivity().findViewById(R.id.bottom_nav);
         bottomNavigationView.setVisibility(View.VISIBLE);
         super.onDestroyView();
     }
-
 
 }
