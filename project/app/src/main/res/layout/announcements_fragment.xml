@@ -12,7 +12,7 @@
         android:layout_height="match_parent">
 
         <EditText
-            android:id="@+id/notifcation_editable"
+            android:id="@+id/announcement_editable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="Send a notification to your event"
@@ -21,7 +21,7 @@
             tools:layout_editor_absoluteX="411dp" />
 
         <ImageView
-            android:id="@+id/profile_picture_notif"
+            android:id="@+id/profile_picture_announcements"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="427dp"

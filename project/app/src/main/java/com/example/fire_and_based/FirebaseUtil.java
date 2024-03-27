@@ -787,7 +787,7 @@ public class FirebaseUtil {
                         announcements = new ArrayList<>();
                     }
                     announcements.add(announcement);
-                    transaction.update(eventDoc, "organizers", announcements);
+                    transaction.update(eventDoc, "announcements", announcements);
                     return null;
                 }).addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);

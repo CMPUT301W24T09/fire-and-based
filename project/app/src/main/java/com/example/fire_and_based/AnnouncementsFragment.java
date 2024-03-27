@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -76,10 +77,22 @@ public class AnnouncementsFragment extends Fragment {
             Log.e("FirebaseError", "Error fetching user events: " + e.getMessage());
         });
 
+        /*
         ConstraintLayout newPost = view.findViewById(R.id.new_post);
         if (Objects.equals(mode, "Attending")) {
             newPost.setVisibility(View.GONE);
+        } else {
+            Button postButton = view.findViewById(R.id.post_button);
+            TextView  = view.findViewById(R.id.announcement_editable);
+            postButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if ()
+                }
+            });
         }
+
+         */
 
         return view;
     }
