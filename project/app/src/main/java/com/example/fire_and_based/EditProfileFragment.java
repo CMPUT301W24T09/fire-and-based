@@ -149,36 +149,59 @@ public class EditProfileFragment extends Fragment {
                     String imageUrl = "profiles/" + user.getDeviceID();
                     StorageReference selectionRef = fireRef.child(imageUrl);
 
-                    // Uploads profile picture, if it was changed
-                    if (pictureChanged) {
-                        selectionRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Toast.makeText(requireContext(), "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(requireContext(), "Image Upload Error", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-
-                    // Updates rest of user info
+                    // Updates user info
                     FirebaseUtil.updateUser(FirebaseFirestore.getInstance(), user, new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
                             // For now we exit from edit details page when valid save (probably should change later, not sure)
-                            Log.d(TAG, "User profile details successfully updated");
-                            ViewProfileFragment fragment = new ViewProfileFragment();
-                            Bundle bundle = new Bundle();
-                            bundle.putParcelable("user", user);
-                            fragment.setArguments(bundle);
-                            getParentFragmentManager().beginTransaction()
-                                    .replace(R.id.fragment_container_view, fragment)
-                                    .setReorderingAllowed(true)
-                                    .addToBackStack(null)
-                                    .commit();
+
+                            // Uploads new profile picture, if it was changed
+                            if (pictureChanged) {
+                                selectionRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                        Toast.makeText(requireContext(), "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
+                                        Log.d(TAG, "User profile details successfully updated");
+                                        ViewProfileFragment fragment = new ViewProfileFragment();
+                                        Bundle bundle = new Bundle();
+                                        bundle.putParcelable("user", user);
+                                        fragment.setArguments(bundle);
+                                        getParentFragmentManager().beginTransaction()
+                                                .replace(R.id.fragment_container_view, fragment)
+                                                .setReorderingAllowed(true)
+                                                .addToBackStack(null)
+                                                .commit();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(requireContext(), "Image Upload Error", Toast.LENGTH_LONG).show();
+                                        Log.d(TAG, "User profile details successfully updated");
+                                        ViewProfileFragment fragment = new ViewProfileFragment();
+                                        Bundle bundle = new Bundle();
+                                        bundle.putParcelable("user", user);
+                                        fragment.setArguments(bundle);
+                                        getParentFragmentManager().beginTransaction()
+                                                .replace(R.id.fragment_container_view, fragment)
+                                                .setReorderingAllowed(true)
+                                                .addToBackStack(null)
+                                                .commit();
+                                    }
+                                });
+                            }
+                            else {
+                                Toast.makeText(requireContext(), "Image Upload Error", Toast.LENGTH_LONG).show();
+                                Log.d(TAG, "User profile details successfully updated");
+                                ViewProfileFragment fragment = new ViewProfileFragment();
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable("user", user);
+                                fragment.setArguments(bundle);
+                                getParentFragmentManager().beginTransaction()
+                                        .replace(R.id.fragment_container_view, fragment)
+                                        .setReorderingAllowed(true)
+                                        .addToBackStack(null)
+                                        .commit();
+                            }
                         }
                     }, new OnFailureListener() {
                         @Override
