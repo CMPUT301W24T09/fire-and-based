@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         Log.d("MainActivity", "Getting UUID");
-        sharedPref.edit().remove("uuid_key").commit();
         String uuid = sharedPref.getString("uuid_key", "");
         Log.d("MainActivity", "UUID is: " + uuid);
 
