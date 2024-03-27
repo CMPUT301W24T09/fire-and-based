@@ -1,17 +1,25 @@
 package com.example.fire_and_based;
 
+import static android.content.ContentValues.TAG;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.LruCache;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * This class implements the functionality for downloading images.
@@ -72,10 +80,11 @@ public class ImageDownloader
     /**
      * Gets the bitmap of the profilepic for a user and displays it to the given ImageView
      */
-        public void getProfilePicBitmap(User thisUser, ImageView profilePreview) {
+        public void getProfilePicBitmap(User thisUser, CircleImageView profilePreview) {
             //Bitmap imageMap;
 
-            String profileUrl = thisUser.getProfilePicture();
+            String profileUrl = "profiles/" + thisUser.getDeviceID();
+            Log.d(TAG, profileUrl);
             StorageReference uriRef = fireRef.child(profileUrl);
             uriRef.getBytes(1000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                 @Override
@@ -85,7 +94,6 @@ public class ImageDownloader
                     //since this is the first retrieval, add to memory cache
                     //addBitmapToMemoryCache(bannerUrl,imageMap);
                     //memoryCache.put(bannerUrl, imageMap);
-
                     profilePreview.setImageBitmap(imageMap);
                 }
             });
