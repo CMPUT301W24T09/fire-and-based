@@ -8,6 +8,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 /**
  * This is the Adapter that allows us to swipe between tab views in the AttendeeFragment.
+ * @author Sumayya
  */
 public class AttendeeListAdapter extends FragmentStateAdapter {
     private Event event;

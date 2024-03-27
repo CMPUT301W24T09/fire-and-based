@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 /**
  * This class is a fragment hosted by UserActivity.
  * Requires a user to be passed in as an argument as a Parcelable with a key "currentUser"
+ * @author Sumayya
  */
 public class ViewProfileFragment extends Fragment {
 

@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHeight="match_parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintWidth="match_parent"
+    >
+
+
+        <!-- Top bar + Image view -->
+        <!-- This was done for the blue background -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/TOPBAR_IMAGEVIEW"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/figmaBlue">
+
+
+            <!-- The top bar with back button and title -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:id="@+id/cancel_event_creation"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cancel"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"/>
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="New Event"
+                    android:layout_weight="3"
+                    android:textAlignment="center"
+                    android:textSize="22dp"
+                    android:textColor="@color/white"/>
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cancel"
+                    android:layout_weight="1"
+                    android:visibility="invisible"/>
+
+            </LinearLayout>
+
+            <!-- Image View -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="20dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="250dp"
+                    android:layout_height="110dp"
+                    app:cardCornerRadius="10dp"
+                    android:layout_gravity="center_horizontal"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:background="@color/white">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipChildren="false"
+                        >
+
+                        <ImageView
+                            android:id="@+id/roundedImageView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:contentDescription="image" />
+
+
+                        <Button
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true"
+
+                            android:background="@color/red"
+                            android:text="Real"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginEnd="2dp"
+                            android:id="@+id/imageButton"
+                            />
+<!--                        IDK WHY THE FUCKING BUTTON IS NOT CHANGING -->
+                        <!-- android:layout_marginTop="-15dp"-->
+                        <!-- android:layout_marginEnd="-15dp"-->
+
+
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            app:layout_constraintTop_toBottomOf="@id/TOPBAR_IMAGEVIEW"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp">
+
+
+            <!-- Event Fields and Edit Boxes-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                app:layout_constraintTop_toBottomOf="@id/TOPBAR_IMAGEVIEW"
+                android:id="@+id/EVENT_FIELDS"
+                android:background="@color/white"
+
+                >
+
+
+                <!-- Title  max length is 50 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="parent"
+                    android:layout_marginBottom="2dp"
+                    android:id="@+id/EVENT_TITLE_NAME">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Event Name"
+                        android:textSize="18dp"/>
+
+                    <EditText
+                        android:id="@+id/event_name_editable"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:hint="Enter Event name"
+                        android:inputType="text"
+                        android:maxLength="50"/>
+
+
+                </LinearLayout>
+
+                <!-- Description  max length is 256-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/EVENT_DESCRIPTION_LAYOUT"
+                    app:layout_constraintTop_toBottomOf="@id/EVENT_TITLE_NAME"
+                    android:layout_marginBottom="2dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Description"
+                        android:textSize="18dp"/>
+
+                    <EditText
+                        android:id="@+id/event_description_editable"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:hint="Enter Event Description"
+                        android:inputType="text"
+                        android:maxLength="128"/>
+
+
+                </LinearLayout>
+
+                <!-- Date -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="2dp">
+
+
+                    <TextView
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:text="Date"
+                        android:textSize="18dp"/>
+
+                    <EditText
+                        android:id="@+id/event_date_editable"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:hint="Select a Date"
+                        android:inputType="none"
+                        android:focusable="false"
+                        />
+
+
+                </LinearLayout>
+
+                <!-- Time -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="2dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Time"
+                        android:textSize="18dp"/>
+
+                    <EditText
+
+                        android:id="@+id/event_time_editable"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:hint="Enter Event Time"
+                        android:inputType="none"
+                        android:focusable="false"/>
+
+
+                </LinearLayout>
+
+                <!-- Location -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="2dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Location"
+                        android:textSize="18dp"/>
+
+                    <EditText
+                        android:id="@+id/event_location_editable"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:hint="Enter Event Location"
+                        android:inputType="text"/>
+                </LinearLayout>
+
+                <!-- Max Attendees -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="2dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Maximum Attendees"
+                        android:textSize="18dp"/>
+
+                    <EditText
+                        android:id="@+id/event_maximum_attendees_editable"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:hint="Enter Max Attendee Amount"
+                        android:inputType="number" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>-->
+
+            <!-- Bottom Buttons -> QR CODES AND CREATE EVENT -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/QRCODES_AND_CREATE_EVENT"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                app:layout_constraintTop_toBottomOf="@id/EVENT_FIELDS"
+                app:layout_constraintEnd_toEndOf="parent"
+                >
+
+                <!-- QR CODE BUTTONS -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/qrCodeLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|center_vertical"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toTopOf="@+id/create_event_button"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <Button
+                        android:id="@+id/reuseQR"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Use Old QR"
+                        app:cornerRadius="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:strokeWidth="0.25dp" />
+
+                    <Button
+                        android:id="@+id/view_qr_code"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="View QR"
+                        app:cornerRadius="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/generateQR"
+                        app:layout_constraintStart_toEndOf="@+id/reuseQR"
+                        app:layout_constraintTop_toTopOf="parent">
+
+
+                    </Button>
+                    <Button
+                        android:id="@+id/generateQR"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Generate QR"
+                        app:cornerRadius="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:strokeWidth="0.25dp" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- Create Event Button -->
+                <Button
+                    android:id="@+id/create_event_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/create_event"
+                    android:textSize="22dp"
+                    app:layout_constraintTop_toBottomOf="@+id/qrCodeLayout"
+                    app:cornerRadius="10dp"
+                    app:strokeWidth="0.25dp"
+                    android:layout_marginTop="5dp"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </LinearLayout>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

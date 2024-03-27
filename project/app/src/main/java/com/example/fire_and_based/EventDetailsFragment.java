@@ -1,7 +1,9 @@
 package com.example.fire_and_based;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -16,7 +18,9 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -24,10 +28,17 @@ import java.util.Objects;
  * It displays the event details for an attendee or an organizer (depends on the mode)
  * This fragment may be accessed by clicking on an event in the list from EventListFragment, when in the attending or organizing tab.
  * It also hosts InfoFragment, NotificationsFragment, and MapFragment.
+ *
  * Requires a user to be passed in as an argument as a Parcelable with a key "user"
  * Also requires an event to be passed in as an argument as a Parcelable with a key "event"
  * Also requires a mode to be passed in as an argument as a String with a key "mode"
  * Note that mode may be either "Attending" or "Organizing"
+ *
+ * To-do (UI):
+ * 1. Delay in displaying checked in status
+ * 2. Make edit details button functional
+ *
+ * @author Sumayya
  */
 public class EventDetailsFragment extends Fragment {
     private User user;
@@ -50,6 +61,8 @@ public class EventDetailsFragment extends Fragment {
         TextView eventTitle = view.findViewById(R.id.event_title);
         eventTitle.setText(event.getEventName());
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         /* we will add this when event banner gets fixed in xml
 
         ImageView imagePreview = view.findViewById(R.id.banner_image);
@@ -58,14 +71,6 @@ public class EventDetailsFragment extends Fragment {
 
          */
 
-        ImageView backArrow = view.findViewById(R.id.back_arrow);
-        backArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getParentFragmentManager().popBackStack();
-            }
-        });
-
         Button checkedInButton = view.findViewById(R.id.checked_in_button);
         Button editDetailsButton = view.findViewById(R.id.edit_details_button);
         Button attendeeListButton = view.findViewById(R.id.attendee_list_button);
@@ -73,6 +78,15 @@ public class EventDetailsFragment extends Fragment {
         if (Objects.equals(mode, "Attending")) {
             editDetailsButton.setVisibility(View.GONE);
             attendeeListButton.setVisibility(View.GONE);
+            FirebaseUtil.getUserCheckedInEvents(db, user.getDeviceID(), eventLongMap -> {
+                for (Map.Entry<Event, Long> entry: eventLongMap.entrySet()) {
+                    if (Objects.equals(entry.getKey().getQRcode(), event.getQRcode())) {
+                        checkedInButton.setText("Checked in");
+                    }
+                }
+            }, e -> {
+                Log.e("FirebaseError", "Error fetching user checked in events: " + e.getMessage());
+            });
         }
         if (Objects.equals(mode, "Organizing")) {
             checkedInButton.setVisibility(View.GONE);
@@ -92,8 +106,17 @@ public class EventDetailsFragment extends Fragment {
             });
         }
 
+        ImageView backArrow = view.findViewById(R.id.back_arrow);
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getParentFragmentManager().popBackStack();
+            }
+        });
+
+
         viewPager = view.findViewById(R.id.event_details_viewpager);
-        adapter = new EventDetailsAdapter(this, event, mode);
+        adapter = new EventDetailsAdapter(this, event, mode, user);
         viewPager.setAdapter(adapter);
 
         TabLayout tabLayout = view.findViewById(R.id.event_details_tablayout);
@@ -110,6 +133,24 @@ public class EventDetailsFragment extends Fragment {
                     break;
             }
         }).attach();
+
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            /**
+             * This method will be invoked when a new page becomes selected. Animation is not
+             * necessarily complete.
+             *
+             * @param position Position index of the new selected page.
+             */
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                if (position == 2) {
+                    viewPager.setUserInputEnabled(false);
+                } else {
+                    viewPager.setUserInputEnabled(true);
+                }
+            }
+        });
 
         return view;
     }
