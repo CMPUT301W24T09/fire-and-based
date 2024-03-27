@@ -74,24 +74,6 @@ public class CreateEventFragment extends Fragment {
 
     StorageReference fireRef = FirebaseStorage.getInstance().getReference();
 
-//    ActivityResultLauncher<Intent> customActivityResultLauncher =
-//            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-//                    new ActivityResultCallback<ActivityResult>() {
-//        @Override
-//        public void onActivityResult(ActivityResult result)
-//        {//if (result.getResultCode() == RESULT_OK)
-//            try {
-//                if (result.getData() != null)
-//                {
-//                    imageUri = result.getData().getData();
-//                    //buttonUpload.setEnabled(true);
-//                    Glide.with(context).load(imageUri).into(previewBanner);
-//                }
-//            }
-//            catch(Exception e)
-//            {Toast.makeText(requireContext(), "Please Select An Image", Toast.LENGTH_LONG).show();}
-//        }
-//    });
 
 
 
