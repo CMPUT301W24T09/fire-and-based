@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -15,22 +14,20 @@ import androidx.fragment.app.Fragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * This class is a fragment hosted by the AttendeeFragment.
  * It displays the list of attendees for the All Attendees tab and the Checked In tab.
- * To-do (Firebase):
- * 1. Need function that returns list of attendees for a given event
- * 2. Need function that returns list of attendees that are checked in to a given event
+ * @author Sumayya
+ * To-do (UI):
+ * 1. Set listener on attendee list to show attendee profiles
  */
 public class AttendeeListFragment extends Fragment {
     private Event event;
     private boolean checkedIn;
     private ArrayList<User> dataList;
     private ListView attendeeList;
-    private UserArrayAdapter attendeeAdapter;
+    private AttendeeArrayAdapter attendeeAdapter;
     private FirebaseFirestore db;
 
     /**
@@ -62,7 +59,7 @@ public class AttendeeListFragment extends Fragment {
         dataList = new ArrayList<>();
         attendeeList = view.findViewById(R.id.attendee_list);
 
-        attendeeAdapter = new UserArrayAdapter(requireContext(), dataList);
+        attendeeAdapter = new AttendeeArrayAdapter(requireContext(), dataList);
         attendeeList.setAdapter(attendeeAdapter);
 
         db = FirebaseFirestore.getInstance();

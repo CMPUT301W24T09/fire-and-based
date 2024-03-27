@@ -18,6 +18,9 @@ import java.util.Objects;
 /**
  * This fragment is hosted by EventDetailsFragment.
  * It displays the info for an event.
+ * @author Sumayya
+ * To-do (UI):
+ * 1. Something wrong with XML
  */
 public class InfoFragment extends Fragment {
     private Event event;

@@ -10,12 +10,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import androidx.annotation.Nullable;
 
 import com.google.firebase.firestore.*;
 import com.google.type.DateTime;
+import com.google.type.LatLng;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import java.util.HashMap;
@@ -30,6 +29,10 @@ import java.util.stream.Collectors;
 /**
  * This class has all the functions for accessing the necessary data from the firebase
  * or storing the necessary data in the firebase.
+ * @author Ilya, Sumayya
+ * To-do:
+ * 1. Need a function that gets all images from the database
+ * 2. getAllEventsUserNotIn has issues. see below for more details.
  */
 
 public class FirebaseUtil {
@@ -94,9 +97,60 @@ public class FirebaseUtil {
         void onCallback(List<Event> list);
     }
 
+    /**
+     * Asynchronously get all users in the database (who are not admins)
+     *
+     * @param db       the database reference
+     * @param callback the callback function
+     * @see getAllNonAdminUsersCallback
+     * @see User
+     */
+    public static void getAllNonAdminUsers(FirebaseFirestore db, getAllNonAdminUsersCallback callback) {
+        ArrayList<User> usersList = new ArrayList<>();
+
+        CollectionReference eventsRef = db.collection("users");
+        eventsRef.addSnapshotListener((querySnapshots, error) -> {
+            if (error != null) {
+                Log.e("Firestore", error.toString());
+                return;
+                //TODO wait no add a proper onFailure() thing to the callback
+            }
+            if (querySnapshots != null) {
+                for (QueryDocumentSnapshot doc : querySnapshots) {
+                    if (!doc.getBoolean("admin")) {
+                        String deviceID = doc.getString("deviceID");
+                        String userName = doc.getString("userName");
+                        String profilePicture = doc.getString("profilePicture");
+                        String firstName = doc.getString("firstName");
+                        String lastName = doc.getString("lastName");
+                        String phoneNumber = doc.getString("phoneNumber");
+                        String email = doc.getString("email");
+                        String homepage = doc.getString("homepage");
+                        String messageID = doc.getString("messageID");
+                        Boolean admin = false;
+                        Log.d("Firestore", String.format("Event(%s, %s) fetched", userName,
+                                deviceID));
+                        usersList.add(new User(deviceID, userName, profilePicture, firstName, lastName, phoneNumber, email, homepage, admin, messageID));
+                    }
+                }
+                Log.d("Firestore", String.format("Fetched %d events", usersList.size()));
+                callback.onCallback(usersList);
+            }
+        });
+    }
 
     /**
-     * Asynchronously get all events in the database that the given user is not registered for or orgaizing
+     * Callback interface to get list of all users
+     *
+     * @see User
+     */
+    public interface getAllNonAdminUsersCallback {
+        void onCallback(List<User> list);
+    }
+
+
+    /**
+     * Asynchronously get all events in the database that the given user is not registered for or organizing
      *
      * @param db       the database reference
      * @param callback the callback function
@@ -105,6 +159,8 @@ public class FirebaseUtil {
      */
     public static void getAllEventsUserIsNotIn(FirebaseFirestore db, String userID, getAllEventsCallback callback) {
         ArrayList<Event> eventsList = new ArrayList<>();
+        // there is an issue here, does not get qr code of event properly. i suspect it has something
+        // to do with qr code being doc id and not a field.
         getUserEvents(db, userID, events1 -> {
             ArrayList<String> qrCodes1 = events1.stream()
                     .map(Event::getQRcode)
@@ -121,7 +177,7 @@ public class FirebaseUtil {
                     }
                     if (querySnapshots != null) {
                         for (QueryDocumentSnapshot doc : querySnapshots) {
-                            String qrCode = doc.getString("QRcode");
+                            String qrCode = doc.getId();
                             if(qrCodes1.contains(qrCode) || qrCodes2.contains(qrCode)){
                                 continue;
                             }
@@ -309,7 +365,7 @@ public class FirebaseUtil {
                 String eventName = doc.getString("eventName");
                 String eventDescription = doc.getString("eventDescription");
                 String eventBanner = doc.getString("eventBanner");
-                String qrCode = doc.getString("QRcode");
+                String qrCode = doc.getId();
                 Long eventStart = doc.getLong("eventStart");
                 Long eventEnd = doc.getLong("eventEnd");
                 String location = doc.getString("location");
@@ -409,13 +465,13 @@ public class FirebaseUtil {
      * @see Event
      * @see User
      */
-    public static void getUserCheckedInEvents(FirebaseFirestore db, String userID, OnSuccessListener<Map<Event, Integer>> successListener, OnFailureListener failureListener) {
+    public static void getUserCheckedInEvents(FirebaseFirestore db, String userID, OnSuccessListener<Map<Event, Long>> successListener, OnFailureListener failureListener) {
         db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                Map<String, Integer> eventIDs = (Map<String, Integer>) documentSnapshot.get("checkedInEvents");
+                Map<String, Long> eventIDs = (Map<String, Long>) documentSnapshot.get("checkedInEvents");
                 if (eventIDs != null && !eventIDs.isEmpty()) {
                     ArrayList<String> eventCodes = new ArrayList<>(eventIDs.keySet());
-                    Map<Event, Integer> events = new HashMap<>();
+                    Map<Event, Long> events = new HashMap<>();
                     for (String eventCode : eventCodes) {
                         String docID = cleanDocumentId(eventCode);
                         getEvent(db, docID, event -> {
@@ -553,6 +609,9 @@ public class FirebaseUtil {
         db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 User user = documentSnapshot.toObject(User.class);
+                if (user != null) {
+                    user.setAdmin(documentSnapshot.getBoolean("admin"));
+                }
                 Log.d(TAG, String.format("Username: %s First: %s Last: %s Phone: %s Email: %s ID: %s", user.getUserName(), user.getFirstName(), user.getLastName()
                         , user.getPhoneNumber(), user.getEmail(), user.getDeviceID()));
                 successListener.onSuccess(user);
@@ -581,14 +640,15 @@ public class FirebaseUtil {
                     DocumentSnapshot userSnapshot = transaction.get(userDoc);
 
                     List<String> attendees = (List<String>) eventSnapshot.get("attendees");
-                    Integer maxAttendees = (Integer) eventSnapshot.get("maxAttendees");
+                    if (attendees == null) {
+                        attendees = new ArrayList<>();
+                    }
+
+                    Long maxAttendees = (Long) eventSnapshot.get("maxAttendees");
                     if (maxAttendees != null && maxAttendees <= attendees.size()){
                         throw new IllegalArgumentException("Event reached max capacity");
                     }
 
-                    if (attendees == null) {
-                        attendees = new ArrayList<>();
-                    }
                     attendees.add(attendee);
                     transaction.update(eventDoc, "attendees", attendees);
 
@@ -661,22 +721,27 @@ public class FirebaseUtil {
                     DocumentSnapshot eventSnapshot = transaction.get(eventDoc);
                     DocumentSnapshot userSnapshot = transaction.get(userDoc);
 
-                    Map<String, Integer> users = (Map<String, Integer>) eventSnapshot.get("checkedInUsers");
-
-                    if (users == null) {
-                        users = new HashMap<String, Integer>();
+                    List<String> attendees = (List<String>) eventSnapshot.get("attendees");
+                    if (attendees == null || !attendees.contains(user)) {
+                        throw new FirebaseFirestoreException("User is not registered for the event", FirebaseFirestoreException.Code.ABORTED);
                     }
 
-                    users.merge(user, 1, Integer::sum);
+                    Map<String, Long> users = (Map<String, Long>) eventSnapshot.get("checkedInUsers");
+
+                    if (users == null) {
+                        users = new HashMap<String, Long>();
+                    }
+
+                    users.merge(user, 1L, Long::sum);
 
                     transaction.update(eventDoc, "checkedInUsers", users);
 
 
-                    Map<String, Integer> checkedInEvents = (Map<String, Integer>) userSnapshot.get("checkedInEvents");
+                    Map<String, Long> checkedInEvents = (Map<String, Long>) userSnapshot.get("checkedInEvents");
                     if (checkedInEvents == null) {
                         checkedInEvents = new HashMap<>();
                     }
-                    checkedInEvents.merge(eventId, 1, Integer::sum);
+                    checkedInEvents.merge(eventId, 1L, Long::sum);
                     transaction.update(userDoc, "checkedInEvents", checkedInEvents);
 
                     return null;
@@ -695,10 +760,22 @@ public class FirebaseUtil {
         String docID = cleanDocumentId(eventID);
         db.collection("events").document(docID).get().addOnSuccessListener(doc -> {
             if (doc.exists()) {
-                ArrayList<Announcement> announcements = (ArrayList<Announcement>)doc.get("announcements");
-                successListener.onSuccess(announcements);
+                if (doc.contains("announcements")) {
+                    ArrayList<HashMap<String, Object>> announcementMaps = (ArrayList<HashMap<String, Object>>) doc.get("announcements");
+                    ArrayList<Announcement> announcements = new ArrayList<>();
+                    for (HashMap<String, Object> announcementMap : announcementMaps) {
+                        String content = (String) announcementMap.get("content");
+                        long timestamp = (long) announcementMap.get("timestamp");
+                        String sender = (String) announcementMap.get("sender");
+                        Announcement announcement = new Announcement(doc.getString("eventName"), content, timestamp, sender, eventID);
+                        announcements.add(announcement);
+                    }
+                    successListener.onSuccess(announcements);
+                } else {
+                    successListener.onSuccess(new ArrayList<>());
+                }
             } else {
-                failureListener.onFailure(new Exception("Event with id " + eventID + "not found"));
+                failureListener.onFailure(new Exception("Event with id " + eventID + " not found"));
             }
         }).addOnFailureListener(failureListener);
     }
@@ -721,7 +798,7 @@ public class FirebaseUtil {
                         announcements = new ArrayList<>();
                     }
                     announcements.add(announcement);
-                    transaction.update(eventDoc, "organizers", announcements);
+                    transaction.update(eventDoc, "announcements", announcements);
                     return null;
                 }).addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);

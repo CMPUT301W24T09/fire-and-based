@@ -16,6 +16,12 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 import android.content.Intent;
 
+/**
+ * This class contains intent tests for the MainActivity.
+ * It verifies that the screen switch to UserActivity occurs correctly.
+ * @author Tyler, Sumayya
+ */
+
 @RunWith(AndroidJUnit4.class)
 public class MainActivityTest {
 

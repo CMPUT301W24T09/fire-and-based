@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/events_item"
+        android:icon="@drawable/browse_image"
+        android:title="Events" />
+    <item
+        android:id="@+id/users_item"
+        android:icon="@drawable/attending_image"
+        android:title="Users" />
+    <item
+        android:id="@+id/images_item"
+        android:icon="@drawable/organizing_image"
+        android:title="Images" />
+</menu>
