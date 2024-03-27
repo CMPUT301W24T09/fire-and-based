@@ -5,6 +5,7 @@
 
 
     <application
+        android:enableOnBackInvokedCallback="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -13,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Fireandbased"
-        tools:targetApi="31"
+        tools:targetApi="tiramisu"
         android:largeHeap="true"
         android:hardwareAccelerated="false">
         <activity
@@ -34,7 +35,7 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity
-            android:name=".CreateEventActivity">
+            android:name=".CreateEventFragment">
         </activity>
 
         <activity

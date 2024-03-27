@@ -50,6 +50,9 @@ public class User implements Parcelable {
     public User() {
     }
 
+    public User(String deviceID){
+        this.deviceID = deviceID;
+    }
     /**
      * Constructs a User instance from a Parcel, enabling the class to be parcelable.
      *
