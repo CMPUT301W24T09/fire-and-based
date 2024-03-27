@@ -5,13 +5,15 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import com.google.type.DateTime;
+import com.google.type.LatLng;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Represents an event with a name, description, banner image, and a QR code.
+ * Represents an event.
  * This class implements Parcelable to allow event objects to be passed between activities.
+ * @author Ilya, Tyler
  */
 public class Event implements Parcelable {
     private String eventName;
@@ -25,6 +27,7 @@ public class Event implements Parcelable {
     private ArrayList<Integer> milestones;
     private Long maxAttendees;
     private Boolean trackLocation;
+
 
     /**
      * Constructs a new Event with the specified details.

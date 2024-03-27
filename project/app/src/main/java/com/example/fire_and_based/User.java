@@ -3,11 +3,11 @@ package com.example.fire_and_based;
 import android.os.Parcel;
 import android.os.Parcelable;
 import androidx.annotation.NonNull;
-import java.util.ArrayList;
 
 /**
  * Represents a user in the application, including their personal information and events they are associated with.
  * Implements Parcelable to enable passing User objects between activities.
+ * @author Tyler, Ilya, Carson, Sumayya
  */
 public class User implements Parcelable {
     private String deviceID;
@@ -18,7 +18,9 @@ public class User implements Parcelable {
     private String phoneNumber;
     private String email;
     private String homepage;
-    private Boolean isAdmin = false;
+    private Boolean admin = false;
+
+    private String messageID;
 
     /**
      * Constructs a User with detailed personal information, including device ID, user name, registered events, profile picture,
@@ -32,10 +34,10 @@ public class User implements Parcelable {
      * @param phoneNumber     The user's phone number.
      * @param email           The user's email address.
      * @param homepage        The user's homepage
-     * @param isAdmin         Whether or not the user is an admin of the app
+     * @param admin           Whether or not the user is an admin of the app
      */
     User(String deviceID, String userName, String profilePicture, String firstName, String lastName,
-         String phoneNumber, String email, String homepage, Boolean isAdmin) {
+        String phoneNumber, String email, String homepage, Boolean admin, String messageID) {
         this.deviceID = deviceID;
         this.userName = userName;
         this.profilePicture = profilePicture;
@@ -44,7 +46,9 @@ public class User implements Parcelable {
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.homepage = homepage;
-        this.isAdmin = isAdmin;
+        this.admin = admin;
+        this.messageID = messageID;
+
     }
 
     public User() {
@@ -53,6 +57,7 @@ public class User implements Parcelable {
     public User(String deviceID){
         this.deviceID = deviceID;
     }
+
     /**
      * Constructs a User instance from a Parcel, enabling the class to be parcelable.
      *
@@ -67,7 +72,28 @@ public class User implements Parcelable {
         phoneNumber = in.readString();
         email = in.readString();
         homepage = in.readString();
-        isAdmin = (in.readInt() == 1);
+        admin = (in.readInt() == 1);
+    }
+
+
+    /**
+     * Flatten this object in to a Parcel.
+     *
+     * @param dest  The Parcel in which the object should be written.
+     * @param flags Additional flags about how the object should be written.
+     */
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(deviceID);
+        dest.writeString(userName);
+        dest.writeString(profilePicture);
+        dest.writeString(firstName);
+        dest.writeString(lastName);
+        dest.writeString(phoneNumber);
+        dest.writeString(email);
+        dest.writeString(homepage);
+        dest.writeInt(admin ? 1 : 0);  // write boolean as int
+        dest.writeString(messageID);
     }
 
     /**
@@ -162,7 +188,15 @@ public class User implements Parcelable {
      * @return true if the user is an admin, false otherwise
      */
     public Boolean isAdmin(){
-        return isAdmin;
+        return admin;
+    }
+
+    /**
+     * Gets the ID used for sending FCM notifications to this user
+     * @return the ID
+     */
+    public String getMessageID(){
+        return this.messageID;
     }
 
     /**
@@ -238,25 +272,6 @@ public class User implements Parcelable {
         return 0;
     }
 
-    /**
-     * Flatten this object in to a Parcel.
-     *
-     * @param dest  The Parcel in which the object should be written.
-     * @param flags Additional flags about how the object should be written.
-     */
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeString(deviceID);
-        dest.writeString(userName);
-        dest.writeString(profilePicture);
-        dest.writeString(firstName);
-        dest.writeString(lastName);
-        dest.writeString(phoneNumber);
-        dest.writeString(email);
-        dest.writeString(homepage);
-        dest.writeInt(isAdmin ? 1 : 0);  // write boolean as int
-    }
-
 
     /**
      * Gets the profile picture of the user.
@@ -265,5 +280,14 @@ public class User implements Parcelable {
      */
     String getProfilePicture() {
         return this.profilePicture;
+    }
+
+    /**
+     * Sets the user's isAdmin attribute
+     *
+     * @param admin true if user is an admin, false otherwise
+     */
+    public void setAdmin(Boolean admin) {
+        this.admin = admin;
     }
 }

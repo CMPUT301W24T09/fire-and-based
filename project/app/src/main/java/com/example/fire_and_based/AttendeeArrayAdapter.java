@@ -14,10 +14,10 @@ import java.util.ArrayList;
 
 /**
  * This class is the adapter for the attendee list. It displays each attendee for an event.
- * Used by UserListFragment.
+ * Used by AttendeeListFragment.
  * @author Sumayya
  */
-public class UserArrayAdapter extends ArrayAdapter<User> {
+public class AttendeeArrayAdapter extends ArrayAdapter<User> {
     private ArrayList<User> users;
     private Context context;
 
@@ -25,9 +25,9 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
      * Constructor for the adapter
      *
      * @param context The context (usually an Activity) in which the adapter is used
-     * @param users  The list of events to be displayed
+     * @param users  The list of attendees to be displayed
      */
-    public UserArrayAdapter(Context context, ArrayList<User> users) {
+    public AttendeeArrayAdapter(Context context, ArrayList<User> users) {
         super(context, 0, users);
         this.users = users;
         this.context = context;
@@ -40,14 +40,14 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
             View view = convertView;
 
             if(view == null){
-                view = LayoutInflater.from(context).inflate(R.layout.user_content, parent,false);
+                view = LayoutInflater.from(context).inflate(R.layout.attendee_content, parent,false);
             }
 
             User user = users.get(position);
 
-            TextView eventName = view.findViewById(R.id.user_name);
+            TextView eventName = view.findViewById(R.id.attendee_name);
 
-            eventName.setText(String.format("%s %s", user.getFirstName(), user.getLastName()));
+            eventName.setText(user.getUserName());
 
             return view;
         }

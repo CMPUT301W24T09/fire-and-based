@@ -16,6 +16,7 @@ import java.util.ArrayList;
 /**
  * This class is the adapter for the events. It displays each event in the list.
  * Used by EventListFragment.
+ * @author Sumayya
  */
 public class EventArrayAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
@@ -38,7 +39,6 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        {
             View view = convertView;
 
             if(view == null){
@@ -50,8 +50,8 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
             /**
              * Downloads event banner and displays
              */
-            ImageView imagePreview = view.findViewById(R.id.event_banner_preview);
-            if (event.getEventBanner() != null)
+            ImageView imagePreview = view.findViewById(R.id.imageView5);
+            if (event.getBannerQR() != null)
             {
                 imageDownloader.getBannerBitmap(event,imagePreview);
             }
@@ -61,6 +61,5 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
             eventName.setText(event.getEventName());
 
             return view;
-        }
     }
 }
