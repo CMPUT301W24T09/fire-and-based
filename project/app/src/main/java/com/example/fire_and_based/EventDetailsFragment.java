@@ -115,7 +115,7 @@ public class EventDetailsFragment extends Fragment {
 
 
         viewPager = view.findViewById(R.id.event_details_viewpager);
-        adapter = new EventDetailsAdapter(this, event, mode);
+        adapter = new EventDetailsAdapter(this, event, mode, user);
         viewPager.setAdapter(adapter);
 
         TabLayout tabLayout = view.findViewById(R.id.event_details_tablayout);

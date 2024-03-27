@@ -758,13 +758,21 @@ public class FirebaseUtil {
         db.collection("events").document(docID).get().addOnSuccessListener(doc -> {
             if (doc.exists()) {
                 if (doc.contains("announcements")) {
-                    ArrayList<Announcement> announcements = (ArrayList<Announcement>) doc.get("announcements");
+                    ArrayList<HashMap<String, Object>> announcementMaps = (ArrayList<HashMap<String, Object>>) doc.get("announcements");
+                    ArrayList<Announcement> announcements = new ArrayList<>();
+                    for (HashMap<String, Object> announcementMap : announcementMaps) {
+                        String content = (String) announcementMap.get("content");
+                        long timestamp = (long) announcementMap.get("timestamp");
+                        String sender = (String) announcementMap.get("sender");
+                        Announcement announcement = new Announcement(content, timestamp, sender);
+                        announcements.add(announcement);
+                    }
                     successListener.onSuccess(announcements);
                 } else {
                     successListener.onSuccess(new ArrayList<>());
                 }
             } else {
-                failureListener.onFailure(new Exception("Event with id " + eventID + "not found"));
+                failureListener.onFailure(new Exception("Event with id " + eventID + " not found"));
             }
         }).addOnFailureListener(failureListener);
     }

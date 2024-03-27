@@ -5,20 +5,14 @@ package com.example.fire_and_based;
  * @author Ilya
  */
 public class Announcement {
-    private String title;
     private String content;
     private long timestamp;
     private String sender;
 
-    public Announcement(String title, String content, long timestamp, String sender) {
-        this.title = title;
+    public Announcement(String content, long timestamp, String sender) {
         this.content = content;
         this.timestamp = timestamp;
         this.sender = sender;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public String getContent() {

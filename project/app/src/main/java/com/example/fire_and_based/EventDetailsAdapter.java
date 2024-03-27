@@ -13,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2;
 public class EventDetailsAdapter extends FragmentStateAdapter {
     private Event event;
     private String mode;
+    private User user;
 
     /**
      * @param fragment if the {@link ViewPager2} lives directly in a {@link Fragment} subclass.
@@ -20,10 +21,11 @@ public class EventDetailsAdapter extends FragmentStateAdapter {
      * @param mode the mode (either "Attending or Organizing)
      * @see FragmentStateAdapter#FragmentStateAdapter(FragmentActivity)
      */
-    public EventDetailsAdapter(@NonNull Fragment fragment, Event event, String mode) {
+    public EventDetailsAdapter(@NonNull Fragment fragment, Event event, String mode, User user) {
         super(fragment);
         this.event = event;
         this.mode = mode;
+        this.user = user;
     }
 
     /**
@@ -39,7 +41,7 @@ public class EventDetailsAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 1:
-                return AnnouncementsFragment.newInstance(event, mode);
+                return AnnouncementsFragment.newInstance(event, mode, user);
             case 2:
                 return MapFragment.newInstance(event);
             default:

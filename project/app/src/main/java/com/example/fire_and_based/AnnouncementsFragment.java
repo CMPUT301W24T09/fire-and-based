@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 /**
@@ -27,6 +30,7 @@ import java.util.Objects;
  * 2. Function that allows us to add a notification.
  */
 public class AnnouncementsFragment extends Fragment {
+    private User user;
     private Event event;
     private String mode;
     private ArrayList<Announcement> dataList;
@@ -39,13 +43,15 @@ public class AnnouncementsFragment extends Fragment {
      *
      * @param event The Event object to be associated with the fragment.
      * @param mode the mode ("Organizing" or "Attending")
+     * @param user the current user
      * @return A new instance of NotificationsFragment with the specified event data.
      */
-    public static AnnouncementsFragment newInstance(Event event, String mode) {
+    public static AnnouncementsFragment newInstance(Event event, String mode, User user) {
         AnnouncementsFragment fragment = new AnnouncementsFragment();
         Bundle args = new Bundle();
         args.putParcelable("event", event);
         args.putString("mode", mode);
+        args.putParcelable("user", user);
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,6 +64,7 @@ public class AnnouncementsFragment extends Fragment {
         if (getArguments() != null) {
             event = getArguments().getParcelable("event");
             mode = getArguments().getString("mode");
+            user = getArguments().getParcelable("user");
         }
 
         dataList = new ArrayList<>();
@@ -77,22 +84,29 @@ public class AnnouncementsFragment extends Fragment {
             Log.e("FirebaseError", "Error fetching user events: " + e.getMessage());
         });
 
-        /*
         ConstraintLayout newPost = view.findViewById(R.id.new_post);
         if (Objects.equals(mode, "Attending")) {
             newPost.setVisibility(View.GONE);
         } else {
             Button postButton = view.findViewById(R.id.post_button);
-            TextView  = view.findViewById(R.id.announcement_editable);
+            TextView announcement_textview = view.findViewById(R.id.announcement_editable);
             postButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if ()
+                    String announcement_content = announcement_textview.toString().trim();
+                    if (announcement_content.isEmpty()) {
+                        Toast.makeText(requireContext(), "Notification may not be empty", Toast.LENGTH_LONG).show();
+                    } else {
+                        Announcement announcement = new Announcement(announcement_content, System.currentTimeMillis(), user.getDeviceID());
+                        FirebaseUtil.saveAnnouncement(db, event.getQRcode(), announcement, aVoid -> {
+                            announcement_textview.setText("");
+                        }, e -> {
+                            Log.e("FirebaseError", "Error saving announcement " + e.getMessage());
+                        });
+                    }
                 }
             });
         }
-
-         */
 
         return view;
     }
