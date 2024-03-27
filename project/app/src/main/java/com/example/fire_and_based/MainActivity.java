@@ -2,6 +2,7 @@ package com.example.fire_and_based;
 
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+import static androidx.core.content.ContentProviderCompat.requireContext;
 
 import androidx.annotation.NonNull;
 
@@ -16,13 +17,16 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Button;
 import android.view.View;
+import android.widget.Toast;
 
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -34,11 +38,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.checkerframework.checker.units.qual.A;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -48,6 +57,7 @@ import java.util.UUID;
  */
 public class MainActivity extends AppCompatActivity {
     private static User currentUser;
+    StorageReference fireRef = FirebaseStorage.getInstance().getReference();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +74,9 @@ public class MainActivity extends AppCompatActivity {
             manager.createNotificationChannel(channel);
         }
 
+
         Log.d("MainActivity", "Getting UUID");
+        sharedPref.edit().remove("uuid_key").commit();
         String uuid = sharedPref.getString("uuid_key", "");
         Log.d("MainActivity", "UUID is: " + uuid);
 
@@ -73,6 +85,14 @@ public class MainActivity extends AppCompatActivity {
             uuid = UUID.randomUUID().toString();
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("uuid_key", uuid);
+
+            // First 5 letters of device id for profile picture
+            String profileImageId = uuid.substring(0, Math.min(uuid.length(), 5));
+
+            // First time users get deterministically (on device id) generated profile picture
+            Bitmap bitmap = generateBitmap(profileImageId, 100, 75);
+
+            uploadProfilePicture(bitmap, uuid);
 
             Log.d(TAG, "Getting FCM Token");
             String finalUuid = uuid;
@@ -129,5 +149,47 @@ public class MainActivity extends AppCompatActivity {
 
     protected static String getDeviceID() {
         return currentUser.getDeviceID();
+    }
+
+    private Bitmap generateBitmap(String text, int width, int height) {
+        // This is all subjective to change, I don't really like how they look currently so open to suggestions
+
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        // Background colour
+        canvas.drawColor(Color.LTGRAY);
+
+        // First 5 letters drawn onto image
+        Paint paint = new Paint();
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(17);
+        paint.setTextAlign(Paint.Align.CENTER);
+        canvas.drawText(text, width / 2f, height / 2f, paint);
+
+        return bitmap;
+    }
+
+    private void uploadProfilePicture(Bitmap bitmap, String uuid) {
+        // Converts bitmap to URI
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, uuid, null);
+        Uri profilePicUri = Uri.parse(path);
+
+        // Profile pictures referenced by device id
+        String imageUrl = "profiles/" + uuid;
+        StorageReference selectionRef = fireRef.child(imageUrl);
+        // Uploads profile image as URI
+        selectionRef.putFile(profilePicUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Log.d(TAG, "superb");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, "death");
+           }
+        });
     }
 }
