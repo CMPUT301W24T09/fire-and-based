@@ -12,6 +12,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.google.firebase.firestore.*;
+import com.google.type.DateTime;
+import com.google.type.LatLng;
 
 import java.util.ArrayList;
 
@@ -124,10 +126,11 @@ public class FirebaseUtil {
                         String phoneNumber = doc.getString("phoneNumber");
                         String email = doc.getString("email");
                         String homepage = doc.getString("homepage");
+                        String messageID = doc.getString("messageID");
                         Boolean admin = false;
                         Log.d("Firestore", String.format("Event(%s, %s) fetched", userName,
                                 deviceID));
-                        usersList.add(new User(deviceID, userName, profilePicture, firstName, lastName, phoneNumber, email, homepage, admin));
+                        usersList.add(new User(deviceID, userName, profilePicture, firstName, lastName, phoneNumber, email, homepage, admin, messageID));
                     }
                 }
                 Log.d("Firestore", String.format("Fetched %d events", usersList.size()));
@@ -764,7 +767,7 @@ public class FirebaseUtil {
                         String content = (String) announcementMap.get("content");
                         long timestamp = (long) announcementMap.get("timestamp");
                         String sender = (String) announcementMap.get("sender");
-                        Announcement announcement = new Announcement(content, timestamp, sender);
+                        Announcement announcement = new Announcement(doc.getString("eventName"), content, timestamp, sender, eventID);
                         announcements.add(announcement);
                     }
                     successListener.onSuccess(announcements);

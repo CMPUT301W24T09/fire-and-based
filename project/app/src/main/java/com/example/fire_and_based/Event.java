@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import com.google.type.DateTime;
+import com.google.type.LatLng;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class Event implements Parcelable {
     private ArrayList<Integer> milestones;
     private Long maxAttendees;
     private Boolean trackLocation;
+
 
     /**
      * Constructs a new Event with the specified details.

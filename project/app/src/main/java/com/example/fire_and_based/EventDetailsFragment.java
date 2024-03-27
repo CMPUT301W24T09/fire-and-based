@@ -3,6 +3,7 @@ package com.example.fire_and_based;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -132,6 +133,24 @@ public class EventDetailsFragment extends Fragment {
                     break;
             }
         }).attach();
+
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            /**
+             * This method will be invoked when a new page becomes selected. Animation is not
+             * necessarily complete.
+             *
+             * @param position Position index of the new selected page.
+             */
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                if (position == 2) {
+                    viewPager.setUserInputEnabled(false);
+                } else {
+                    viewPager.setUserInputEnabled(true);
+                }
+            }
+        });
 
         return view;
     }

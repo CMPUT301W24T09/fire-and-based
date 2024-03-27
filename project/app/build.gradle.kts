@@ -1,11 +1,16 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
     namespace = "com.example.fire_and_based"
     compileSdk = 34
+
+    android.buildFeatures.buildConfig = true
 
     defaultConfig {
         applicationId = "com.example.fire_and_based"
@@ -15,6 +20,13 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val getApiKey: String by lazy {
+            val properties = Properties()
+            properties.load(rootProject.file("local.properties").inputStream())
+            properties.getProperty("API_KEY")
+        }
+        buildConfigField("String", "API_KEY", "\"${getApiKey}\"")
     }
 
     buildTypes {
@@ -36,13 +48,15 @@ android {
 }
 
 dependencies {
-    //Firebase firestore and storage functionality
+    //Firebase
     //Core dependency
     implementation(platform("com.google.firebase:firebase-bom:32.7.3"))
     //Firestore (NoSQL Database, stores users and events data)
     implementation("com.google.firebase:firebase-firestore")
     //Storage stores image assets
     implementation("com.google.firebase:firebase-storage:20.3.0")
+    //push notifications
+    implementation("com.google.firebase:firebase-messaging:23.4.1")
 
     //UI and navigation elements
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -67,5 +81,11 @@ dependencies {
     //QR Code core dependency and android-specific implementation
     implementation("com.google.zxing:core:3.4.1")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+
+    //Google Maps API
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+
+    // For geocoding
+    implementation("com.google.maps:google-maps-services:0.9.0")
 
 }

@@ -97,7 +97,7 @@ public class AnnouncementsFragment extends Fragment {
                     if (announcement_content.isEmpty()) {
                         Toast.makeText(requireContext(), "Notification may not be empty", Toast.LENGTH_LONG).show();
                     } else {
-                        Announcement announcement = new Announcement(announcement_content, System.currentTimeMillis(), user.getDeviceID());
+                        Announcement announcement = new Announcement(event.getEventName(), announcement_content, System.currentTimeMillis(), user.getDeviceID(), event.getQRcode());
                         FirebaseUtil.saveAnnouncement(db, event.getQRcode(), announcement, aVoid -> {
                             announcement_textview.setText("");
                         }, e -> {

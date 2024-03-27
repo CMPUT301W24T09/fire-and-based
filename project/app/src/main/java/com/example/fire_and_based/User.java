@@ -20,6 +20,8 @@ public class User implements Parcelable {
     private String homepage;
     private Boolean admin = false;
 
+    private String messageID;
+
     /**
      * Constructs a User with detailed personal information, including device ID, user name, registered events, profile picture,
      * first name, last name, email, and phone number.
@@ -35,7 +37,7 @@ public class User implements Parcelable {
      * @param admin           Whether or not the user is an admin of the app
      */
     User(String deviceID, String userName, String profilePicture, String firstName, String lastName,
-         String phoneNumber, String email, String homepage, Boolean admin) {
+        String phoneNumber, String email, String homepage, Boolean admin, String messageID) {
         this.deviceID = deviceID;
         this.userName = userName;
         this.profilePicture = profilePicture;
@@ -45,6 +47,8 @@ public class User implements Parcelable {
         this.email = email;
         this.homepage = homepage;
         this.admin = admin;
+        this.messageID = messageID;
+
     }
 
     public User() {
@@ -89,6 +93,7 @@ public class User implements Parcelable {
         dest.writeString(email);
         dest.writeString(homepage);
         dest.writeInt(admin ? 1 : 0);  // write boolean as int
+        dest.writeString(messageID);
     }
 
     /**
@@ -184,6 +189,14 @@ public class User implements Parcelable {
      */
     public Boolean isAdmin(){
         return admin;
+    }
+
+    /**
+     * Gets the ID used for sending FCM notifications to this user
+     * @return the ID
+     */
+    public String getMessageID(){
+        return this.messageID;
     }
 
     /**
