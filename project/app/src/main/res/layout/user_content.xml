@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/username_user_content"
+        android:id="@+id/user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -28,7 +28,7 @@
         android:textColor="#808080"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username_user_content" />
+        app:layout_constraintTop_toBottomOf="@+id/user_name" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -37,7 +37,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toStartOf="@+id/date_user_content"
-        app:layout_constraintTop_toBottomOf="@+id/username_user_content"
+        app:layout_constraintTop_toBottomOf="@+id/user_name"
         app:srcCompat="@drawable/baseline_calendar_month_24" />
 
     <ImageView
@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="36dp"
         android:layout_marginTop="64dp"
-        app:layout_constraintEnd_toStartOf="@+id/username_user_content"
+        app:layout_constraintEnd_toStartOf="@+id/user_name"
         app:layout_constraintHorizontal_bias="0.116"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
