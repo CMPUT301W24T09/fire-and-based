@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String uuid = sharedPref.getString("uuid_key", "");
 
         //Needed for notifications
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -75,9 +74,8 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("uuid_key", uuid);
 
-            String finalUuid = uuid;
-
             Log.d(TAG, "Getting FCM Token");
+            String finalUuid = uuid;
             FirebaseMessaging.getInstance().getToken()
                     .addOnCompleteListener(new OnCompleteListener<String>() {
                         @Override
