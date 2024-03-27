@@ -26,6 +26,12 @@ jobs:
       env:
         DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
       run: echo $DATA > ./project/app/google-services.json
+    - name: Create local.properties
+      run: cat ./project/local.properties | base64
+    - name: Put data in local.properties
+      env:
+        DATA: ${{ secrets.API_KEY }}
+      run: echo $DATA > ./project/local.properties
     - name: Grant execute permission for gradlew
       working-directory: ./project
       run: chmod +x gradlew
