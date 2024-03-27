@@ -757,8 +757,12 @@ public class FirebaseUtil {
         String docID = cleanDocumentId(eventID);
         db.collection("events").document(docID).get().addOnSuccessListener(doc -> {
             if (doc.exists()) {
-                ArrayList<Announcement> announcements = (ArrayList<Announcement>)doc.get("announcements");
-                successListener.onSuccess(announcements);
+                if (doc.contains("announcements")) {
+                    ArrayList<Announcement> announcements = (ArrayList<Announcement>) doc.get("announcements");
+                    successListener.onSuccess(announcements);
+                } else {
+                    successListener.onSuccess(new ArrayList<>());
+                }
             } else {
                 failureListener.onFailure(new Exception("Event with id " + eventID + "not found"));
             }
@@ -783,7 +787,7 @@ public class FirebaseUtil {
                         announcements = new ArrayList<>();
                     }
                     announcements.add(announcement);
-                    transaction.update(eventDoc, "organizers", announcements);
+                    transaction.update(eventDoc, "announcements", announcements);
                     return null;
                 }).addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);

@@ -62,7 +62,7 @@ public class CreateEventFragment extends Fragment {
         }
 
         // get all textfields
-        EditText eventName = view.findViewById(R.id.event_name_editable);
+        EditText eventName = view.findViewById(R.id.announcement_editable);
         EditText eventDescription = view.findViewById(R.id.event_description_editable);
         EditText eventDate = view.findViewById(R.id.event_date_editable); // Make sure to replace 'your_date_button_id' with the actual ID of your button in the layout
         EditText eventTime = view.findViewById(R.id.event_time_editable); // Initialize it as per your actual layout component

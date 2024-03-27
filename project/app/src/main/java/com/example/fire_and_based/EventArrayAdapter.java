@@ -39,7 +39,6 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        {
             View view = convertView;
 
             if(view == null){
@@ -62,6 +61,5 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
             eventName.setText(event.getEventName());
 
             return view;
-        }
     }
 }

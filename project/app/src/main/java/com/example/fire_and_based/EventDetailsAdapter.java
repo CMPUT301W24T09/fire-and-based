@@ -39,7 +39,7 @@ public class EventDetailsAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 1:
-                return NotifcationsFragment.newInstance(event);
+                return AnnouncementsFragment.newInstance(event, mode);
             case 2:
                 return MapFragment.newInstance(event);
             default:
