@@ -33,8 +33,8 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
             )
         }
     }
@@ -82,12 +82,13 @@ dependencies {
     implementation("com.google.zxing:core:3.4.1")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
 
-
-    implementation("de.hdodenhof:circleimageview:2.1.0")
-
     //Google Maps API
     implementation("com.google.android.gms:play-services-maps:18.2.0")
 
     // For geocoding
     implementation("com.google.maps:google-maps-services:0.9.0")
+
+    // Circular image view for profile image
+    implementation("de.hdodenhof:circleimageview:2.1.0")
+
 }
