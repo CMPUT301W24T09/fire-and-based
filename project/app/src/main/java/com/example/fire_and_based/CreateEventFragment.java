@@ -327,7 +327,7 @@ public class CreateEventFragment extends Fragment {
                     // we can create the event object
                     Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, timeSince1970, eventLocationString, imageUrl, null, 0L, false);
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    toast("adding event to db  ) ");
+//                    toast("adding event to db  ) ");
 
                     FirebaseUtil.addEventToDB(db, newEvent, new FirebaseUtil.AddEventCallback() {
                         @Override
