@@ -74,6 +74,24 @@ public class CreateEventFragment extends Fragment {
 
     StorageReference fireRef = FirebaseStorage.getInstance().getReference();
 
+//    ActivityResultLauncher<Intent> customActivityResultLauncher =
+//            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+//                    new ActivityResultCallback<ActivityResult>() {
+//        @Override
+//        public void onActivityResult(ActivityResult result)
+//        {//if (result.getResultCode() == RESULT_OK)
+//            try {
+//                if (result.getData() != null)
+//                {
+//                    imageUri = result.getData().getData();
+//                    //buttonUpload.setEnabled(true);
+//                    Glide.with(context).load(imageUri).into(previewBanner);
+//                }
+//            }
+//            catch(Exception e)
+//            {Toast.makeText(requireContext(), "Please Select An Image", Toast.LENGTH_LONG).show();}
+//        }
+//    });
 
 
 
@@ -93,7 +111,7 @@ public class CreateEventFragment extends Fragment {
         }
 
         // get all textfields
-        EditText eventName = view.findViewById(R.id.announcement_editable);
+        EditText eventName = view.findViewById(R.id.event_name_editable);
         EditText eventDescription = view.findViewById(R.id.event_description_editable);
         EditText eventDate = view.findViewById(R.id.event_date_editable); // Make sure to replace 'your_date_button_id' with the actual ID of your button in the layout
         EditText eventTime = view.findViewById(R.id.event_time_editable); // Initialize it as per your actual layout component
@@ -206,42 +224,40 @@ public class CreateEventFragment extends Fragment {
                     @Override
             public void onActivityResult(ActivityResult result)
             {//if (result.getResultCode() == RESULT_OK)
-                try {
+                try
+                {
                     if (result.getData() != null)
                     {
                         imageUri = result.getData().getData();
-                        Toast.makeText(requireContext(), "Uri Selected", Toast.LENGTH_LONG).show();
-                        //buttonUpload.setEnabled(true);
-                        //Glide.with(context).load(imageUri).into(previewBanner);
                         previewBanner.setImageURI(imageUri);
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inJustDecodeBounds = true;
+
+
+                        InputStream inputStream = requireContext().getContentResolver().openInputStream(imageUri);
+                        BitmapFactory.decodeStream(inputStream, null, options);
+                        if (inputStream != null) {
+                            inputStream.close();}
+                        int imageHeight = options.outHeight;
+                        int imageWidth = options.outWidth;
+                        Log.d("ImageDimensions", "Image Height: " + imageHeight);
+                        Log.d("ImageDimensions", "Image Width: " + imageWidth);
+                        //EVENT BANNERS SHOULD BE 640 x 480 pixels MINIMUM
+                        if(imageHeight < 640 || imageWidth < 480)
+                        {
+                            Toast.makeText(requireContext(), "Banners are 640x480 minimum", Toast.LENGTH_LONG).show();
+                            imageUri = null;
+                            //previewBanner.setImageURI(null);
+                            previewBanner.setImageResource(android.R.color.white);}
                     }
                 }
                 catch(Exception e)
-                {Toast.makeText(requireContext(), "Please Select An Image", Toast.LENGTH_LONG).show();}
-            }
-        });
-        imageButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
+                {Toast.makeText(requireContext(), "Please Select An Image", Toast.LENGTH_LONG).show();}}});
+        imageButton.setOnClickListener(new View.OnClickListener() {@Override
+            public void onClick(View v) {
                 Intent imageIntent = new Intent(Intent.ACTION_PICK);
                 imageIntent.setType("image/*");
-                Toast.makeText(requireContext(), "Attempting", Toast.LENGTH_LONG).show();
-                customActivityResultLauncher.launch(imageIntent);
-
-//                InputStream inputStream = null;
-//                try {
-//                    inputStream = context.getContentResolver().openInputStream(imageUri);
-//                } catch (FileNotFoundException e) {
-//                    throw new RuntimeException(e);
-//                }
-//                BitmapFactory.Options options = new BitmapFactory.Options();
-//                options.inJustDecodeBounds = true;
-//                BitmapFactory.decodeStream(inputStream, null, options);
-
-
-            }});
+                customActivityResultLauncher.launch(imageIntent);}});
 
 
 
@@ -291,7 +307,6 @@ public class CreateEventFragment extends Fragment {
                     Date date = sdf.parse(combinedDateTime);
                     long timeSince1970 = date.getTime();  // this is the time we store n the database -> put in the event object when its created
 
-
                     String imageUrl = "events/" + QRCode;
 
                     //IMAGE UPLOAD TO FIREBASE
@@ -307,6 +322,7 @@ public class CreateEventFragment extends Fragment {
                             Toast.makeText(requireContext(), "Image Upload Error", Toast.LENGTH_LONG).show();
                         }
                     });
+
                     // EVENT CREATION GOES HERE
                     // we can create the event object
                     Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, timeSince1970, eventLocationString, imageUrl, null, 0L, false);

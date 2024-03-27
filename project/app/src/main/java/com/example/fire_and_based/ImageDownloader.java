@@ -52,7 +52,7 @@ public class ImageDownloader
     public void getBannerBitmap(Event thisEvent, ImageView imagePreview)
     {
         //Bitmap imageMap;
-        String bannerUrl = thisEvent.getEventBanner();
+        String bannerUrl = thisEvent.getBannerQR();
 
         StorageReference uriRef = fireRef.child(bannerUrl);
         uriRef.getBytes(1000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
