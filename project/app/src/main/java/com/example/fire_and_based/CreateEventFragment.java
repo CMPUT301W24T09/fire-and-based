@@ -295,7 +295,8 @@ public class CreateEventFragment extends Fragment {
                 toast("You must generate or scan a QR Code");
                 // add handling for qr code and banner as well
                 // add more handling here if needed
-
+            } else if (imageUri == null){
+                Toast.makeText(context, "Please Upload an Image", Toast.LENGTH_SHORT).show();
             } else {
 
                 // convert the date to time since 1970 jan 1 to store in the database
