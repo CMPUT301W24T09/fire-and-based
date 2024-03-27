@@ -12,7 +12,7 @@
         android:id="@+id/event_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="28dp"
         android:text="TextView"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/additional_actions_button"
@@ -24,7 +24,7 @@
         android:id="@+id/additional_actions_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="568dp"
+        android:layout_marginBottom="368dp"
         android:backgroundTint="@color/red"
         android:text="Leave Event"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -44,5 +44,5 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.463" />
+        app:layout_constraintVertical_bias="0.582" />
 </androidx.constraintlayout.widget.ConstraintLayout>
