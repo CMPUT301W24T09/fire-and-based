@@ -195,9 +195,13 @@ public class CreateEventFragment extends Fragment {
         {
             @Override
             public void onClick(View v) {
-                byte[] array = new byte[7]; // length is bounded by 7
-                new Random().nextBytes(array);
-                QRCode = "fire_and_based_event:" + new String(array, StandardCharsets.UTF_8);
+                String validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~%";
+                Random random = new Random();
+                StringBuilder str = new StringBuilder(7);
+                for (int i = 0; i < 7; i++) {
+                    str.append(validChars.charAt(random.nextInt(validChars.length())));
+                }
+                QRCode = "fire_and_based_event_" + str;
                 //TODO add a thing that previews the QR Code string? at least for debug?
                 Toast.makeText(requireContext(), "Random QR Code Successfully Generated", Toast.LENGTH_SHORT).show();
 
