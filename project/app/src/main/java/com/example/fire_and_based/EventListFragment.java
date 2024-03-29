@@ -178,7 +178,7 @@ public class EventListFragment extends Fragment {
      * @param clickedEvent The event associated with the clicked item.
      * @param mode the mode ("Browse", "Attending", "Organizing", "Admin")
      */
-    private void executeFragmentTransaction(Event clickedEvent, String mode) {
+    public void executeFragmentTransaction(Event clickedEvent, String mode) {
         if (Objects.equals(mode, "Admin")) {
             Fragment fragment = new AdminEventDetailsFragment();
             Bundle bundle = new Bundle();

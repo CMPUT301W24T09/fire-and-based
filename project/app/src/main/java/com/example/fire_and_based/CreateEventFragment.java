@@ -306,7 +306,7 @@ public class CreateEventFragment extends Fragment {
                     // Parse the string into a Date object
                     Date date = sdf.parse(combinedDateTime);
                     long timeSince1970 = date.getTime();  // this is the time we store n the database -> put in the event object when its created
-
+                    long maxAttendeeLong = Long.parseLong(eventMaxAttendeesString);
                     String imageUrl = "events/" + QRCode;
 
                     //IMAGE UPLOAD TO FIREBASE
@@ -325,7 +325,7 @@ public class CreateEventFragment extends Fragment {
 
                     // EVENT CREATION GOES HERE
                     // we can create the event object
-                    Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, timeSince1970, eventLocationString, imageUrl, null, 0L, false);
+                    Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, timeSince1970, eventLocationString, imageUrl, null, maxAttendeeLong, false);
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
 //                    toast("adding event to db  ) ");
 

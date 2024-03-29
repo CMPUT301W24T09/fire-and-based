@@ -29,16 +29,19 @@ public class AdminEventDetailsFragment extends Fragment {
             event = getArguments().getParcelable("event");
         }
 
-        TextView title = view.findViewById(R.id.edit_event_title);
-        title.setText(event.getEventName());
 
-        TextView cancel = view.findViewById(R.id.cancel_edit_event);
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getParentFragmentManager().popBackStack();
-            }
-        });
+
+        // BRO SUMAYYA I USED THE EDIT EVENT FRAGMENT FOR EDITING EVENT AS ORGANIZER IDK BRO LOL
+//        TextView title = view.findViewById(R.id.edit_event_title);
+//        title.setText(event.getEventName());
+//
+//        TextView cancel = view.findViewById(R.id.cancel_edit_event);
+//        cancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                getParentFragmentManager().popBackStack();
+//            }
+//        });
 
         return view;
     }
