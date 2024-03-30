@@ -23,6 +23,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -100,11 +101,19 @@ public class EditEventFragment extends Fragment {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                FragmentManager fragmentManager = getParentFragmentManager();
+
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
-                FirebaseUtil.deleteEvent(db, event, new OnSuccessListener<Void>() {
+                FirebaseUtil.updateEvent(db, event, new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        Toast.makeText(getContext(), "Event deleted from database :) ", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(), "Event deleted from database :) ", Toast.LENGTH_SHORT).show();
+//                        event = null;
+//                        for (int i = 0; i < 2; i++) {
+//                            fragmentManager.popBackStackImmediate();
+//                        }
+                        // tried several things im not sure what do - even when you leave this blank it just gets nuked still
                     }
                 }, new OnFailureListener() {
                     @Override
