@@ -5,15 +5,42 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/back_arrow_browser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="4dp"
+        android:clickable="true"
+        app:backgroundTint="#808080"
+        app:fabCustomSize="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/back_gray"
+        app:tint="#FFFFFF" />
+
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginEnd="15dp"
+    android:layout_marginStart="25dp">
+
     <TextView
         android:id="@+id/event_title_browser"
-        android:layout_width="369dp"
-        android:layout_height="47dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="112dp"
         android:fontFamily="@font/roboto_bold"
+        android:gravity="left"
         android:text="Minecraft Club"
         android:textSize="40sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bannerView" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/event_date_browser"
@@ -46,8 +73,8 @@
 
     <Button
         android:id="@+id/join_event_button"
-        android:layout_width="135dp"
-        android:layout_height="46dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
         android:backgroundTint="?attr/colorPrimary"
         android:text="Join Event"
@@ -58,13 +85,13 @@
 
     <TextView
         android:id="@+id/event_description_browser"
-        android:layout_width="385dp"
-        android:layout_height="147dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:fontFamily="@font/roboto"
         android:text="TextView"
         android:textSize="23sp"
-        app:layout_constraintEnd_toEndOf="parent"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/event_location_browser" />
 
@@ -85,32 +112,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         app:layout_constraintEnd_toStartOf="@+id/event_location_browser"
-        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintHorizontal_bias="0.416"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/calendar_icon_browser"
         app:srcCompat="@drawable/location_gray" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/back_arrow_browser"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="4dp"
-        android:clickable="true"
-        app:backgroundTint="#808080"
-        app:fabCustomSize="40dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/back_gray"
-        app:tint="#FFFFFF" />
 
-    <ImageView
-        android:id="@+id/bannerView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/event_box_background" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

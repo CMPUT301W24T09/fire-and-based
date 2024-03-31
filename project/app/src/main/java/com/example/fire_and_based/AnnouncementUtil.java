@@ -12,7 +12,10 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.jetbrains.annotations.NotNull;
@@ -65,6 +68,18 @@ public class AnnouncementUtil {
                         }
                     }
                 });
+    }
+
+    public static void newAnnouncement(FirebaseFirestore db, String content, Event event, OnSuccessListener<Void> successListener, OnFailureListener failureListener){
+        Announcement announcement = new Announcement(event.getEventName(), content, System.currentTimeMillis()/1000L, MainActivity.getDeviceID(), event.getQRcode());
+        FirebaseUtil.saveAnnouncement(db, event.getQRcode(), announcement, aVoid -> {
+            boolean success = sendToRecipient(announcement, "/topics/"+event.getQRcode());
+            if (!success){
+                failureListener.onFailure(new Exception("Failed to send notification"));
+            } else {
+                successListener.onSuccess(null);
+            }
+        }, failureListener);
     }
 
 }

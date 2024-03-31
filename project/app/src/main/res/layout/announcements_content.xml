@@ -9,12 +9,12 @@
         android:id="@+id/notif_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="44dp"
         android:fontFamily="@font/roboto_bold"
         android:text="Username"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/notif_time"
-        app:layout_constraintHorizontal_bias="0.533"
+        app:layout_constraintHorizontal_bias="0.678"
         app:layout_constraintStart_toEndOf="@+id/profile_picture"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -22,32 +22,32 @@
         android:id="@+id/notif_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="172dp"
+        android:layout_marginEnd="176dp"
         android:text="time ago"
         android:textColor="#808080"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/notif_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.878" />
+        app:layout_constraintVertical_bias="0.857" />
 
     <TextView
         android:id="@+id/notif_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:text="description text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.094"
+        app:layout_constraintHorizontal_bias="0.136"
         app:layout_constraintStart_toEndOf="@+id/profile_picture"
         app:layout_constraintTop_toBottomOf="@+id/notif_user" />
 
     <ImageView
         android:id="@+id/profile_picture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="56dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/circle_white" />
