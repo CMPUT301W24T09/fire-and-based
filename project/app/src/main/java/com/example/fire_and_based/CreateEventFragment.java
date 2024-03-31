@@ -8,6 +8,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -214,7 +215,7 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
-        Button imageButton = view.findViewById(R.id.imageButton);
+        ImageView imageButton = view.findViewById(R.id.add_banner_button);
         ImageView previewBanner = view.findViewById(R.id.roundedImageView);
 
 
@@ -243,9 +244,11 @@ public class CreateEventFragment extends Fragment {
                         Log.d("ImageDimensions", "Image Height: " + imageHeight);
                         Log.d("ImageDimensions", "Image Width: " + imageWidth);
                         //EVENT BANNERS SHOULD BE 640 x 480 pixels MINIMUM
-                        if(imageHeight < 400 || imageWidth < 1600)
+                        int imageRatio = imageHeight * 4; // Width should be height x 4
+
+                        if(imageWidth < imageRatio)
                         {
-                            Toast.makeText(requireContext(), "Banners are 640x480 minimum", Toast.LENGTH_LONG).show();
+                            Toast.makeText(requireContext(), "Banners are 4:1. Try another image", Toast.LENGTH_LONG).show();
                             imageUri = null;
                             //previewBanner.setImageURI(null);
                             previewBanner.setImageResource(android.R.color.white);}

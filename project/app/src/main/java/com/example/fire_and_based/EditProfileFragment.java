@@ -93,6 +93,7 @@ public class EditProfileFragment extends Fragment {
             homepageEdit.setText(user.getHomepage());
 
         // Idrk how this stuff works I copied from Aiden
+        // Real
         ActivityResultLauncher<Intent> customActivityResultLauncher =
                 registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                         new ActivityResultCallback<ActivityResult>() {
