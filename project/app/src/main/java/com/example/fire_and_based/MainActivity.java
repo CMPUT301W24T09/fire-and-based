@@ -45,6 +45,10 @@ import com.google.firebase.storage.UploadTask;
 import org.checkerframework.checker.units.qual.A;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import java.util.Random;
@@ -74,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             manager.createNotificationChannel(channel);
         }
 
-
+        sharedPref.edit().remove("uuid_key").commit();
         Log.d("MainActivity", "Getting UUID");
         String uuid = sharedPref.getString("uuid_key", "");
         Log.d("MainActivity", "UUID is: " + uuid);
@@ -91,7 +95,11 @@ public class MainActivity extends AppCompatActivity {
             // First time users get deterministically (on device id) generated profile picture
             Bitmap bitmap = generateBitmap(profileImageId, 100, 75);
 
-            uploadProfilePicture(bitmap, uuid);
+            try {
+                uploadProfilePicture(bitmap, uuid);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
 
             Log.d(TAG, "Getting FCM Token");
             String finalUuid = uuid;
@@ -168,18 +176,31 @@ public class MainActivity extends AppCompatActivity {
         return bitmap;
     }
 
-    private void uploadProfilePicture(Bitmap bitmap, String uuid) {
+    private void uploadProfilePicture(Bitmap bitmap, String uuid) throws FileNotFoundException {
         // Converts bitmap to URI
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, uuid, null);
-        Uri profilePicUri = Uri.parse(path);
+        byte[] byteArray = bytes.toByteArray();
+
+        String fileName = "image_" + uuid + ".png";
+
+        File tempFile = new File(getCacheDir(), fileName);
+
+        try {
+            FileOutputStream outputStream = new FileOutputStream(tempFile);
+            outputStream.write(byteArray);
+            outputStream.flush();
+            outputStream.close();
+        }
+        catch (IOException e) {
+            Log.w(TAG, "Error: Didn't make this thing correctly.");
+        }
 
         // Profile pictures referenced by device id
         String imageUrl = "profiles/" + uuid;
         StorageReference selectionRef = fireRef.child(imageUrl);
         // Uploads profile image as URI
-        selectionRef.putFile(profilePicUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        selectionRef.putFile(Uri.fromFile(tempFile)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Log.d(TAG, "superb");
