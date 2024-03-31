@@ -22,7 +22,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
     private Context context;
 
-    ImageDownloader imageDownloader = new ImageDownloader();
+    private ImageDownloader imageDownloader = new ImageDownloader();
 
     /**
      * Constructor for the adapter

@@ -31,6 +31,8 @@ import java.util.Objects;
 public class EventDetailsBrowserFragment extends Fragment {
     private User user;
     private Event event;
+    private ImageDownloader imageDownloader = new ImageDownloader();
+
 
     @Nullable
     @Override
@@ -57,6 +59,15 @@ public class EventDetailsBrowserFragment extends Fragment {
         imageDownloader.getBannerBitmap(clickedEvent, imagePreview);
 
          */
+
+
+        ImageView imagePreview = view.findViewById(R.id.bannerView);
+        if (event.getBannerQR() != null)
+        {
+            imageDownloader.getBannerBitmap(event,imagePreview);
+        }
+
+
 
         ImageView backArrow = view.findViewById(R.id.back_arrow_browser);
         backArrow.setOnClickListener(new View.OnClickListener() {

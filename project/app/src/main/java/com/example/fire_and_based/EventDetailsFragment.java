@@ -46,6 +46,8 @@ public class EventDetailsFragment extends Fragment {
     private String mode;
     private ViewPager2 viewPager;
     private FragmentStateAdapter adapter;
+    private ImageDownloader imageDownloader = new ImageDownloader();
+
 
     @Nullable
     @Override
@@ -70,6 +72,16 @@ public class EventDetailsFragment extends Fragment {
         imageDownloader.getBannerBitmap(clickedEvent, imagePreview);
 
          */
+
+
+        ImageView imagePreview = view.findViewById(R.id.banner_image);
+        if (event.getBannerQR() != null)
+        {
+            imageDownloader.getBannerBitmap(event,imagePreview);
+        }
+
+
+
 
         Button checkedInButton = view.findViewById(R.id.checked_in_button);
         Button editDetailsButton = view.findViewById(R.id.edit_details_button);

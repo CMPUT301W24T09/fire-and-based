@@ -243,7 +243,7 @@ public class CreateEventFragment extends Fragment {
                         Log.d("ImageDimensions", "Image Height: " + imageHeight);
                         Log.d("ImageDimensions", "Image Width: " + imageWidth);
                         //EVENT BANNERS SHOULD BE 640 x 480 pixels MINIMUM
-                        if(imageHeight < 640 || imageWidth < 480)
+                        if(imageHeight < 400 || imageWidth < 1600)
                         {
                             Toast.makeText(requireContext(), "Banners are 640x480 minimum", Toast.LENGTH_LONG).show();
                             imageUri = null;
