@@ -62,9 +62,10 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 
             TextView eventDate = view.findViewById(R.id.dateText);
 
-            //WE HAVE NO FUNCTION FOR GETTING THE DATE
-            //eventDate.setText(Math.toIntExact(event.getEventStart()));
-
+            Long startLong = event.getEventStart();
+            String startString = event.dateFromLong(startLong);
+            eventDate.setText(startString);
+                    
             return view;
     }
 }

@@ -22,7 +22,7 @@ import com.google.firebase.storage.StorageReference;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
- * This class implements the functionality for downloading images.
+ * Used for accessing image files in the database
  * @author Aiden
  */
 public class ImageDownloader
