@@ -20,8 +20,6 @@ import java.util.List;
  * This class is a fragment hosted by Admin Activity
  * It displays the list of users.
  * @author Sumayya
- * To-do (UI):
- * 1. Set up listener to click on a user and display the user profile (waiting on XML from Carson)
  */
 public class UserListFragment extends Fragment {
     protected ListView userList;
@@ -56,7 +54,19 @@ public class UserListFragment extends Fragment {
 
         userList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {            }
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                lastClickedIndex = position;
+                User user = dataList.get(lastClickedIndex);
+                AdminProfileFragment fragment = new AdminProfileFragment();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("user", user);
+                fragment.setArguments(bundle);
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container_view_admin, fragment)
+                        .setReorderingAllowed(true)
+                        .addToBackStack(null)
+                        .commit();
+            }
         });
 
         return view;
