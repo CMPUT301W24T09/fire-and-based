@@ -1,5 +1,7 @@
 package com.example.fire_and_based;
 
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,16 +11,23 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.util.Map;
 import java.util.Objects;
@@ -49,6 +58,10 @@ public class EventDetailsFragment extends Fragment {
     private ImageDownloader imageDownloader = new ImageDownloader();
 
 
+    private FusedLocationProviderClient fusedLocationClient;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1; // Define a request code
+    public Button checkedInButton;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,6 +72,9 @@ public class EventDetailsFragment extends Fragment {
             event = getArguments().getParcelable("event");
             mode = getArguments().getString("mode");
         }
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+
 
         TextView eventTitle = view.findViewById(R.id.event_title);
         eventTitle.setText(event.getEventName());
@@ -73,6 +89,8 @@ public class EventDetailsFragment extends Fragment {
 
          */
 
+        
+        
 
         ImageView imagePreview = view.findViewById(R.id.banner_image);
         if (event.getBannerQR() != null)
@@ -83,7 +101,8 @@ public class EventDetailsFragment extends Fragment {
 
 
 
-        Button checkedInButton = view.findViewById(R.id.checked_in_button);
+        //Button checkedInButton = view.findViewById(R.id.checked_in_button);
+        checkedInButton = view.findViewById(R.id.checked_in_button);
         Button editDetailsButton = view.findViewById(R.id.edit_details_button);
         Button attendeeListButton = view.findViewById(R.id.attendee_list_button);
 
@@ -143,6 +162,13 @@ public class EventDetailsFragment extends Fragment {
             }
         });
 
+        checkedInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+             getLocation();
+            }
+        });
+
 
 
         viewPager = view.findViewById(R.id.event_details_viewpager);
@@ -183,5 +209,54 @@ public class EventDetailsFragment extends Fragment {
         });
 
         return view;
+    }
+
+
+
+    private void getLocation() {
+        if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestLocationPermission();
+            return;
+        }
+
+        if (!checkedInButton.getText().toString().equals("Not checked In")){
+            Toast.makeText(getContext(), "You are already checked in for this event!", Toast.LENGTH_SHORT).show();
+        } else {
+
+
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations, this can be null.
+                        if (location != null) {
+                            // Logic to handle location object
+                            double latitude = location.getLatitude();
+                            double longitude = location.getLongitude();
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            GeoPoint geoPoint = new GeoPoint(latitude, longitude);
+
+                            FirebaseUtil.sendCoordinatesToEvent(db, event, geoPoint, new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Toast.makeText(getContext(), "It wrote to db u did it kid proud of u ", Toast.LENGTH_SHORT).show();
+                                    checkedInButton.setText("Checked In");
+                                }
+                            }, new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getContext(), "Error sending location to database :( ", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                        }
+                    }
+                });
+        }
+    }
+    private void requestLocationPermission() {
+        ActivityCompat.requestPermissions(requireActivity(),
+                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION},
+                LOCATION_PERMISSION_REQUEST_CODE);
     }
 }

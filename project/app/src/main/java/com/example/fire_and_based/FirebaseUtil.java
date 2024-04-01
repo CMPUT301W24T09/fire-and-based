@@ -4,6 +4,7 @@ package com.example.fire_and_based;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.util.Log;
+import android.widget.Toast;
 
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -829,6 +830,32 @@ public class FirebaseUtil {
         }
 
         return docId;
+    }
+
+
+
+    // for adding a location that a user has checked in from java docs are not real java docs cannot hurt me
+    public static void sendCoordinatesToEvent(FirebaseFirestore db, Event event, GeoPoint geoPoint,OnSuccessListener<Void> successListener, OnFailureListener failureListener ){
+        db.collection("events").document(event.getQRcode())
+                .update("checkInLocations", FieldValue.arrayUnion(geoPoint))
+                .addOnSuccessListener(successListener)
+                .addOnFailureListener(failureListener);
+    }
+
+
+    public static void getEventCheckInLocations(FirebaseFirestore db, Event event, OnSuccessListener<List<GeoPoint>> successListener, OnFailureListener failureListener) {
+        db.collection("events").document(event.getQRcode())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists() && documentSnapshot.contains("checkInLocations")) {
+                        List<GeoPoint> checkInLocations = (List<GeoPoint>) documentSnapshot.get("checkInLocations");
+                        successListener.onSuccess(checkInLocations);
+                    } else {
+                        // Handle the case where the event doesn't have a 'checkInLocations' field or doesn't exist
+                        successListener.onSuccess(new ArrayList<>()); // Return an empty list as fallback
+                    }
+                })
+                .addOnFailureListener(failureListener);
     }
 
 }

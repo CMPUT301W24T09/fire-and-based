@@ -85,6 +85,9 @@ dependencies {
     //Google Maps API
     implementation("com.google.android.gms:play-services-maps:18.2.0")
 
+    // For Location Services with Maps functionality
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+
     // For geocoding
     implementation("com.google.maps:google-maps-services:0.9.0")
 
