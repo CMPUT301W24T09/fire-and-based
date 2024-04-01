@@ -118,7 +118,7 @@ public class EventDetailsFragment extends Fragment {
             });
         }
 
-        ImageView backArrow = view.findViewById(R.id.back_arrow);
+        ImageView backArrow = view.findViewById(R.id.back_arrow_browser);
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
