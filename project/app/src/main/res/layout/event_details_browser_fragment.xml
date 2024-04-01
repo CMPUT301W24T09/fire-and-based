@@ -123,10 +123,13 @@
             android:layout_marginStart="-5dp"
             android:layout_marginTop="-5dp"
             android:layout_marginEnd="-5dp"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toTopOf="@+id/event_title_browser"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
             app:srcCompat="@drawable/event_box_background" />
 
 

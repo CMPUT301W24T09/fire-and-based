@@ -50,7 +50,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
             /**
              * Downloads event banner and displays
              */
-            ImageView imagePreview = view.findViewById(R.id.imageView5);
+            ImageView imagePreview = view.findViewById(R.id.event_banner_preview);
             if (event.getBannerQR() != null)
             {
                 imageDownloader.getBannerBitmap(event,imagePreview);
@@ -59,6 +59,11 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
             TextView eventName = view.findViewById(R.id.event_title_text);
 
             eventName.setText(event.getEventName());
+
+            TextView eventDate = view.findViewById(R.id.dateText);
+
+            //WE HAVE NO FUNCTION FOR GETTING THE DATE
+            //eventDate.setText(Math.toIntExact(event.getEventStart()));
 
             return view;
     }
