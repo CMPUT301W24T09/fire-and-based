@@ -100,15 +100,13 @@ public class EditEventFragment extends Fragment {
                 FragmentManager fragmentManager = getParentFragmentManager();
 
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
-                FirebaseUtil.updateEvent(db, event, new OnSuccessListener<Void>() {
+                FirebaseUtil.deleteEvent(db, event, new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-//                        Toast.makeText(getContext(), "Event deleted from database :) ", Toast.LENGTH_SHORT).show();
-//                        event = null;
-//                        for (int i = 0; i < 2; i++) {
-//                            fragmentManager.popBackStackImmediate();
-//                        }
-                        // tried several things im not sure what do - even when you leave this blank it just gets nuked still
+                        Toast.makeText(getContext(), "Event deleted from database :) ", Toast.LENGTH_SHORT).show();
+                        for (int i = 0; i < 2; i++) {
+                            fragmentManager.popBackStackImmediate();
+                        }
                     }
                 }, new OnFailureListener() {
                     @Override
