@@ -178,7 +178,7 @@ public class EventListFragment extends Fragment {
      * @param clickedEvent The event associated with the clicked item.
      * @param mode the mode ("Browse", "Attending", "Organizing", "Admin")
      */
-    private void executeFragmentTransaction(Event clickedEvent, String mode) {
+    public void executeFragmentTransaction(Event clickedEvent, String mode) {
         if (Objects.equals(mode, "Admin")) {
             Fragment fragment = new AdminEventDetailsFragment();
             Bundle bundle = new Bundle();
@@ -216,5 +216,13 @@ public class EventListFragment extends Fragment {
         options.setOrientationLocked(true);
 
         qrLauncher.launch(options);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        db = FirebaseFirestore.getInstance();
+        updateEventList();
+        // Call your method to refresh the events list here
     }
 }

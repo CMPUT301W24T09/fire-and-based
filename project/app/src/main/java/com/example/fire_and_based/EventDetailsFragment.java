@@ -119,12 +119,30 @@ public class EventDetailsFragment extends Fragment {
         }
 
         ImageView backArrow = view.findViewById(R.id.back_arrow_browser);
+        editDetailsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditEventFragment fragment = new EditEventFragment();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("event", event);
+                bundle.putParcelable("user", user);
+                fragment.setArguments(bundle);
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container_view, fragment)
+                        .setReorderingAllowed(true)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        //ImageView backArrow = view.findViewById(R.id.back_arrow);
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getParentFragmentManager().popBackStack();
             }
         });
+
 
 
         viewPager = view.findViewById(R.id.event_details_viewpager);
