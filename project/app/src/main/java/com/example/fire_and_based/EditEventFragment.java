@@ -1,12 +1,9 @@
 package com.example.fire_and_based;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,14 +29,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import org.w3c.dom.Text;
-
-import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
 
 public class EditEventFragment extends Fragment {
 
@@ -60,6 +53,7 @@ public class EditEventFragment extends Fragment {
             user = getArguments().getParcelable("user");
         }
 
+        TextView eventTitle = view.findViewById(R.id.eventEditTitle);
         TextView cancelButton = view.findViewById(R.id.eventEditCancelButton);
         // all form fields just read them it makes sense i promise :3
         EditText eventDescription = view.findViewById(R.id.eventEditDescription);
@@ -72,6 +66,7 @@ public class EditEventFragment extends Fragment {
         TextView deleteButton = view.findViewById(R.id.eventEditDeleteButton);
 
         // setting all the forms
+        eventTitle.setText(event.getEventName());
         eventDescription.setText(event.getEventDescription());
         Long eventStartDateLong = event.getEventStart();          // sets start date after converting
         String[] dateTime = convertTimestampToCalendarDateAndTime(eventStartDateLong);

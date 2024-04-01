@@ -1,9 +1,12 @@
 package com.example.fire_and_based;
 
+import static com.example.fire_and_based.EditEventFragment.convertTimestampToCalendarDateAndTime;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,25 +26,41 @@ public class AdminEventDetailsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.edit_event_fragment, container, false);
+        View view = inflater.inflate(R.layout.admin_event_details_fragment, container, false);
 
         if (getArguments() != null) {
             event = getArguments().getParcelable("event");
         }
 
+        TextView eventTitle = view.findViewById(R.id.admin_event_title);
+        EditText eventDescription = view.findViewById(R.id.admin_event_description);
+        EditText eventStartDate = view.findViewById(R.id.start_date);
+        EditText eventEndDate = view.findViewById(R.id.event_date);
+        EditText eventStartTime = view.findViewById(R.id.edit_time);
+        EditText eventLocation = view.findViewById(R.id.event_location);
+        EditText eventAttendeeAmount = view.findViewById(R.id.max_attendees);
 
+        eventTitle.setText(event.getEventName());
+        eventDescription.setText(event.getEventDescription());
+        Long eventStartDateLong = event.getEventStart();          // sets start date after converting
+        String[] dateTime = convertTimestampToCalendarDateAndTime(eventStartDateLong);
+        String startCalendar = dateTime[0]; // date
+        String startTime = dateTime[1]; // time
+        eventStartDate.setText(startCalendar);
+        eventStartTime.setText(startTime);
+        Long eventEndDateLong = event.getEventEnd();         // sets end date after converting
+        String endCalendar = convertTimestampToCalendarDateAndTime(eventEndDateLong)[0];
+        eventEndDate.setText(endCalendar);
+        eventLocation.setText(event.getLocation());
+        eventAttendeeAmount.setText(event.getMaxAttendees().toString());
 
-        // BRO SUMAYYA I USED THE EDIT EVENT FRAGMENT FOR EDITING EVENT AS ORGANIZER IDK BRO LOL
-//        TextView title = view.findViewById(R.id.edit_event_title);
-//        title.setText(event.getEventName());
-//
-//        TextView cancel = view.findViewById(R.id.cancel_edit_event);
-//        cancel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                getParentFragmentManager().popBackStack();
-//            }
-//        });
+        TextView cancel = view.findViewById(R.id.admin_cancel_button);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getParentFragmentManager().popBackStack();
+            }
+        });
 
         return view;
     }

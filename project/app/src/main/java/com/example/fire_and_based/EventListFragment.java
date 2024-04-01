@@ -221,7 +221,6 @@ public class EventListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Toast.makeText(getContext(), "Calling update List", Toast.LENGTH_SHORT).show();
         db = FirebaseFirestore.getInstance();
         updateEventList();
         // Call your method to refresh the events list here
