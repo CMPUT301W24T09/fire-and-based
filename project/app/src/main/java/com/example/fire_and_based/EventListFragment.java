@@ -33,6 +33,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import android.location.Location;
 
+
 /**
  * This class is a fragment hosted by the UserActivity and/or Admin Activity
  * It displays the list of events.
@@ -54,7 +55,6 @@ public class EventListFragment extends Fragment {
     private FusedLocationProviderClient fusedLocationClient;
     public Event scannedEvent;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1; // Define a request code
-
 
 
     private final ActivityResultLauncher<ScanOptions> qrLauncher = registerForActivityResult(
