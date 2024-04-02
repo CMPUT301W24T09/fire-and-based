@@ -87,6 +87,7 @@ public class EventDetailsBrowserFragment extends Fragment {
             public void onClick(View v) {
                 FirebaseUtil.addEventAndAttendee(db, event.getQRcode(), user.getDeviceID(), aVoid -> {
                     Toast.makeText(requireContext(), "Successfully joined event", Toast.LENGTH_LONG).show();
+                    AnnouncementUtil.subscribeToTopic(event.getQRcode());
                     getParentFragmentManager().popBackStack();
                     EventDetailsFragment fragment = new EventDetailsFragment();
                     Bundle bundle = new Bundle();

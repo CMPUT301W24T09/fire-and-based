@@ -64,10 +64,11 @@ public class EventListFragment extends Fragment {
                     Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_LONG).show();
                 } else {
                     db = FirebaseFirestore.getInstance();
-                    FirebaseUtil.addEventAndCheckedInUser(db, result.getContents(), user.getDeviceID(), aVoid -> {
+                    String QRCode = QRCodeGenerator.getValidChars(result.getContents());
+                    FirebaseUtil.addEventAndCheckedInUser(db, QRCode, user.getDeviceID(), aVoid -> {
                         Toast.makeText(requireContext(), "Checked in!", Toast.LENGTH_LONG).show();
                         // write logic that gets user Lat and Long here so that it can be wrote to the databse
-                        FirebaseUtil.getEvent(db, result.getContents(), new OnSuccessListener<Event>() {
+                        FirebaseUtil.getEvent(db, QRCode, new OnSuccessListener<Event>() {
                             @Override
                             public void onSuccess(Event event) {
                                 scannedEvent = event;

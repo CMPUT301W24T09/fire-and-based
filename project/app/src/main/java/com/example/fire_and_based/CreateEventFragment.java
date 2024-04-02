@@ -197,9 +197,7 @@ public class CreateEventFragment extends Fragment {
         {
             @Override
             public void onClick(View v) {
-                byte[] array = new byte[7]; // length is bounded by 7
-                new Random().nextBytes(array);
-                QRCode = "fire_and_based_event:" + new String(array, StandardCharsets.UTF_8);
+                QRCodeGenerator.getValidString();
                 //TODO add a thing that previews the QR Code string? at least for debug?
                 Toast.makeText(requireContext(), "Random QR Code Successfully Generated", Toast.LENGTH_SHORT).show();
 
@@ -299,7 +297,8 @@ public class CreateEventFragment extends Fragment {
                 toast("You must generate or scan a QR Code");
                 // add handling for qr code and banner as well
                 // add more handling here if needed
-
+            } else if (imageUri == null){
+                Toast.makeText(context, "Please Upload an Image", Toast.LENGTH_SHORT).show();
             } else {
 
                 // convert the date to time since 1970 jan 1 to store in the database
@@ -440,7 +439,7 @@ public class CreateEventFragment extends Fragment {
             {
                 // TODO remove debug confirmation maybe
                 toast("Scanned: " + result.getContents());
-                QRCode = result.getContents();
+                QRCode = QRCodeGenerator.getValidChars(result.getContents());
                 //TODO again up to you if you want to display this
                 //showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
             }
