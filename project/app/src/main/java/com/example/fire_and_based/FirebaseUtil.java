@@ -174,7 +174,9 @@ public class FirebaseUtil {
                 db.collection("events").get().addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         String qrCode = doc.getId();
+                        Log.d(TAG,"GETTING QRCODE FOR EVENT "+qrCode);
                         // Check if the user is already associated with the event
+
                         if (!attendingEvents.contains(qrCode) && !organizingEvents.contains(qrCode)) {
                             // Event not associated with the user, add it to the events list
                             String eventName = doc.getString("eventName");

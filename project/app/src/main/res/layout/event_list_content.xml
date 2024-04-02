@@ -21,6 +21,7 @@
         android:clipToPadding="false"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
+        android:paddingBottom="10dp"
         android:paddingVertical="5dp"
         app:cardCornerRadius="20dp"
         app:cardUseCompatPadding="true"
@@ -68,8 +69,9 @@
                         android:layout_marginStart="0dp"
                         android:layout_marginTop="0dp"
                         android:layout_marginEnd="0dp"
+                        android:layout_marginBottom="0dp"
                         android:background="@color/white"
-                        android:scaleType="centerCrop" />
+                        android:scaleType="center" />
                 </RelativeLayout>
 
             </androidx.cardview.widget.CardView>
