@@ -33,8 +33,8 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
             )
         }
     }
@@ -87,5 +87,8 @@ dependencies {
 
     // For geocoding
     implementation("com.google.maps:google-maps-services:0.9.0")
+
+    // Circular image view for profile image
+    implementation("de.hdodenhof:circleimageview:2.1.0")
 
 }
