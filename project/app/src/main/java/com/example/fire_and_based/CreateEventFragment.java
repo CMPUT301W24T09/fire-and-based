@@ -311,21 +311,27 @@ public class CreateEventFragment extends Fragment {
                     Date date = sdf.parse(combinedDateTime);
                     long timeSince1970 = date.getTime();  // this is the time we store n the database -> put in the event object when its created
                     long maxAttendeeLong = Long.parseLong(eventMaxAttendeesString);
-                    String imageUrl = "events/" + QRCode;
 
-                    //IMAGE UPLOAD TO FIREBASE
-                    StorageReference selectionRef = fireRef.child(imageUrl);
-                    selectionRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Toast.makeText(requireContext(), "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(requireContext(), "Image Upload Error", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    String imageUrl = null;
+
+                    if (!(imageUri == null))
+                    {
+                        imageUrl = "events/" + QRCode;
+                        //IMAGE UPLOAD TO FIREBASE
+                        StorageReference selectionRef = fireRef.child(imageUrl);
+                        selectionRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                Toast.makeText(requireContext(), "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(requireContext(), "Image Upload Error", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+
 
                     // EVENT CREATION GOES HERE
                     // we can create the event object

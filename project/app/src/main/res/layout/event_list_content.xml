@@ -112,6 +112,19 @@
                 android:textColor="#808080"
                 android:textSize="15sp" />
 
+            <TextView
+                android:id="@+id/checkCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/cardView2"
+                android:layout_marginStart="172dp"
+                android:layout_marginTop="56dp"
+                android:layout_toEndOf="@+id/dateText"
+                android:fontFamily="@font/roboto"
+                android:text="TextView"
+                android:textColor="#808080"
+                android:textSize="15sp" />
+
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>

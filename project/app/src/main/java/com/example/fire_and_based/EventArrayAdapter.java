@@ -65,6 +65,21 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
             Long startLong = event.getEventStart();
             String startString = event.dateFromLong(startLong);
             eventDate.setText(startString);
+
+
+
+
+            TextView checkCount = view.findViewById(R.id.checkCount);
+
+            //ArrayList<Integer> checkNums = event.getMilestones();
+            String checkNum = "0";
+            String totalNum = String.valueOf(event.getMaxAttendees());
+            checkCount.setText(checkNum+"/"+totalNum);
+
+
+
+
+
                     
             return view;
     }

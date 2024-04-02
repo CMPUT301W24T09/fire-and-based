@@ -98,6 +98,10 @@ public class EventDetailsFragment extends Fragment {
             imageDownloader.getBannerBitmap(event,imagePreview);
         }
 
+        TextView eventDate = view.findViewById(R.id.dateText);
+        Long startLong = event.getEventStart();
+        String startString = event.dateFromLong(startLong);
+        eventDate.setText(startString);
 
 
 

@@ -67,6 +67,10 @@ public class EventDetailsBrowserFragment extends Fragment {
             imageDownloader.getBannerBitmap(event,imagePreview);
         }
 
+        TextView eventDate = view.findViewById(R.id.event_date_browser);
+        Long startLong = event.getEventStart();
+        String startString = event.dateFromLong(startLong);
+        eventDate.setText(startString);
 
 
         ImageView backArrow = view.findViewById(R.id.back_arrow_browser);
