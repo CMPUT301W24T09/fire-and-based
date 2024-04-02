@@ -19,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -75,6 +77,18 @@ public class AdminProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 getParentFragmentManager().popBackStack();
+            }
+        });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                FirebaseUtil.deleteUser(db, user, aVoid -> {
+                    getParentFragmentManager().popBackStack();
+                }, e -> {
+                    Toast.makeText(requireContext(), "Unable to delete user", Toast.LENGTH_SHORT).show();
+                });
             }
         });
 

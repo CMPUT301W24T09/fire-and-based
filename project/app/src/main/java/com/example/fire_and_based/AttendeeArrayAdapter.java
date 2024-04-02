@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * This class is the adapter for the attendee list. It displays each attendee for an event.
@@ -45,9 +46,13 @@ public class AttendeeArrayAdapter extends ArrayAdapter<User> {
 
             User user = users.get(position);
 
-            TextView eventName = view.findViewById(R.id.attendee_name);
+            TextView username = view.findViewById(R.id.attendee_name);
 
-            eventName.setText(user.getUserName());
+            if (Objects.equals("", username)) {
+                username.setText("Anonymous");
+            } else {
+                username.setText(user.getUserName());
+            }
 
             return view;
         }

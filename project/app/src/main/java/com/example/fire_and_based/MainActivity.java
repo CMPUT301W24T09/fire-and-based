@@ -149,10 +149,12 @@ public class MainActivity extends AppCompatActivity {
                         if (user.isAdmin()) {
                             Intent intent = new Intent(MainActivity.this, AdminActivity.class);
                             startActivity(intent);
+                            finish();
                         } else {
                             Intent intent = new Intent(MainActivity.this, UserActivity.class);
                             intent.putExtra("user", currentUser);
                             startActivity(intent);
+                            finish();
                         }
                     },
                     e -> {

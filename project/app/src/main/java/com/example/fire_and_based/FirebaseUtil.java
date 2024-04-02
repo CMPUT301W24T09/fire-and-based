@@ -490,14 +490,22 @@ public class FirebaseUtil {
                 if (eventIDs != null && !eventIDs.isEmpty()) {
                     ArrayList<String> eventCodes = new ArrayList<>(eventIDs.keySet());
                     Map<Event, Long> events = new HashMap<>();
+                    AtomicInteger processedCount = new AtomicInteger(0); // To track processed events
+
                     for (String eventCode : eventCodes) {
                         String docID = cleanDocumentId(eventCode);
                         getEvent(db, docID, event -> {
                             events.put(event, eventIDs.get(eventCode));
-                            if (events.size() == eventCodes.size()) {
+                            int currentCount = processedCount.incrementAndGet();
+                            if (currentCount == eventCodes.size()) {
                                 successListener.onSuccess(events);
                             }
-                        }, failureListener);
+                        }, e -> {
+                            int currentCount = processedCount.incrementAndGet();
+                            if (currentCount == eventCodes.size()) {
+                                successListener.onSuccess(events);
+                            }
+                        });
                     }
                 } else {
                     successListener.onSuccess(new HashMap<>());
@@ -528,13 +536,21 @@ public class FirebaseUtil {
                 List<String> userIDs = (List<String>) documentSnapshot.get("attendees");
                 if (userIDs != null && !userIDs.isEmpty()) {
                     ArrayList<User> users = new ArrayList<>();
+                    AtomicInteger processedCount = new AtomicInteger(0); // To track processed events
+
                     for (String userID : userIDs) {
                         getUserObject(db, userID, user -> {
                             users.add(user);
-                            if (users.size() == userIDs.size()) {
+                            int currentCount = processedCount.incrementAndGet();
+                            if (currentCount == userIDs.size()) {
                                 successListener.onSuccess(users);
                             }
-                        }, failureListener);
+                        }, e -> {
+                            int currentCount = processedCount.incrementAndGet();
+                            if (currentCount == userIDs.size()) {
+                                successListener.onSuccess(users);
+                            }
+                        });
                     }
                 } else {
                     successListener.onSuccess(new ArrayList<User>());
@@ -560,15 +576,23 @@ public class FirebaseUtil {
         db.collection("events").document(docID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 Map<String, Long> userIDs = (Map<String, Long>) documentSnapshot.get("checkedInUsers");
+                AtomicInteger processedCount = new AtomicInteger(0); // To track processed events
+
                 if (userIDs != null && !userIDs.isEmpty()) {
                     Map<User, Long> users = new HashMap<>();
                     for (String userID : userIDs.keySet()) {
                         getUserObject(db, userID, user -> {
                             users.put(user, userIDs.get(userID));
-                            if (users.size() == userIDs.size()) {
+                            int currentCount = processedCount.incrementAndGet();
+                            if (currentCount == userIDs.size()) {
                                 successListener.onSuccess(users);
                             }
-                        }, failureListener);
+                        }, e -> {
+                            int currentCount = processedCount.incrementAndGet();
+                            if (currentCount == userIDs.size()) {
+                                successListener.onSuccess(users);
+                            }
+                        });
                     }
                 } else {
                     successListener.onSuccess(new HashMap<>());
