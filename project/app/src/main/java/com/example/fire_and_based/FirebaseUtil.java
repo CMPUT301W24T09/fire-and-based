@@ -573,15 +573,23 @@ public class FirebaseUtil {
         db.collection("events").document(docID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 Map<String, Long> userIDs = (Map<String, Long>) documentSnapshot.get("checkedInUsers");
+                AtomicInteger processedCount = new AtomicInteger(0); // To track processed events
+
                 if (userIDs != null && !userIDs.isEmpty()) {
                     Map<User, Long> users = new HashMap<>();
                     for (String userID : userIDs.keySet()) {
                         getUserObject(db, userID, user -> {
                             users.put(user, userIDs.get(userID));
-                            if (users.size() == userIDs.size()) {
+                            int currentCount = processedCount.incrementAndGet();
+                            if (currentCount == userIDs.size()) {
                                 successListener.onSuccess(users);
                             }
-                        }, failureListener);
+                        }, e -> {
+                            int currentCount = processedCount.incrementAndGet();
+                            if (currentCount == userIDs.size()) {
+                                successListener.onSuccess(users);
+                            }
+                        });
                     }
                 } else {
                     successListener.onSuccess(new HashMap<>());
