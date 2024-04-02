@@ -20,7 +20,12 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.jetbrains.annotations.NotNull;
 
+import android.os.Handler;
+import android.os.Looper;
+
 public class AnnouncementUtil {
+
+    protected static String key = BuildConfig.API_KEY;
 
     /**
      * Can be used to send a message to a given user or all users subscribed to a topic
@@ -36,7 +41,7 @@ public class AnnouncementUtil {
                 .url("https://fcm.googleapis.com/fcm/send")
                 .post(body)
                 .addHeader("content-type", "application/json")
-                .addHeader("authorization", "key=" + BuildConfig.API_KEY)
+                .addHeader("authorization", ("key=" + key))
                 .build();
         try {
             Response response = client.newCall(request).execute();
@@ -58,28 +63,32 @@ public class AnnouncementUtil {
      */
     public static void subscribeToTopic(String topic){
         FirebaseMessaging.getInstance().subscribeToTopic(topic)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NotNull Task<Void> task) {
-                        if (!task.isSuccessful()) {
-                            Log.e("AnnouncementUtil", "Failed to subscribe to " + topic);
-                        } else {
-                            Log.d("Announcement", "Subscribed to " + topic);
-                        }
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.e("AnnouncementUtil", "Failed to subscribe to " + topic);
+                    } else {
+                        Log.d("Announcement", "Subscribed to " + topic);
                     }
                 });
     }
 
-    public static void newAnnouncement(FirebaseFirestore db, String content, Event event, OnSuccessListener<Void> successListener, OnFailureListener failureListener){
+
+
+    public static void newAnnouncement(FirebaseFirestore db, String content, Event event, OnSuccessListener<Void> successListener, OnFailureListener failureListener, Handler handler){
         Announcement announcement = new Announcement(event.getEventName(), content, System.currentTimeMillis()/1000L, MainActivity.getDeviceID(), event.getQRcode());
         FirebaseUtil.saveAnnouncement(db, event.getQRcode(), announcement, aVoid -> {
-            boolean success = sendToRecipient(announcement, "/topics/"+event.getQRcode());
-            if (!success){
-                failureListener.onFailure(new Exception("Failed to send notification"));
-            } else {
-                successListener.onSuccess(null);
-            }
+            new Thread(() -> {
+                boolean success = sendToRecipient(announcement, "/topics/"+event.getQRcode());
+                handler.post(() -> {
+                    if (!success){
+                        failureListener.onFailure(new Exception("Failed to send notification"));
+                    } else {
+                        successListener.onSuccess(null);
+                    }
+                });
+            }).start();
         }, failureListener);
     }
+
 
 }
