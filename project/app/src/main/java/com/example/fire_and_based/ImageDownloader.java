@@ -83,7 +83,7 @@ public class ImageDownloader
         public void getProfilePicBitmap(User thisUser, CircleImageView profilePreview) {
             //Bitmap imageMap;
 
-            String profileUrl = "profiles/" + thisUser.getDeviceID();
+            String profileUrl = thisUser.getProfilePicture();
             Log.d(TAG, profileUrl);
             StorageReference uriRef = fireRef.child(profileUrl);
             uriRef.getBytes(1000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {

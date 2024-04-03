@@ -36,6 +36,7 @@ import com.google.firebase.storage.UploadTask;
 
 import org.w3c.dom.Text;
 
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -150,18 +151,28 @@ public class EditProfileFragment extends Fragment {
                     String imageUrl = "profiles/" + user.getDeviceID();
                     StorageReference selectionRef = fireRef.child(imageUrl);
 
+                    HashMap<String, Object> data = new HashMap<>();
+
+                    data.put("firstName", user.getFirstName());
+                    data.put("lastName", user.getLastName());
+                    data.put("userName", user.getUserName());
+                    data.put("email", user.getEmail());
+                    data.put("phoneNumber", user.getPhoneNumber());
+                    data.put("homepage", user.getHomepage());
+
                     // Updates user info
-                    FirebaseUtil.updateUser(FirebaseFirestore.getInstance(), user, new OnSuccessListener<Void>() {
+                    FirebaseUtil.updateUser(FirebaseFirestore.getInstance(), user, data, new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
                             // For now we exit from edit details page when valid save (probably should change later, not sure)
 
                             // Uploads new profile picture, if it was changed
                             if (pictureChanged) {
+                                user.setProfilePicture(imageUrl);
                                 selectionRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                        Toast.makeText(requireContext(), "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(requireContext(), "Successfully updated profile details", Toast.LENGTH_LONG).show();
                                         Log.d(TAG, "User profile details successfully updated");
                                         getParentFragmentManager().popBackStack();
                                     }
@@ -175,7 +186,7 @@ public class EditProfileFragment extends Fragment {
                                 });
                             }
                             else {
-                                Toast.makeText(requireContext(), "Image Upload Error", Toast.LENGTH_LONG).show();
+                                Toast.makeText(requireContext(), "Successfully updated profile details", Toast.LENGTH_LONG).show();
                                 Log.d(TAG, "User profile details successfully updated");
                                 getParentFragmentManager().popBackStack();
                             }

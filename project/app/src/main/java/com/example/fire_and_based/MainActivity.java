@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
             manager.createNotificationChannel(channel);
         }
 
-        sharedPref.edit().remove("uuid_key").commit();
         Log.d("MainActivity", "Getting UUID");
         String uuid = sharedPref.getString("uuid_key", "");
         Log.d("MainActivity", "UUID is: " + uuid);
@@ -115,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             String token = task.getResult();
                             Log.d(TAG, "Token: " + token);
-                            currentUser = new User(finalUuid, "", "", "", "", "", "", "", false, token);
+                            currentUser = new User(finalUuid, "", "defaultProfiles/" + finalUuid, "", "", "", "", "", false, token);
                             FirebaseUtil.addUserToDB(db, currentUser,
                                     aVoid -> {
                                         addFieldstoUser(db, currentUser, new OnSuccessListener<Void>() {
@@ -229,8 +228,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Profile pictures referenced by device id
-        String imageUrl = "profiles/" + uuid;
-        StorageReference selectionRef = fireRef.child(imageUrl);
+        String defaultImageUrl = "defaultProfiles/" + uuid;
+        StorageReference selectionRef = fireRef.child(defaultImageUrl);
         // Uploads profile image as URI
         selectionRef.putFile(Uri.fromFile(tempFile)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override

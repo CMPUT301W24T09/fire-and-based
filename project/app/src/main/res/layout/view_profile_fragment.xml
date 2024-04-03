@@ -32,7 +32,6 @@
             android:layout_height="96dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
-            android:src="@drawable/frog"
             app:civ_border_width="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

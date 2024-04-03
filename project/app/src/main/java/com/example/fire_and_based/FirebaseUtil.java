@@ -270,11 +270,12 @@ public class FirebaseUtil {
      * @see User
      */
     public static void addUserToDB(FirebaseFirestore db, User user, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
-        db.collection("users")
-                .document(user.getDeviceID())
-                .set(user)
+        DocumentReference docsRef = db.collection("users")
+                    .document(user.getDeviceID());
+        docsRef.set(user)
                 .addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);
+        HashMap<String, ArrayList<Event>> events = new HashMap<>();
     }
 
     /**
@@ -340,9 +341,9 @@ public class FirebaseUtil {
      * @param failureListener what to do in case of failure (database error)
      * @see User
      */
-    public static void updateUser(FirebaseFirestore db, User user, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
+    public static void updateUser(FirebaseFirestore db, User user, HashMap<String, Object> data, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
         db.collection("users").document(user.getDeviceID())
-                .set(user)
+                .update(data)
                 .addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);
     }
