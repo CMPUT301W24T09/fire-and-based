@@ -34,6 +34,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FieldPath;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -47,6 +48,7 @@ import org.checkerframework.checker.units.qual.A;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -108,6 +110,22 @@ public class MainActivity extends AppCompatActivity {
                             currentUser = new User(finalUuid, "", "", "", "", "", "", "", false, token);
                             FirebaseUtil.addUserToDB(db, currentUser,
                                     aVoid -> {
+                                        addFieldstoUser(db, currentUser, new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused)
+                                            {
+                                                Log.d(TAG, "Extra Fields Added to User in DB");
+
+                                            }
+                                        }, new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e)
+                                            {
+                                                Log.d(TAG, "Extra fields not added");
+
+                                            }
+                                        });
+
                                         Log.d(TAG, "User added successfully");
                                         AnnouncementUtil.subscribeToTopic("system");
                                         Intent intent = new Intent(MainActivity.this, UserActivity.class);
@@ -131,10 +149,12 @@ public class MainActivity extends AppCompatActivity {
                         if (user.isAdmin()) {
                             Intent intent = new Intent(MainActivity.this, AdminActivity.class);
                             startActivity(intent);
+                            finish();
                         } else {
                             Intent intent = new Intent(MainActivity.this, UserActivity.class);
                             intent.putExtra("user", currentUser);
                             startActivity(intent);
+                            finish();
                         }
                     },
                     e -> {
@@ -144,6 +164,18 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    }
+
+    public static void addFieldstoUser(FirebaseFirestore db, User user, OnSuccessListener<Void> successListener, OnFailureListener failureListener ){
+        db.collection("users").document(user.getDeviceID())
+                .update("attendeeEvents", FieldValue.arrayUnion())
+                .addOnSuccessListener(successListener)
+                .addOnFailureListener(failureListener);
+
+        db.collection("users").document(user.getDeviceID())
+                .update("organizerEvents", FieldValue.arrayUnion())
+                .addOnSuccessListener(successListener)
+                .addOnFailureListener(failureListener);
     }
 
     protected static String getDeviceID() {

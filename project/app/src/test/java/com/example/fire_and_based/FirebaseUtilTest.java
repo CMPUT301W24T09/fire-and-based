@@ -95,7 +95,9 @@ public class FirebaseUtilTest {
             when(mockQueryDocumentSnapshot.getString("eventName")).thenReturn("eventName");
             when(mockQueryDocumentSnapshot.getString("eventDescription")).thenReturn("eventDescription");
             when(mockQueryDocumentSnapshot.getString("eventBanner")).thenReturn("eventBanner");
-            when(mockQueryDocumentSnapshot.getString("QRcode")).thenReturn("QRcode");
+            //when(mockQueryDocumentSnapshot.getString("QRcode")).thenReturn("QRcode");
+            when(mockQueryDocumentSnapshot.getId()).thenReturn("QRcode");
+
             listener.onEvent(mockQuerySnapshot, null);
             return null;
         });
@@ -132,7 +134,7 @@ public class FirebaseUtilTest {
             when(mockQueryDocumentSnapshot.getString("eventName")).thenReturn("eventName1", "eventName2");
             when(mockQueryDocumentSnapshot.getString("eventDescription")).thenReturn("eventDescription1", "eventDescription2");
             when(mockQueryDocumentSnapshot.getString("eventBanner")).thenReturn("eventBanner1", "eventBanner2");
-            when(mockQueryDocumentSnapshot.getString("QRcode")).thenReturn("QRcode1", "QRcode2");
+            when(mockQueryDocumentSnapshot.getId()).thenReturn("QRcode1", "QRcode2");
             when(mockQueryDocumentSnapshot.getLong("eventCapacity")).thenReturn(0L, 5L);
             when(mockQueryDocumentSnapshot.getLong("eventRegistered")).thenReturn(1L, 10L);
             when(mockQueryDocumentSnapshot.getString("eventLocation")).thenReturn("Edmonton", "Vancouver");

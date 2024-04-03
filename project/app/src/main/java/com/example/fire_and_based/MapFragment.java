@@ -1,40 +1,51 @@
 package com.example.fire_and_based;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.GeoApiContext;
-import com.google.maps.GeocodingApi;
-import com.google.maps.model.GeocodingResult;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap mMap;
 
     Event event;
+    String mode;
 
-    public static MapFragment newInstance(Event event) {
+    public static MapFragment newInstance(Event event, String mode) {
         MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
         args.putParcelable("event", event);
+        args.putString("mode", mode);
         fragment.setArguments(args);
         return fragment;
     }
@@ -47,6 +58,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         if (getArguments() != null) {
             event = getArguments().getParcelable("event");
+            mode = getArguments().getString("mode");
         }
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
@@ -67,7 +79,35 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         String eventAddress = event.getLocation();
         LatLng eventCoords = geocodeAddress(eventAddress);
         float zoomLevel = 13.0f;  // higher == more zoom
-        mMap.addMarker(new MarkerOptions().position(eventCoords).title(event.getEventName()));
+        BitmapDescriptor icon = bitmapDescriptorFromVector(getContext(), R.drawable.google_maps, 150, 150);
+
+        mMap.addMarker(new MarkerOptions()
+                .position(eventCoords)
+                .title(event.getEventName())
+                .icon(icon));
+
+        if (Objects.equals(mode, "Organizing")){
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            FirebaseUtil.getEventCheckInLocations(db, event, new OnSuccessListener<List<GeoPoint>>() {
+                @Override
+                public void onSuccess(List<GeoPoint> geoPoints) {
+                    for (GeoPoint geoPoint : geoPoints) {
+                        // Process each GeoPoint
+                        LatLng point = new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
+
+                        // Add a marker for each LatLng to the map
+                        mMap.addMarker(new MarkerOptions().position(point).title(""));
+
+                    }
+                }
+            }, new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getContext(), "Error getting event check in Locations", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(eventCoords, zoomLevel));
     }
 
@@ -113,5 +153,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             LatLng edmonton = new LatLng(53.5, -113.5); // Your default coordinates
             return edmonton;
         }
+    }
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, @DrawableRes int vectorDrawableResourceId, int width, int height) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId);
+        vectorDrawable.setBounds(0, 0, width, height); // Set the bounds with the new width and height
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 }

@@ -22,7 +22,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
     private Context context;
 
-    ImageDownloader imageDownloader = new ImageDownloader();
+    private ImageDownloader imageDownloader = new ImageDownloader();
 
     /**
      * Constructor for the adapter
@@ -50,7 +50,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
             /**
              * Downloads event banner and displays
              */
-            ImageView imagePreview = view.findViewById(R.id.imageView5);
+            ImageView imagePreview = view.findViewById(R.id.event_banner_preview);
             if (event.getBannerQR() != null)
             {
                 imageDownloader.getBannerBitmap(event,imagePreview);
@@ -60,6 +60,27 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 
             eventName.setText(event.getEventName());
 
+            TextView eventDate = view.findViewById(R.id.dateText);
+
+            Long startLong = event.getEventStart();
+            String startString = event.dateFromLong(startLong);
+            eventDate.setText(startString);
+
+
+
+
+            TextView checkCount = view.findViewById(R.id.checkCount);
+
+            //ArrayList<Integer> checkNums = event.getMilestones();
+            String checkNum = "0";
+            String totalNum = String.valueOf(event.getMaxAttendees());
+            checkCount.setText(checkNum+"/"+totalNum);
+
+
+
+
+
+                    
             return view;
     }
 }

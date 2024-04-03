@@ -43,7 +43,7 @@ public class EventDetailsAdapter extends FragmentStateAdapter {
             case 1:
                 return AnnouncementsFragment.newInstance(event, mode, user);
             case 2:
-                return MapFragment.newInstance(event);
+                return MapFragment.newInstance(event, mode);
             default:
                 return InfoFragment.newInstance(event, mode);
         }

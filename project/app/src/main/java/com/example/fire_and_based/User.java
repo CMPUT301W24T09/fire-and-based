@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
+import java.util.List;
+
 /**
  * Represents a user in the application, including their personal information and events they are associated with.
  * Implements Parcelable to enable passing User objects between activities.

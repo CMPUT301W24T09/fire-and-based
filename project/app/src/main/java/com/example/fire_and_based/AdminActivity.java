@@ -13,7 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 /**
- * This activity hosts the EventListFragment and the UserListFragment.
+ * This activity hosts the EventListFragment, UserListFragment, AdminEventDetailsFragment, and AdminProfileFragment.
  * Holds the bottom navigation bar for admin view of app.
  * @author Sumayya
  * To-do:

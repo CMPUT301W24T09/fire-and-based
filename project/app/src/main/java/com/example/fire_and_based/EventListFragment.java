@@ -1,5 +1,6 @@
 package com.example.fire_and_based;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,13 +17,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import androidx.core.app.ActivityCompat;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
+import android.location.Location;
+
 
 /**
  * This class is a fragment hosted by the UserActivity and/or Admin Activity
@@ -42,6 +52,10 @@ public class EventListFragment extends Fragment {
     protected int lastClickedIndex;
     protected String mode;
     protected FirebaseFirestore db;
+    private FusedLocationProviderClient fusedLocationClient;
+    public Event scannedEvent;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1; // Define a request code
+
 
     private final ActivityResultLauncher<ScanOptions> qrLauncher = registerForActivityResult(
             new ScanContract(),
@@ -50,13 +64,29 @@ public class EventListFragment extends Fragment {
                     Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_LONG).show();
                 } else {
                     db = FirebaseFirestore.getInstance();
-                    FirebaseUtil.addEventAndCheckedInUser(db, result.getContents(), user.getDeviceID(), aVoid -> {
+                    String QRCode = QRCodeGenerator.getValidChars(result.getContents());
+                    FirebaseUtil.addEventAndCheckedInUser(db, QRCode, user.getDeviceID(), aVoid -> {
                         Toast.makeText(requireContext(), "Checked in!", Toast.LENGTH_LONG).show();
-                        FirebaseUtil.getEvent(db, result.getContents(), event -> {
-                            executeFragmentTransaction(event, "Attending");
-                        }, e -> {
-                            Log.e("FirebaseError", "Error fetching event: " + e.getMessage());
+                        // write logic that gets user Lat and Long here so that it can be wrote to the databse
+                        FirebaseUtil.getEvent(db, QRCode, new OnSuccessListener<Event>() {
+                            @Override
+                            public void onSuccess(Event event) {
+                                scannedEvent = event;
+                                getLocation();
+                            }
+                        }, new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getContext(), "Error finding that event make sure it exists!", Toast.LENGTH_SHORT).show();
+                            }
                         });
+
+
+//                        FirebaseUtil.getEvent(db, result.getContents(), event -> {
+//                            executeFragmentTransaction(event, "Attending");
+//                        }, e -> {
+//                            Log.e("FirebaseError", "Error fetching event: " + e.getMessage());
+//                        });
                     }, e -> {
                         Toast.makeText(requireContext(), "Failed. Make sure you are registered.", Toast.LENGTH_LONG).show();
                     });
@@ -74,6 +104,10 @@ public class EventListFragment extends Fragment {
             user = getArguments().getParcelable("user");
             mode = getArguments().getString("mode");
         }
+
+        // for getting user location
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+
 
         TextView toolbarTitle = view.findViewById(R.id.event_list_toolbar_title);
         if (Objects.equals(mode, "Admin")) {
@@ -216,5 +250,52 @@ public class EventListFragment extends Fragment {
         options.setOrientationLocked(true);
 
         qrLauncher.launch(options);
+    }
+
+    private void getLocation() {
+        if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestLocationPermission();
+            return;
+        }
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations, this can be null.
+                        if (location != null) {
+                            // Logic to handle location object
+                            double latitude = location.getLatitude();
+                            double longitude = location.getLongitude();
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            GeoPoint geoPoint = new GeoPoint(latitude, longitude);
+
+                            FirebaseUtil.sendCoordinatesToEvent(db, scannedEvent, geoPoint, new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Toast.makeText(getContext(), "It wrote to db u did it kid proud of u ", Toast.LENGTH_SHORT).show();
+                                }
+                            }, new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getContext(), "Error sending location to database :( ", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                        }
+                    }
+                });
+    }
+    private void requestLocationPermission() {
+        ActivityCompat.requestPermissions(requireActivity(),
+                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION},
+                LOCATION_PERMISSION_REQUEST_CODE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        db = FirebaseFirestore.getInstance();
+        updateEventList();
+        // Call your method to refresh the events list here
     }
 }
