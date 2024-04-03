@@ -2,7 +2,9 @@ package com.example.fire_and_based;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.Image;
 import android.net.Uri;
@@ -29,6 +31,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Firebase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -67,12 +70,15 @@ public class EditProfileFragment extends Fragment {
         EditText homepageEdit = view.findViewById(R.id.editTextHomepage);
         TextView saveButton = view.findViewById(R.id.save_text_view);
         TextView cancelButton = view.findViewById(R.id.cancel_text_view);
+        TextView removePictureButton = view.findViewById(R.id.remove_picture_button);
         CircleImageView profilePictureView = view.findViewById(R.id.edit_profile_image);
         ImageView profilePictureEditButton = view.findViewById(R.id.edit_profile_picture_button);
 
         // Retrieves profile picture from db and sets it in view
         ImageDownloader downloader = new ImageDownloader();
         downloader.getProfilePicBitmap(user, profilePictureView);
+
+        final String[] imageUrl = {"profiles/" + user.getDeviceID()};
 
         // Fields may be "" or null, therefore only change text if exists
         if (!TextUtils.isEmpty(user.getFirstName()))
@@ -128,6 +134,28 @@ public class EditProfileFragment extends Fragment {
                 customActivityResultLauncher.launch(imageIntent);
             }});
 
+        removePictureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setMessage("Are you sure you want to remove your profile picture?\nDefault profile picture will be restored.")
+                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                imageUrl[0] = "defaultProfiles/" + user.getDeviceID();
+                                downloader.getProfilePicBitmap(user, profilePictureView);
+                                Toast.makeText(getContext(), "Successfully removed profile picture.", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+            }
+        });
+
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -147,9 +175,8 @@ public class EditProfileFragment extends Fragment {
                     user.setPhoneNumber(newPhone);
                     user.setHomepage(newHomepage);
 
-                    // I believe this is where profile pictures are stored?
-                    String imageUrl = "profiles/" + user.getDeviceID();
-                    StorageReference selectionRef = fireRef.child(imageUrl);
+                    // I believe this is where profile pictures are stored
+                    StorageReference selectionRef = fireRef.child(imageUrl[0]);
 
                     HashMap<String, Object> data = new HashMap<>();
 
@@ -168,7 +195,7 @@ public class EditProfileFragment extends Fragment {
 
                             // Uploads new profile picture, if it was changed
                             if (pictureChanged) {
-                                user.setProfilePicture(imageUrl);
+                                user.setProfilePicture(imageUrl[0]);
                                 selectionRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
