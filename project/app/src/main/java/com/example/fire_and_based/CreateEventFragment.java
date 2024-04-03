@@ -320,7 +320,7 @@ public class CreateEventFragment extends Fragment {
                         maxAttendeeLong = (long) -1;
                     }
 
-//                    String imageUrl = null;
+                    String imageUrl = null;
 
                     if (!(imageUri == null)) {
                         imageUrl = "events/" + QRCode;
@@ -330,41 +330,6 @@ public class CreateEventFragment extends Fragment {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 Toast.makeText(requireContext(), "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
-
-                                Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, timeSince1970, eventLocationString, imageUrl, null, maxAttendeeLong, false);
-                                FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-                                FirebaseUtil.addEventToDB(db, newEvent, new FirebaseUtil.AddEventCallback() {
-                                    @Override
-                                    public void onEventAdded() {
-                                        toast("Event successfully added!");
-                                        Log.println(Log.DEBUG, "EventCreation", "New event with id: " + QRCode + " added");
-                                        getParentFragmentManager().popBackStack();
-
-                                        FirebaseUtil.addEventAndOrganizer(db, newEvent.getQRcode(), user.getDeviceID(), aVoid -> {
-                                            Log.d("Firebase Success", "User registered successfully");
-                                        }, e -> {
-                                            Log.e("FirebaseError", "Error setting up organizer of event " + e.getMessage());
-                                        });
-
-                                        //TODO exit out maybe?
-                                    }
-
-                                    @Override
-                                    public void onEventExists() {
-                                        toast("ERROR: Event with the same ID already exists in the database.");
-                                        Log.println(Log.DEBUG, "EventCreation", "Event with id: " + QRCode + " found a duplicate");
-                                    }
-
-                                    @Override
-                                    public void onError(Exception e) {
-                                        toast("An internal error occurred, please try again later");
-                                        Log.println(Log.ERROR, "EventCreation", e.toString());
-                                    }
-                                });
-
-
-
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -373,6 +338,39 @@ public class CreateEventFragment extends Fragment {
                             }
                         });
                     }
+
+
+                    Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, timeSince1970, eventLocationString, imageUrl, null, maxAttendeeLong, false);
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                    FirebaseUtil.addEventToDB(db, newEvent, new FirebaseUtil.AddEventCallback() {
+                        @Override
+                        public void onEventAdded() {
+                            toast("Event successfully added!");
+                            Log.println(Log.DEBUG, "EventCreation", "New event with id: " + QRCode + " added");
+                            getParentFragmentManager().popBackStack();
+
+                            FirebaseUtil.addEventAndOrganizer(db, newEvent.getQRcode(), user.getDeviceID(), aVoid -> {
+                                Log.d("Firebase Success", "User registered successfully");
+                            }, e -> {
+                                Log.e("FirebaseError", "Error setting up organizer of event " + e.getMessage());
+                            });
+
+                            //TODO exit out maybe?
+                        }
+
+                        @Override
+                        public void onEventExists() {
+                            toast("ERROR: Event with the same ID already exists in the database.");
+                            Log.println(Log.DEBUG, "EventCreation", "Event with id: " + QRCode + " found a duplicate");
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            toast("An internal error occurred, please try again later");
+                            Log.println(Log.ERROR, "EventCreation", e.toString());
+                        }
+                    });
 
 
                     // EVENT CREATION GOES HERE
