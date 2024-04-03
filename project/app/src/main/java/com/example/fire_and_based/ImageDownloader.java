@@ -61,8 +61,11 @@ public class ImageDownloader
     {
         //Bitmap imageMap;
         String bannerUrl = thisEvent.getBannerQR();
-
-        StorageReference uriRef = fireRef.child(bannerUrl);
+        StorageReference uriRef;
+        if (bannerUrl == null) {
+            return;
+        }
+        uriRef = fireRef.child(bannerUrl);
         uriRef.getBytes(1000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {

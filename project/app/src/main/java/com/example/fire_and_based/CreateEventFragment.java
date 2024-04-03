@@ -302,8 +302,8 @@ public class CreateEventFragment extends Fragment {
                 toast("You must generate or scan a QR Code");
                 // add handling for qr code and banner as well
                 // add more handling here if needed
-
             } else {
+
 
                 // convert the date to time since 1970 jan 1 to store in the database
                 String combinedDateTime = dateString + " " + timeString;
@@ -326,17 +326,21 @@ public class CreateEventFragment extends Fragment {
                         imageUrl = "events/" + QRCode;
                         //IMAGE UPLOAD TO FIREBASE
                         StorageReference selectionRef = fireRef.child(imageUrl);
-                        selectionRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Toast.makeText(requireContext(), "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(requireContext(), "Image Upload Error", Toast.LENGTH_LONG).show();
-                            }
-                        });
+                        Toast.makeText(getContext(), "MADE IT TO HERE ", Toast.LENGTH_SHORT).show();
+                        selectionRef.putFile(imageUri);
+
+                        // this was causing the app to crash when uploading images
+//                        selectionRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                            @Override
+//                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                                Toast.makeText(requireContext(), "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
+//                            }
+//                        }).addOnFailureListener(new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception e) {
+//                                Toast.makeText(requireContext(), "Image Upload Error", Toast.LENGTH_LONG).show();
+//                            }
+//                        });
                     }
 
 
@@ -389,15 +393,15 @@ public class CreateEventFragment extends Fragment {
                                     // also make sure that in the event the user is an organizer :salute:
 
 
-                                    Toast.makeText(requireContext(), Long.toString(timeSince1970), Toast.LENGTH_SHORT).show();
-                                } catch (ParseException e) {
-                                    // Handle the possibility that parsing fails
-                                    Toast.makeText(requireContext(), dateString + " " + timeString, Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    });
-                    return view;
+//                                    Toast.makeText(requireContext(), Long.toString(timeSince1970), Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        // Handle the possibility that parsing fails
+                        Toast.makeText(requireContext(), (CharSequence) e, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+        return view;
     }
 
 
