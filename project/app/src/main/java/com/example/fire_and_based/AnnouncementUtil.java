@@ -32,11 +32,11 @@ public class AnnouncementUtil {
      * @param recipient a users device ID, or a topic prefixed with /topics/
      * @return whether or not the message was sent successfully
      */
-    public static boolean sendToRecipient(Announcement announcement, String recipient){
+    public static boolean sendText(String header, String content, String recipient){
         OkHttpClient client = new OkHttpClient();
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType,
-                "{\n    \"to\" : \"" + recipient +"\",\n    \"notification\" : {\n        \"title\" : \"" + announcement.getTitle() +"\",\n        \"body\" : \""+ announcement.getContent() + "\"\n    }\n}");
+                "{\n    \"to\" : \"" + recipient +"\",\n    \"notification\" : {\n        \"title\" : \"" + header +"\",\n        \"body\" : \""+ content + "\"\n    }\n}");
         Request request = new Request.Builder()
                 .url("https://fcm.googleapis.com/fcm/send")
                 .post(body)
@@ -78,7 +78,7 @@ public class AnnouncementUtil {
         Announcement announcement = new Announcement(event.getEventName(), content, System.currentTimeMillis()/1000L, MainActivity.getDeviceID(), event.getQRcode());
         FirebaseUtil.saveAnnouncement(db, event.getQRcode(), announcement, aVoid -> {
             new Thread(() -> {
-                boolean success = sendToRecipient(announcement, "/topics/"+event.getQRcode());
+                boolean success = sendText(announcement.getTitle(), announcement.getContent(), "/topics/"+event.getQRcode());
                 handler.post(() -> {
                     if (!success){
                         failureListener.onFailure(new Exception("Failed to send notification"));
