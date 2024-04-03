@@ -69,41 +69,42 @@
                 android:layout_marginBottom="20dp">
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="250dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="110dp"
-                    app:cardCornerRadius="10dp"
                     android:layout_gravity="center_horizontal"
+                    android:background="@color/white"
                     android:clipChildren="false"
                     android:clipToPadding="false"
-                    android:background="@color/white">
+                    app:cardCornerRadius="10dp">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:clipChildren="false"
-                        >
+                        android:clipChildren="false">
 
                         <ImageView
                             android:id="@+id/roundedImageView"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:scaleType="centerCrop"
-                            android:contentDescription="image" />
+                            android:contentDescription="image"
+                            android:scaleType="centerCrop" />
 
 
-                        <Button
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                        <ImageView
+                            android:id="@+id/add_banner_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
                             android:layout_alignParentEnd="true"
-
-                            android:background="@color/red"
-                            android:text="Real"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginEnd="2dp"
-                            android:id="@+id/imageButton"
-                            />
-<!--                        IDK WHY THE FUCKING BUTTON IS NOT CHANGING -->
+                            android:layout_marginTop="0dp"
+                            android:layout_marginEnd="5dp"
+                            android:layout_marginBottom="20dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.594"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:srcCompat="@drawable/baseline_add_a_photo_24" />
+                        <!--                        IDK WHY THE FUCKING BUTTON IS NOT CHANGING -->
                         <!-- android:layout_marginTop="-15dp"-->
                         <!-- android:layout_marginEnd="-15dp"-->
 

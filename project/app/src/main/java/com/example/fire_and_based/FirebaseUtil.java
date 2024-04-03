@@ -4,6 +4,7 @@ package com.example.fire_and_based;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.util.Log;
+import android.widget.Toast;
 
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -17,6 +18,7 @@ import com.google.type.LatLng;
 
 import java.util.ArrayList;
 
+import java.util.Collections;
 import java.util.HashMap;
 
 
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -70,7 +73,7 @@ public class FirebaseUtil {
                     String eventName = doc.getString("eventName");
                     String eventDescription = doc.getString("eventDescription");
                     String eventBanner = doc.getString("eventBanner");
-                    String qrCode = doc.getString("QRcode");
+                    String qrCode = doc.getId();
                     Long eventStart = doc.getLong("eventStart");
                     Long eventEnd = doc.getLong("eventEnd");
                     String location = doc.getString("location");
@@ -128,12 +131,12 @@ public class FirebaseUtil {
                         String homepage = doc.getString("homepage");
                         String messageID = doc.getString("messageID");
                         Boolean admin = false;
-                        Log.d("Firestore", String.format("Event(%s, %s) fetched", userName,
+                        Log.d("Firestore", String.format("User(%s, %s) fetched", userName,
                                 deviceID));
                         usersList.add(new User(deviceID, userName, profilePicture, firstName, lastName, phoneNumber, email, homepage, admin, messageID));
                     }
                 }
-                Log.d("Firestore", String.format("Fetched %d events", usersList.size()));
+                Log.d("Firestore", String.format("Fetched %d users", usersList.size()));
                 callback.onCallback(usersList);
             }
         });
@@ -159,28 +162,23 @@ public class FirebaseUtil {
      */
     public static void getAllEventsUserIsNotIn(FirebaseFirestore db, String userID, getAllEventsCallback callback) {
         ArrayList<Event> eventsList = new ArrayList<>();
-        // there is an issue here, does not get qr code of event properly. i suspect it has something
-        // to do with qr code being doc id and not a field.
-        getUserEvents(db, userID, events1 -> {
-            ArrayList<String> qrCodes1 = events1.stream()
-                    .map(Event::getQRcode)
-                    .collect(Collectors.toCollection(ArrayList::new));
-            getUserOrganizingEvents(db, userID, events2 -> {
-                ArrayList<String> qrCodes2 = events2.stream()
-                        .map(Event::getQRcode)
-                        .collect(Collectors.toCollection(ArrayList::new));
-                CollectionReference eventsRef = db.collection("events");
-                eventsRef.addSnapshotListener((querySnapshots, error) -> {
-                    if (error != null) {
-                        Log.e("FirebaseUtil", error.toString());
-                        return;
-                    }
-                    if (querySnapshots != null) {
-                        for (QueryDocumentSnapshot doc : querySnapshots) {
-                            String qrCode = doc.getId();
-                            if(qrCodes1.contains(qrCode) || qrCodes2.contains(qrCode)){
-                                continue;
-                            }
+
+        // Retrieve user document
+        db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                // Get the user's attendingEvents and organizingEvents arrays
+                List<String> attendingEvents = (List<String>) documentSnapshot.get("attendeeEvents");
+                List<String> organizingEvents = (List<String>) documentSnapshot.get("organizerEvents");
+
+                // Query all events
+                db.collection("events").get().addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        String qrCode = doc.getId();
+                        Log.d(TAG,"GETTING QRCODE FOR EVENT "+qrCode);
+                        // Check if the user is already associated with the event
+
+                        if (!attendingEvents.contains(qrCode) && !organizingEvents.contains(qrCode)) {
+                            // Event not associated with the user, add it to the events list
                             String eventName = doc.getString("eventName");
                             String eventDescription = doc.getString("eventDescription");
                             String eventBanner = doc.getString("eventBanner");
@@ -191,22 +189,23 @@ public class FirebaseUtil {
                             ArrayList<Integer> milestones = (ArrayList<Integer>) doc.get("milestones");
                             Long maxAttendees = (doc.getLong("maxAttendees"));
                             boolean trackLocation = doc.getBoolean("trackLocation");
-                            Log.d("Firestore", String.format("Event(%s, %s) fetched", eventName,
-                                    qrCode));
                             eventsList.add(new Event(eventName, eventDescription, eventBanner, qrCode, eventStart, eventEnd, location, bannerQR, milestones, maxAttendees, trackLocation));
                         }
-                        Log.d("Firestore", String.format("Fetched %d events", eventsList.size()));
-                        callback.onCallback(eventsList);
                     }
+                    // Invoke the callback with the list of events
+                    callback.onCallback(eventsList);
+                }).addOnFailureListener(e -> {
+                    Log.e("FirebaseUtil", "Error getting events", e);
+                    callback.onCallback(Collections.emptyList()); // Invoke the callback with an empty list on failure
                 });
-            }, e -> {
-                Log.println(Log.ERROR, "FirebaseUtil", e.getMessage());
-            });
-        }, e -> {
-            Log.println(Log.ERROR, "FirebaseUtil", e.getMessage());
+            } else {
+                Log.e("FirebaseUtil", "User document not found");
+                callback.onCallback(Collections.emptyList()); // Invoke the callback with an empty list if user document not found
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("FirebaseUtil", "Error getting user document", e);
+            callback.onCallback(Collections.emptyList()); // Invoke the callback with an empty list on failure
         });
-
-
     }
 
 
@@ -402,14 +401,22 @@ public class FirebaseUtil {
                 if (eventIDs != null && !eventIDs.isEmpty()) {
                     ArrayList<String> eventCodes = new ArrayList<>(eventIDs);
                     ArrayList<Event> events = new ArrayList<>();
+                    AtomicInteger processedCount = new AtomicInteger(0); // To track processed events
+
                     for (String eventCode : eventCodes) {
                         String docID = cleanDocumentId(eventCode);
                         getEvent(db, docID, event -> {
                             events.add(event);
-                            if (events.size() == eventCodes.size()) {
+                            int currentCount = processedCount.incrementAndGet();
+                            if (currentCount == eventCodes.size()) {
                                 successListener.onSuccess(events);
                             }
-                        }, failureListener);
+                        }, e -> {
+                            int currentCount = processedCount.incrementAndGet();
+                            if (currentCount == eventCodes.size()) {
+                                successListener.onSuccess(events);
+                            }
+                        });
                     }
                 } else {
                     successListener.onSuccess(new ArrayList<Event>());
@@ -437,14 +444,24 @@ public class FirebaseUtil {
                 if (eventIDs != null && !eventIDs.isEmpty()) {
                     ArrayList<String> eventCodes = new ArrayList<>(eventIDs);
                     ArrayList<Event> events = new ArrayList<>();
+                    AtomicInteger processedCount = new AtomicInteger(0); // To track processed events
+
                     for (String eventCode : eventCodes) {
                         String docID = cleanDocumentId(eventCode);
                         getEvent(db, docID, event -> {
-                            events.add(event);
-                            if (events.size() == eventCodes.size()) {
+                            if (event != null) { // Check if event is not null (valid)
+                                events.add(event);
+                                int currentCount = processedCount.incrementAndGet();
+                                if (currentCount == eventCodes.size()) {
+                                    successListener.onSuccess(events);
+                                }
+                            }
+                        }, e -> {
+                            int currentCount = processedCount.incrementAndGet();
+                            if (currentCount == eventCodes.size()) {
                                 successListener.onSuccess(events);
                             }
-                        }, failureListener);
+                        });
                     }
                 } else {
                     successListener.onSuccess(new ArrayList<Event>());
@@ -454,6 +471,7 @@ public class FirebaseUtil {
             }
         }).addOnFailureListener(failureListener);
     }
+
 
     /**
      * Asynchronously get map of Events a user has checked in to and how many times they checked in
@@ -472,14 +490,22 @@ public class FirebaseUtil {
                 if (eventIDs != null && !eventIDs.isEmpty()) {
                     ArrayList<String> eventCodes = new ArrayList<>(eventIDs.keySet());
                     Map<Event, Long> events = new HashMap<>();
+                    AtomicInteger processedCount = new AtomicInteger(0); // To track processed events
+
                     for (String eventCode : eventCodes) {
                         String docID = cleanDocumentId(eventCode);
                         getEvent(db, docID, event -> {
                             events.put(event, eventIDs.get(eventCode));
-                            if (events.size() == eventCodes.size()) {
+                            int currentCount = processedCount.incrementAndGet();
+                            if (currentCount == eventCodes.size()) {
                                 successListener.onSuccess(events);
                             }
-                        }, failureListener);
+                        }, e -> {
+                            int currentCount = processedCount.incrementAndGet();
+                            if (currentCount == eventCodes.size()) {
+                                successListener.onSuccess(events);
+                            }
+                        });
                     }
                 } else {
                     successListener.onSuccess(new HashMap<>());
@@ -510,13 +536,21 @@ public class FirebaseUtil {
                 List<String> userIDs = (List<String>) documentSnapshot.get("attendees");
                 if (userIDs != null && !userIDs.isEmpty()) {
                     ArrayList<User> users = new ArrayList<>();
+                    AtomicInteger processedCount = new AtomicInteger(0); // To track processed events
+
                     for (String userID : userIDs) {
                         getUserObject(db, userID, user -> {
                             users.add(user);
-                            if (users.size() == userIDs.size()) {
+                            int currentCount = processedCount.incrementAndGet();
+                            if (currentCount == userIDs.size()) {
                                 successListener.onSuccess(users);
                             }
-                        }, failureListener);
+                        }, e -> {
+                            int currentCount = processedCount.incrementAndGet();
+                            if (currentCount == userIDs.size()) {
+                                successListener.onSuccess(users);
+                            }
+                        });
                     }
                 } else {
                     successListener.onSuccess(new ArrayList<User>());
@@ -542,15 +576,23 @@ public class FirebaseUtil {
         db.collection("events").document(docID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 Map<String, Long> userIDs = (Map<String, Long>) documentSnapshot.get("checkedInUsers");
+                AtomicInteger processedCount = new AtomicInteger(0); // To track processed events
+
                 if (userIDs != null && !userIDs.isEmpty()) {
                     Map<User, Long> users = new HashMap<>();
                     for (String userID : userIDs.keySet()) {
                         getUserObject(db, userID, user -> {
                             users.put(user, userIDs.get(userID));
-                            if (users.size() == userIDs.size()) {
+                            int currentCount = processedCount.incrementAndGet();
+                            if (currentCount == userIDs.size()) {
                                 successListener.onSuccess(users);
                             }
-                        }, failureListener);
+                        }, e -> {
+                            int currentCount = processedCount.incrementAndGet();
+                            if (currentCount == userIDs.size()) {
+                                successListener.onSuccess(users);
+                            }
+                        });
                     }
                 } else {
                     successListener.onSuccess(new HashMap<>());
@@ -829,6 +871,32 @@ public class FirebaseUtil {
         }
 
         return docId;
+    }
+
+
+
+    // for adding a location that a user has checked in from java docs are not real java docs cannot hurt me
+    public static void sendCoordinatesToEvent(FirebaseFirestore db, Event event, GeoPoint geoPoint,OnSuccessListener<Void> successListener, OnFailureListener failureListener ){
+        db.collection("events").document(event.getQRcode())
+                .update("checkInLocations", FieldValue.arrayUnion(geoPoint))
+                .addOnSuccessListener(successListener)
+                .addOnFailureListener(failureListener);
+    }
+
+
+    public static void getEventCheckInLocations(FirebaseFirestore db, Event event, OnSuccessListener<List<GeoPoint>> successListener, OnFailureListener failureListener) {
+        db.collection("events").document(event.getQRcode())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists() && documentSnapshot.contains("checkInLocations")) {
+                        List<GeoPoint> checkInLocations = (List<GeoPoint>) documentSnapshot.get("checkInLocations");
+                        successListener.onSuccess(checkInLocations);
+                    } else {
+                        // Handle the case where the event doesn't have a 'checkInLocations' field or doesn't exist
+                        successListener.onSuccess(new ArrayList<>()); // Return an empty list as fallback
+                    }
+                })
+                .addOnFailureListener(failureListener);
     }
 
 }

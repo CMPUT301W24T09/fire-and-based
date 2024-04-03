@@ -93,6 +93,7 @@ public class EditProfileFragment extends Fragment {
             homepageEdit.setText(user.getHomepage());
 
         // Idrk how this stuff works I copied from Aiden
+        // Real
         ActivityResultLauncher<Intent> customActivityResultLauncher =
                 registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                         new ActivityResultCallback<ActivityResult>() {
@@ -162,45 +163,21 @@ public class EditProfileFragment extends Fragment {
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                         Toast.makeText(requireContext(), "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
                                         Log.d(TAG, "User profile details successfully updated");
-                                        ViewProfileFragment fragment = new ViewProfileFragment();
-                                        Bundle bundle = new Bundle();
-                                        bundle.putParcelable("user", user);
-                                        fragment.setArguments(bundle);
-                                        getParentFragmentManager().beginTransaction()
-                                                .replace(R.id.fragment_container_view, fragment)
-                                                .setReorderingAllowed(true)
-                                                .addToBackStack(null)
-                                                .commit();
+                                        getParentFragmentManager().popBackStack();
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
                                         Toast.makeText(requireContext(), "Image Upload Error", Toast.LENGTH_LONG).show();
                                         Log.d(TAG, "User profile details successfully updated");
-                                        ViewProfileFragment fragment = new ViewProfileFragment();
-                                        Bundle bundle = new Bundle();
-                                        bundle.putParcelable("user", user);
-                                        fragment.setArguments(bundle);
-                                        getParentFragmentManager().beginTransaction()
-                                                .replace(R.id.fragment_container_view, fragment)
-                                                .setReorderingAllowed(true)
-                                                .addToBackStack(null)
-                                                .commit();
+                                        getParentFragmentManager().popBackStack();
                                     }
                                 });
                             }
                             else {
                                 Toast.makeText(requireContext(), "Image Upload Error", Toast.LENGTH_LONG).show();
                                 Log.d(TAG, "User profile details successfully updated");
-                                ViewProfileFragment fragment = new ViewProfileFragment();
-                                Bundle bundle = new Bundle();
-                                bundle.putParcelable("user", user);
-                                fragment.setArguments(bundle);
-                                getParentFragmentManager().beginTransaction()
-                                        .replace(R.id.fragment_container_view, fragment)
-                                        .setReorderingAllowed(true)
-                                        .addToBackStack(null)
-                                        .commit();
+                                getParentFragmentManager().popBackStack();
                             }
                         }
                     }, new OnFailureListener() {
@@ -215,15 +192,7 @@ public class EditProfileFragment extends Fragment {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ViewProfileFragment fragment = new ViewProfileFragment();
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("user", user);
-                fragment.setArguments(bundle);
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container_view, fragment)
-                        .setReorderingAllowed(true)
-                        .addToBackStack(null)
-                        .commit();
+               getParentFragmentManager().popBackStack();
             }
         });
         return view;

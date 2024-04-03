@@ -9,6 +9,7 @@ import com.google.type.LatLng;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Represents an event.
@@ -139,6 +140,25 @@ public class Event implements Parcelable {
      */
     public void setEventEnd(Long endTimeStamp) {
         this.endTimeStamp = endTimeStamp;
+    }
+
+    /**
+     * Returns a string of the formatted event time (start or end)
+     *
+     * @param timeStamp start/end time of event
+     * @return string representing long timeStamp
+     */
+    public String dateFromLong(long timeStamp)
+    {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timeStamp);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+        String monthName = months[month];
+
+        return (monthName + " " + day);
     }
 
     /**

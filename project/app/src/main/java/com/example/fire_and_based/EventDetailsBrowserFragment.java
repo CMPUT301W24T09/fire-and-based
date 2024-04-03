@@ -31,6 +31,8 @@ import java.util.Objects;
 public class EventDetailsBrowserFragment extends Fragment {
     private User user;
     private Event event;
+    private ImageDownloader imageDownloader = new ImageDownloader();
+
 
     @Nullable
     @Override
@@ -58,6 +60,19 @@ public class EventDetailsBrowserFragment extends Fragment {
 
          */
 
+
+        ImageView imagePreview = view.findViewById(R.id.bannerView);
+        if (event.getBannerQR() != null)
+        {
+            imageDownloader.getBannerBitmap(event,imagePreview);
+        }
+
+        TextView eventDate = view.findViewById(R.id.event_date_browser);
+        Long startLong = event.getEventStart();
+        String startString = event.dateFromLong(startLong);
+        eventDate.setText(startString);
+
+
         ImageView backArrow = view.findViewById(R.id.back_arrow_browser);
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +87,7 @@ public class EventDetailsBrowserFragment extends Fragment {
             public void onClick(View v) {
                 FirebaseUtil.addEventAndAttendee(db, event.getQRcode(), user.getDeviceID(), aVoid -> {
                     Toast.makeText(requireContext(), "Successfully joined event", Toast.LENGTH_LONG).show();
+                    AnnouncementUtil.subscribeToTopic(event.getQRcode());
                     getParentFragmentManager().popBackStack();
                     EventDetailsFragment fragment = new EventDetailsFragment();
                     Bundle bundle = new Bundle();

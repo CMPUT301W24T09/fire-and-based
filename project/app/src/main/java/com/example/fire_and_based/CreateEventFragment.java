@@ -8,6 +8,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -59,6 +60,8 @@ import java.util.Random;
  * To-do:
  * 1. AIDEN: run the app and click the blue plus in middle of screen -> you see the white rectangle at the top, its an imageview, i want you to set an onclick for image uploading there
  * 2. ILYA: run the app and see the two QR code buttons, there is zero code for them and no id's either go to create_event_and_edit.xml and connect those buttons to the qr code upload / generate functionality
+ * 3. Not attached to activity when you press create event, app crashes
+ * 4. Need to allow creation of event without making a poster
  */
 public class CreateEventFragment extends Fragment {
     private User user;
@@ -195,9 +198,7 @@ public class CreateEventFragment extends Fragment {
         {
             @Override
             public void onClick(View v) {
-                byte[] array = new byte[7]; // length is bounded by 7
-                new Random().nextBytes(array);
-                QRCode = "fire_and_based_event:" + new String(array, StandardCharsets.UTF_8);
+                QRCodeGenerator.getValidString();
                 //TODO add a thing that previews the QR Code string? at least for debug?
                 Toast.makeText(requireContext(), "Random QR Code Successfully Generated", Toast.LENGTH_SHORT).show();
 
@@ -214,7 +215,7 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
-        Button imageButton = view.findViewById(R.id.imageButton);
+        ImageView imageButton = view.findViewById(R.id.add_banner_button);
         ImageView previewBanner = view.findViewById(R.id.roundedImageView);
 
 
@@ -243,9 +244,11 @@ public class CreateEventFragment extends Fragment {
                         Log.d("ImageDimensions", "Image Height: " + imageHeight);
                         Log.d("ImageDimensions", "Image Width: " + imageWidth);
                         //EVENT BANNERS SHOULD BE 640 x 480 pixels MINIMUM
-                        if(imageHeight < 640 || imageWidth < 480)
+                        int imageRatio = imageHeight * 4; // Width should be height x 4
+
+                        if(imageWidth < imageRatio)
                         {
-                            Toast.makeText(requireContext(), "Banners are 640x480 minimum", Toast.LENGTH_LONG).show();
+                            Toast.makeText(requireContext(), "Banners are 4:1. Try another image", Toast.LENGTH_LONG).show();
                             imageUri = null;
                             //previewBanner.setImageURI(null);
                             previewBanner.setImageResource(android.R.color.white);}
@@ -295,7 +298,8 @@ public class CreateEventFragment extends Fragment {
                 toast("You must generate or scan a QR Code");
                 // add handling for qr code and banner as well
                 // add more handling here if needed
-
+            } else if (imageUri == null){
+                Toast.makeText(context, "Please Upload an Image", Toast.LENGTH_SHORT).show();
             } else {
 
                 // convert the date to time since 1970 jan 1 to store in the database
@@ -306,26 +310,32 @@ public class CreateEventFragment extends Fragment {
                     // Parse the string into a Date object
                     Date date = sdf.parse(combinedDateTime);
                     long timeSince1970 = date.getTime();  // this is the time we store n the database -> put in the event object when its created
+                    long maxAttendeeLong = Long.parseLong(eventMaxAttendeesString);
 
-                    String imageUrl = "events/" + QRCode;
+                    String imageUrl = null;
 
-                    //IMAGE UPLOAD TO FIREBASE
-                    StorageReference selectionRef = fireRef.child(imageUrl);
-                    selectionRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Toast.makeText(requireContext(), "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(requireContext(), "Image Upload Error", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    if (!(imageUri == null))
+                    {
+                        imageUrl = "events/" + QRCode;
+                        //IMAGE UPLOAD TO FIREBASE
+                        StorageReference selectionRef = fireRef.child(imageUrl);
+                        selectionRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                Toast.makeText(requireContext(), "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(requireContext(), "Image Upload Error", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+
 
                     // EVENT CREATION GOES HERE
                     // we can create the event object
-                    Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, timeSince1970, eventLocationString, imageUrl, null, 0L, false);
+                    Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, timeSince1970, eventLocationString, imageUrl, null, maxAttendeeLong, false);
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
 //                    toast("adding event to db  ) ");
 
@@ -430,7 +440,7 @@ public class CreateEventFragment extends Fragment {
             {
                 // TODO remove debug confirmation maybe
                 toast("Scanned: " + result.getContents());
-                QRCode = result.getContents();
+                QRCode = QRCodeGenerator.getValidChars(result.getContents());
                 //TODO again up to you if you want to display this
                 //showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
             }
