@@ -53,7 +53,6 @@
             android:id="@+id/admin_edit_profile_image"
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:src="@drawable/frog"
             app:civ_border_width="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
