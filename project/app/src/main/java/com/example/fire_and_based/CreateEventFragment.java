@@ -68,10 +68,14 @@ public class CreateEventFragment extends Fragment {
     public Date newEventDate;
 
     private String QRCode = null;
+    private String imageUrl = null;
+
     public String timeString;
     public String dateString;
+    public Long maxAttendeeLong;
 
-   // private ImageView previewBanner;
+
+    // private ImageView previewBanner;
     private Uri imageUri;
     Context context = getContext();
 
@@ -198,7 +202,8 @@ public class CreateEventFragment extends Fragment {
         {
             @Override
             public void onClick(View v) {
-                QRCodeGenerator.getValidString();
+                QRCode = QRCodeGenerator.getValidString();
+
                 //TODO add a thing that previews the QR Code string? at least for debug?
                 Toast.makeText(requireContext(), "Random QR Code Successfully Generated", Toast.LENGTH_SHORT).show();
 
@@ -246,12 +251,12 @@ public class CreateEventFragment extends Fragment {
                         //EVENT BANNERS SHOULD BE 640 x 480 pixels MINIMUM
                         int imageRatio = imageHeight * 4; // Width should be height x 4
 
-                        if(imageWidth < imageRatio)
-                        {
-                            Toast.makeText(requireContext(), "Banners are 4:1. Try another image", Toast.LENGTH_LONG).show();
-                            imageUri = null;
-                            //previewBanner.setImageURI(null);
-                            previewBanner.setImageResource(android.R.color.white);}
+//                        if(imageWidth < imageRatio)
+//                        {
+//                            Toast.makeText(requireContext(), "Banners are 4:1. Try another image", Toast.LENGTH_LONG).show();
+//                            imageUri = null;
+//                            //previewBanner.setImageURI(null);
+//                            previewBanner.setImageResource(android.R.color.white);}
                     }
                 }
                 catch(Exception e)
@@ -291,15 +296,13 @@ public class CreateEventFragment extends Fragment {
                 Toast.makeText(requireContext(), "You need an event time", Toast.LENGTH_SHORT).show();
             } else if (eventLocationString.length() < 5) {
                 Toast.makeText(requireContext(), "Your event needs a location", Toast.LENGTH_SHORT).show();
-            } else if (eventMaxAttendeesString.length() < 1) {
-                Toast.makeText(requireContext(), "Set the maximum number of attendees", Toast.LENGTH_SHORT).show();
+
             } else if (QRCode == null) {
                 //TODO change above to toast function as well for readability?
                 toast("You must generate or scan a QR Code");
                 // add handling for qr code and banner as well
                 // add more handling here if needed
-            } else if (imageUri == null){
-                Toast.makeText(context, "Please Upload an Image", Toast.LENGTH_SHORT).show();
+
             } else {
 
                 // convert the date to time since 1970 jan 1 to store in the database
@@ -307,15 +310,19 @@ public class CreateEventFragment extends Fragment {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd M yyyy HH:mm");  // this is used for just how the string is formatted we could change this easily if we need to
 
                 try {
+
                     // Parse the string into a Date object
                     Date date = sdf.parse(combinedDateTime);
                     long timeSince1970 = date.getTime();  // this is the time we store n the database -> put in the event object when its created
-                    long maxAttendeeLong = Long.parseLong(eventMaxAttendeesString);
+                    if (eventMaxAttendeesString.length() > 0) {
+                        maxAttendeeLong = Long.parseLong(eventMaxAttendeesString);
+                    } else {
+                        maxAttendeeLong = (long) -1;
+                    }
 
-                    String imageUrl = null;
+//                    String imageUrl = null;
 
-                    if (!(imageUri == null))
-                    {
+                    if (!(imageUri == null)) {
                         imageUrl = "events/" + QRCode;
                         //IMAGE UPLOAD TO FIREBASE
                         StorageReference selectionRef = fireRef.child(imageUrl);
@@ -323,6 +330,41 @@ public class CreateEventFragment extends Fragment {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 Toast.makeText(requireContext(), "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
+
+                                Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, timeSince1970, eventLocationString, imageUrl, null, maxAttendeeLong, false);
+                                FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                                FirebaseUtil.addEventToDB(db, newEvent, new FirebaseUtil.AddEventCallback() {
+                                    @Override
+                                    public void onEventAdded() {
+                                        toast("Event successfully added!");
+                                        Log.println(Log.DEBUG, "EventCreation", "New event with id: " + QRCode + " added");
+                                        getParentFragmentManager().popBackStack();
+
+                                        FirebaseUtil.addEventAndOrganizer(db, newEvent.getQRcode(), user.getDeviceID(), aVoid -> {
+                                            Log.d("Firebase Success", "User registered successfully");
+                                        }, e -> {
+                                            Log.e("FirebaseError", "Error setting up organizer of event " + e.getMessage());
+                                        });
+
+                                        //TODO exit out maybe?
+                                    }
+
+                                    @Override
+                                    public void onEventExists() {
+                                        toast("ERROR: Event with the same ID already exists in the database.");
+                                        Log.println(Log.DEBUG, "EventCreation", "Event with id: " + QRCode + " found a duplicate");
+                                    }
+
+                                    @Override
+                                    public void onError(Exception e) {
+                                        toast("An internal error occurred, please try again later");
+                                        Log.println(Log.ERROR, "EventCreation", e.toString());
+                                    }
+                                });
+
+
+
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -335,38 +377,8 @@ public class CreateEventFragment extends Fragment {
 
                     // EVENT CREATION GOES HERE
                     // we can create the event object
-                    Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, timeSince1970, eventLocationString, imageUrl, null, maxAttendeeLong, false);
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-//                    toast("adding event to db  ) ");
 
-                    FirebaseUtil.addEventToDB(db, newEvent, new FirebaseUtil.AddEventCallback() {
-                        @Override
-                        public void onEventAdded() {
-                            toast("Event successfully added!");
-                            Log.println(Log.DEBUG, "EventCreation", "New event with id: " + QRCode + " added");
-                            getParentFragmentManager().popBackStack();
 
-                                FirebaseUtil.addEventAndOrganizer(db, newEvent.getQRcode(), user.getDeviceID(), aVoid -> {
-                                    Log.d("Firebase Success", "User registered successfully");
-                                }, e -> {
-                                    Log.e("FirebaseError", "Error setting up organizer of event " + e.getMessage());
-                                });
-
-                            //TODO exit out maybe?
-                        }
-
-                        @Override
-                        public void onEventExists() {
-                            toast("ERROR: Event with the same ID already exists in the database.");
-                            Log.println(Log.DEBUG, "EventCreation", "Event with id: " + QRCode + " found a duplicate");
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            toast("An internal error occurred, please try again later");
-                            Log.println(Log.ERROR, "EventCreation", e.toString());
-                        }
-                    });
                                     //this.eventName = eventName;
                                     //this.eventDescription = eventDescription;
                                     //this.eventBanner = eventBanner;
