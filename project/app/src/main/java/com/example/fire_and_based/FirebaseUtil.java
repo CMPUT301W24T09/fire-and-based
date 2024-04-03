@@ -711,7 +711,7 @@ public class FirebaseUtil {
 
 
     public static void notifyOrganizers(FirebaseFirestore db, Integer num, String id, String name){
-        if ((num % 2) != 0) return; //notify every 50th register
+        if ((num % 50) != 0) return; //notify every 50th register
         getEventOrganizers(db, id, organizers -> {
             new Thread(() -> {
                 for (User organizer : organizers){
