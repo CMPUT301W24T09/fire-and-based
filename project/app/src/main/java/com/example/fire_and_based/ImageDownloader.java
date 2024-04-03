@@ -66,7 +66,7 @@ public class ImageDownloader
             return;
         }
         uriRef = fireRef.child(bannerUrl);
-        uriRef.getBytes(1000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+        uriRef.getBytes(10000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
                 Bitmap imageMap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -89,7 +89,7 @@ public class ImageDownloader
             String profileUrl = "profiles/" + thisUser.getDeviceID();
             Log.d(TAG, profileUrl);
             StorageReference uriRef = fireRef.child(profileUrl);
-            uriRef.getBytes(1000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            uriRef.getBytes(10000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                 @Override
                 public void onSuccess(byte[] bytes) {
                     Bitmap imageMap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
