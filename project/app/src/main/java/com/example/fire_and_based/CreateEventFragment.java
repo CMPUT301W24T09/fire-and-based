@@ -29,6 +29,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -68,6 +69,7 @@ public class CreateEventFragment extends Fragment {
     public Date newEventDate;
 
     private String QRCode = null;
+    private String PosterQRCode = null;
     private String imageUrl = null;
 
     public String timeString;
@@ -185,17 +187,17 @@ public class CreateEventFragment extends Fragment {
 
 
         //TODO The QR Code viewer class got deleted, up to you if/how you want to display it
-//        previewQRImage = findViewById(R.id.create_event_preview_qr_image);
-//        previewQRImage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (QRCode != null){
-//                    displayQR(QRCode, eventName.getText().toString());
-//                } else {
-//                    toast("ERROR: QR Code not set");
-//                }
-//            }
-//        });
+        Button previewQRImage = view.findViewById(R.id.view_qr_code);
+        previewQRImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (QRCode != null){
+                    displayQR(QRCode, PosterQRCode, eventName.getText().toString());
+                } else {
+                    toast("ERROR: QR Code not set");
+                }
+            }
+        });
 
         Button generateQRButton = view.findViewById(R.id.generateQR);
         generateQRButton.setOnClickListener(new View.OnClickListener()
@@ -203,10 +205,10 @@ public class CreateEventFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 QRCode = QRCodeGenerator.getValidString();
-
+                PosterQRCode = QRCodeGenerator.getValidString();
                 //TODO add a thing that previews the QR Code string? at least for debug?
                 Toast.makeText(requireContext(), "Random QR Code Successfully Generated", Toast.LENGTH_SHORT).show();
-
+                displayQR(QRCode, PosterQRCode, eventName.getText().toString());
                 //showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
             }
         });
@@ -344,7 +346,7 @@ public class CreateEventFragment extends Fragment {
                     }
 
 
-                    Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, timeSince1970, eventLocationString, imageUrl, null, maxAttendeeLong, false);
+                    Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, timeSince1970, eventLocationString, PosterQRCode, null, maxAttendeeLong, false);
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
                     FirebaseUtil.addEventToDB(db, newEvent, new FirebaseUtil.AddEventCallback() {
@@ -456,6 +458,7 @@ public class CreateEventFragment extends Fragment {
                 toast("Scanned: " + result.getContents());
                 QRCode = QRCodeGenerator.getValidChars(result.getContents());
                 //TODO again up to you if you want to display this
+                displayQR(QRCode, PosterQRCode, "");
                 //showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
             }
         }
@@ -480,5 +483,31 @@ public class CreateEventFragment extends Fragment {
         bottomNavigationView.setVisibility(View.VISIBLE);
         super.onDestroyView();
     }
+
+    public void displayQR(String QRCode, String PosterQRCode, String eventName) {
+        QRCodeDisplayFragment fragment = new QRCodeDisplayFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("eventQR", QRCode);
+        bundle.putString("eventName", eventName);
+        bundle.putString("posterQR", PosterQRCode);
+        fragment.setArguments(bundle);
+        fragment.show(getParentFragmentManager(), "QRCodeDisplayFragment");
+    }
+
+
+//    public void tester(){
+//        CreateEventFragment fragment = new CreateEventFragment();
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable("user", user);
+//        fragment.setArguments(bundle);
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.fragment_container_view, fragment)
+//                .setReorderingAllowed(true)
+//                .addToBackStack(null)
+//                .commit();
+//
+//    }
+//    }
+
 
 }
