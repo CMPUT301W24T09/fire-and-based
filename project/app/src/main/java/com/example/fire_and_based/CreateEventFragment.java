@@ -495,19 +495,4 @@ public class CreateEventFragment extends Fragment {
     }
 
 
-//    public void tester(){
-//        CreateEventFragment fragment = new CreateEventFragment();
-//        Bundle bundle = new Bundle();
-//        bundle.putParcelable("user", user);
-//        fragment.setArguments(bundle);
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.fragment_container_view, fragment)
-//                .setReorderingAllowed(true)
-//                .addToBackStack(null)
-//                .commit();
-//
-//    }
-//    }
-
-
 }
