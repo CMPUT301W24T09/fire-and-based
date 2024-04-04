@@ -275,7 +275,6 @@ public class FirebaseUtil {
         docsRef.set(user)
                 .addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);
-        HashMap<String, ArrayList<Event>> events = new HashMap<>();
     }
 
     /**
@@ -652,6 +651,7 @@ public class FirebaseUtil {
         db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 User user = documentSnapshot.toObject(User.class);
+                user.setProfilePicture(documentSnapshot.get("profilePicture").toString());
                 if (user != null) {
                     user.setAdmin(documentSnapshot.getBoolean("admin"));
                 }

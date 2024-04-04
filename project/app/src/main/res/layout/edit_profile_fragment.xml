@@ -9,30 +9,29 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="175dp"
+        android:layout_height="200dp"
         android:background="?attr/colorPrimary">
 
-        <TextView
+        <Button
             android:id="@+id/save_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14sp"
-            android:layout_marginEnd="20sp"
+            android:layout_width="80dp"
+            android:layout_height="35dp"
+            android:layout_marginEnd="4dp"
             android:fontFamily="@font/roboto"
             android:text="Save"
             android:textColor="@color/white"
+            android:textSize="14dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <Button
             android:id="@+id/cancel_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20sp"
-            android:layout_marginTop="14sp"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
             android:fontFamily="@font/roboto"
             android:text="Cancel"
             android:textColor="@color/white"
+            android:textSize="14dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -56,19 +55,32 @@
             app:civ_border_width="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.501"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/eventEditTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/eventEditTitle"
+            app:layout_constraintVertical_bias="0.133" />
 
         <ImageView
             android:id="@+id/edit_profile_picture_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="52dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.594"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/baseline_add_a_photo_24" />
+
+        <Button
+            android:id="@+id/remove_profile_pic_button"
+            android:layout_width="195dp"
+            android:layout_height="40dp"
+            android:text="Remove Profile Picture"
+            android:textColor="@color/red"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

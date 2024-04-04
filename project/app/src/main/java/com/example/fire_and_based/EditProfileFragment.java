@@ -2,7 +2,9 @@ package com.example.fire_and_based;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.Image;
 import android.net.Uri;
@@ -13,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -48,7 +51,7 @@ public class EditProfileFragment extends Fragment {
     private Uri imageUri;
     Context context = getContext();
     StorageReference fireRef = FirebaseStorage.getInstance().getReference();
-    boolean pictureChanged = false;
+    int pictureChanged = 0;
 
     @Nullable
     @Override
@@ -65,8 +68,9 @@ public class EditProfileFragment extends Fragment {
         EditText emailEdit = view.findViewById(R.id.editTextEmail);
         EditText phoneEdit = view.findViewById(R.id.editTextPhone);
         EditText homepageEdit = view.findViewById(R.id.editTextHomepage);
-        TextView saveButton = view.findViewById(R.id.save_text_view);
-        TextView cancelButton = view.findViewById(R.id.cancel_text_view);
+        Button saveButton = view.findViewById(R.id.save_text_view);
+        Button cancelButton = view.findViewById(R.id.cancel_text_view);
+        Button removeProfilePicButton = view.findViewById(R.id.remove_profile_pic_button);
         CircleImageView profilePictureView = view.findViewById(R.id.edit_profile_image);
         ImageView profilePictureEditButton = view.findViewById(R.id.edit_profile_picture_button);
 
@@ -109,7 +113,7 @@ public class EditProfileFragment extends Fragment {
                                         //buttonUpload.setEnabled(true);
                                         //Glide.with(context).load(imageUri).into(previewBanner);
                                         profilePictureView.setImageURI(imageUri);
-                                        pictureChanged = true;
+                                        pictureChanged = 1;
                                     }
                                 }
                                 catch(Exception e)
@@ -127,6 +131,30 @@ public class EditProfileFragment extends Fragment {
                 imageIntent.setType("image/*");
                 customActivityResultLauncher.launch(imageIntent);
             }});
+        // Only revert change to defaultProfiles/ path if user chooses to remove profile picture
+        final String[] imageUrl = {"profiles/" + user.getDeviceID()};
+        removeProfilePicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setMessage("Are you sure you wish to remove your profile picture?")
+                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                imageUrl[0] = "defaultProfiles/" + user.getDeviceID();
+                                downloader.getProfilePicBitmap(user, profilePictureView);
+                                pictureChanged = 2;
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // Cancel button clicked, do nothing or perform any action as needed
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,8 +176,8 @@ public class EditProfileFragment extends Fragment {
                     user.setHomepage(newHomepage);
 
                     // I believe this is where profile pictures are stored?
-                    String imageUrl = "profiles/" + user.getDeviceID();
-                    StorageReference selectionRef = fireRef.child(imageUrl);
+
+                    StorageReference selectionRef = fireRef.child(imageUrl[0]);
 
                     HashMap<String, Object> data = new HashMap<>();
 
@@ -160,6 +188,11 @@ public class EditProfileFragment extends Fragment {
                     data.put("phoneNumber", user.getPhoneNumber());
                     data.put("homepage", user.getHomepage());
 
+                    if (pictureChanged == 1 || pictureChanged == 2) {
+                        user.setProfilePicture(imageUrl[0]);
+                        data.put("profilePicture", imageUrl[0]);
+                    }
+
                     // Updates user info
                     FirebaseUtil.updateUser(FirebaseFirestore.getInstance(), user, data, new OnSuccessListener<Void>() {
                         @Override
@@ -167,8 +200,7 @@ public class EditProfileFragment extends Fragment {
                             // For now we exit from edit details page when valid save (probably should change later, not sure)
 
                             // Uploads new profile picture, if it was changed
-                            if (pictureChanged) {
-                                user.setProfilePicture(imageUrl);
+                            if (pictureChanged == 1) {
                                 selectionRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
