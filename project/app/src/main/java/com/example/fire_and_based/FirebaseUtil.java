@@ -283,13 +283,13 @@ public class FirebaseUtil {
      * Delete event from database and remove references to it from users' entries
      *
      * @param db    the database
-     * @param event the event
+     * @param eventID the event ID
      * @param successListener what to do in case of success
      * @param failureListener what to do in case of failure (database error)
      * @see Event
      */
-    public static void deleteEvent(FirebaseFirestore db, Event event, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
-        String docID = cleanDocumentId(event.getQRcode());
+    public static void deleteEvent(FirebaseFirestore db, String eventID, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
+        String docID = cleanDocumentId(eventID);
 
         // Start a new transaction
         db.runTransaction((Transaction.Function<Void>) transaction -> {
@@ -341,7 +341,7 @@ public class FirebaseUtil {
     }
 
     /**
-     * Delete user from database
+     * Delete user from database and remove references to it from events' entries
      *
      * @param db    the database
      * @param user  the user to delete
@@ -351,12 +351,61 @@ public class FirebaseUtil {
      */
     public static void deleteUser(FirebaseFirestore db, User user, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
         String docID = cleanDocumentId(user.getDeviceID());
-        db.collection("users")
-                .document(docID)
-                .delete()
-                .addOnSuccessListener(successListener)
+
+        // Start a new transaction
+        db.runTransaction((Transaction.Function<Void>) transaction -> {
+                    DocumentSnapshot userSnapshot = transaction.get(db.collection("users").document(docID));
+
+                    // Get the properties of the user's entry
+                    Map<String, Long> checkedInEvents = new HashMap<>((Map) userSnapshot.get("checkedInEvents"));
+                    List<String> organizerEvents = new ArrayList<>((Collection) userSnapshot.get("organizerEvents"));
+                    List<String> attendeeEvents = new ArrayList<>((Collection) userSnapshot.get("attendeeEvents"));
+
+                    // For each event in "checkedInEvents", "organizerEvents", and "attendeeEvents", remove the user from their users
+                    Stream.of(checkedInEvents.keySet(), organizerEvents, attendeeEvents)
+                            .flatMap(Collection::stream)
+                            .distinct()
+                            .forEach(eventID -> {
+                                DocumentReference eventRef = db.collection("events").document(eventID);
+                                DocumentSnapshot eventSnapshot = null;
+                                try {
+                                    eventSnapshot = transaction.get(eventRef);
+                                } catch (FirebaseFirestoreException e) {
+                                    failureListener.onFailure(e);
+                                }
+
+                                if (checkedInEvents.containsKey(eventID)) {
+                                    Map<String, String> checkedInUsers = new HashMap<>((Map) eventSnapshot.get("checkedInUsers"));
+                                    checkedInUsers.remove(docID);
+                                    transaction.update(eventRef, "checkedInUsers", checkedInUsers);
+                                }
+
+                                if (organizerEvents.contains(eventID)) {
+                                    List<String> organizers = new ArrayList<>((Collection) eventSnapshot.get("organizers"));
+                                    organizers.remove(docID);
+                                    transaction.update(eventRef, "organizers", organizers);
+
+                                    // If the "organizers" list is left blank, delete the event
+                                    if (organizers.isEmpty()) {
+                                        deleteEvent(db, eventID, successListener, failureListener);
+                                    }
+                                }
+
+                                if (attendeeEvents.contains(eventID)) {
+                                    List<String> attendees = new ArrayList<>((Collection) eventSnapshot.get("attendees"));
+                                    attendees.remove(docID);
+                                    transaction.update(eventRef, "attendees", attendees);
+                                }
+                            });
+
+                    // Delete the user
+                    transaction.delete(db.collection("users").document(docID));
+
+                    return null;
+                }).addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);
     }
+
 
     /**
      * Update an event with the same QR Code
