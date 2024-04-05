@@ -241,7 +241,7 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
-        ImageView imageButton = view.findViewById(R.id.add_banner_button);
+        Button imageButton = view.findViewById(R.id.add_banner_button);
         ImageView previewBanner = view.findViewById(R.id.roundedImageView);
 
 
