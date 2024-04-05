@@ -42,6 +42,9 @@ import java.util.stream.Stream;
 
 public class FirebaseUtil {
 
+    private static final String USERS_COLLECTION = "users";
+    private static final String EVENTS_COLLECTION = "events";
+
     // FOR THHIS CLASS THERE ARE TWO ARGS YOU NEED
     // THE DATABASE AND THE OBJECT
     // EXAMPLE HERE
@@ -63,7 +66,7 @@ public class FirebaseUtil {
     public static void getAllEvents(FirebaseFirestore db, getAllEventsCallback callback) {
         ArrayList<Event> eventsList = new ArrayList<>();
 
-        CollectionReference eventsRef = db.collection("events");
+        CollectionReference eventsRef = db.collection(EVENTS_COLLECTION);
         eventsRef.addSnapshotListener((querySnapshots, error) -> {
             if (error != null) {
                 Log.e("Firestore", error.toString());
@@ -113,7 +116,7 @@ public class FirebaseUtil {
     public static void getAllNonAdminUsers(FirebaseFirestore db, getAllNonAdminUsersCallback callback) {
         ArrayList<User> usersList = new ArrayList<>();
 
-        CollectionReference eventsRef = db.collection("users");
+        CollectionReference eventsRef = db.collection(USERS_COLLECTION);
         eventsRef.addSnapshotListener((querySnapshots, error) -> {
             if (error != null) {
                 Log.e("Firestore", error.toString());
@@ -166,14 +169,14 @@ public class FirebaseUtil {
         ArrayList<Event> eventsList = new ArrayList<>();
 
         // Retrieve user document
-        db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
+        db.collection(USERS_COLLECTION).document(userID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 // Get the user's attendingEvents and organizingEvents arrays
                 List<String> attendingEvents = (List<String>) documentSnapshot.get("attendeeEvents");
                 List<String> organizingEvents = (List<String>) documentSnapshot.get("organizerEvents");
 
                 // Query all events
-                db.collection("events").get().addOnSuccessListener(queryDocumentSnapshots -> {
+                db.collection(EVENTS_COLLECTION).get().addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         String qrCode = doc.getId();
                         Log.d(TAG,"GETTING QRCODE FOR EVENT "+qrCode);
@@ -247,12 +250,12 @@ public class FirebaseUtil {
      */
     public static void addEventToDB(FirebaseFirestore db, Event event, AddEventCallback callback) {
         String docID = cleanDocumentId(event.getQRcode());
-        db.collection("events").document(docID).get().addOnCompleteListener(task -> {
+        db.collection(EVENTS_COLLECTION).document(docID).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 if (task.getResult().exists()) {
                     callback.onEventExists();
                 } else {
-                    db.collection("events").document(docID).set(event)
+                    db.collection(EVENTS_COLLECTION).document(docID).set(event)
                             .addOnSuccessListener(aVoid -> callback.onEventAdded())
                             .addOnFailureListener(callback::onError);
                 }
@@ -272,7 +275,7 @@ public class FirebaseUtil {
      * @see User
      */
     public static void addUserToDB(FirebaseFirestore db, User user, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
-        db.collection("users")
+        db.collection(USERS_COLLECTION)
                 .document(user.getDeviceID())
                 .set(user)
                 .addOnSuccessListener(successListener)
@@ -293,7 +296,7 @@ public class FirebaseUtil {
 
         // Start a new transaction
         db.runTransaction((Transaction.Function<Void>) transaction -> {
-                    DocumentSnapshot eventSnapshot = transaction.get(db.collection("events").document(docID));
+                    DocumentSnapshot eventSnapshot = transaction.get(db.collection(EVENTS_COLLECTION).document(docID));
 
                     // Get the properties of the event's entry
                     Map<String, String> checkedInUsers = new HashMap<>((Map) eventSnapshot.get("checkedInUsers"));
@@ -305,7 +308,7 @@ public class FirebaseUtil {
                             .flatMap(Collection::stream)
                             .distinct()
                             .forEach(userID -> {
-                                DocumentReference userRef = db.collection("users").document(userID);
+                                DocumentReference userRef = db.collection(USERS_COLLECTION).document(userID);
                                 DocumentSnapshot userSnapshot = null;
                                 try {
                                     userSnapshot = transaction.get(userRef);
@@ -333,7 +336,7 @@ public class FirebaseUtil {
                             });
 
                     // Delete the event
-                    transaction.delete(db.collection("events").document(docID));
+                    transaction.delete(db.collection(EVENTS_COLLECTION).document(docID));
 
                     return null;
                 }).addOnSuccessListener(successListener)
@@ -354,7 +357,7 @@ public class FirebaseUtil {
 
         // Start a new transaction
         db.runTransaction((Transaction.Function<Void>) transaction -> {
-                    DocumentSnapshot userSnapshot = transaction.get(db.collection("users").document(docID));
+                    DocumentSnapshot userSnapshot = transaction.get(db.collection(USERS_COLLECTION).document(docID));
 
                     // Get the properties of the user's entry
                     Map<String, Long> checkedInEvents = new HashMap<>((Map) userSnapshot.get("checkedInEvents"));
@@ -366,7 +369,7 @@ public class FirebaseUtil {
                             .flatMap(Collection::stream)
                             .distinct()
                             .forEach(eventID -> {
-                                DocumentReference eventRef = db.collection("events").document(eventID);
+                                DocumentReference eventRef = db.collection(EVENTS_COLLECTION).document(eventID);
                                 DocumentSnapshot eventSnapshot = null;
                                 try {
                                     eventSnapshot = transaction.get(eventRef);
@@ -399,7 +402,7 @@ public class FirebaseUtil {
                             });
 
                     // Delete the user
-                    transaction.delete(db.collection("users").document(docID));
+                    transaction.delete(db.collection(USERS_COLLECTION).document(docID));
 
                     return null;
                 }).addOnSuccessListener(successListener)
@@ -418,7 +421,7 @@ public class FirebaseUtil {
      */
     public static void updateEvent(FirebaseFirestore db, Event event, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
         String docID = cleanDocumentId(event.getQRcode());
-        db.collection("events")
+        db.collection(EVENTS_COLLECTION)
                 .document(docID)
                 .set(event)
                 .addOnSuccessListener(successListener)
@@ -435,7 +438,7 @@ public class FirebaseUtil {
      * @see User
      */
     public static void updateUser(FirebaseFirestore db, User user, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
-        db.collection("users").document(user.getDeviceID())
+        db.collection(USERS_COLLECTION).document(user.getDeviceID())
                 .set(user)
                 .addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);
@@ -453,7 +456,7 @@ public class FirebaseUtil {
     public static void getEvent(FirebaseFirestore db, String QRCode, OnSuccessListener<Event> successListener, OnFailureListener failureListener) {
         String docID = cleanDocumentId(QRCode);
         // Handle any errors that occur while fetching the document
-        db.collection("events").document(docID).get().addOnSuccessListener(doc -> {
+        db.collection(EVENTS_COLLECTION).document(docID).get().addOnSuccessListener(doc -> {
             if (doc.exists()) {
                 String eventName = doc.getString("eventName");
                 String eventDescription = doc.getString("eventDescription");
@@ -489,7 +492,7 @@ public class FirebaseUtil {
      * @see User
      */
     public static void getUserEvents(FirebaseFirestore db, String userID, OnSuccessListener<ArrayList<Event>> successListener, OnFailureListener failureListener) {
-        db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
+        db.collection(USERS_COLLECTION).document(userID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 List<String> eventIDs = (List<String>) documentSnapshot.get("attendeeEvents");
                 if (eventIDs != null && !eventIDs.isEmpty()) {
@@ -532,7 +535,7 @@ public class FirebaseUtil {
      * @see User
      */
     public static void getUserOrganizingEvents(FirebaseFirestore db, String userID, OnSuccessListener<ArrayList<Event>> successListener, OnFailureListener failureListener) {
-        db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
+        db.collection(USERS_COLLECTION).document(userID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 List<String> eventIDs = (List<String>) documentSnapshot.get("organizerEvents");
                 if (eventIDs != null && !eventIDs.isEmpty()) {
@@ -578,7 +581,7 @@ public class FirebaseUtil {
      * @see User
      */
     public static void getUserCheckedInEvents(FirebaseFirestore db, String userID, OnSuccessListener<Map<Event, Long>> successListener, OnFailureListener failureListener) {
-        db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
+        db.collection(USERS_COLLECTION).document(userID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 Map<String, Long> eventIDs = (Map<String, Long>) documentSnapshot.get("checkedInEvents");
                 if (eventIDs != null && !eventIDs.isEmpty()) {
@@ -625,7 +628,7 @@ public class FirebaseUtil {
      */
     public static void getEventAttendees(FirebaseFirestore db, String eventQR, OnSuccessListener<ArrayList<User>> successListener, OnFailureListener failureListener) {
         String docID = cleanDocumentId(eventQR);
-        db.collection("events").document(docID).get().addOnSuccessListener(documentSnapshot -> {
+        db.collection(EVENTS_COLLECTION).document(docID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 List<String> userIDs = (List<String>) documentSnapshot.get("attendees");
                 if (userIDs != null && !userIDs.isEmpty()) {
@@ -667,7 +670,7 @@ public class FirebaseUtil {
      */
     public static void getEventCheckedInUsers(FirebaseFirestore db, String eventQR, OnSuccessListener<Map<User, Long>> successListener, OnFailureListener failureListener) {
         String docID = cleanDocumentId(eventQR);
-        db.collection("events").document(docID).get().addOnSuccessListener(documentSnapshot -> {
+        db.collection(EVENTS_COLLECTION).document(docID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 Map<String, Long> userIDs = (Map<String, Long>) documentSnapshot.get("checkedInUsers");
                 AtomicInteger processedCount = new AtomicInteger(0); // To track processed events
@@ -709,7 +712,7 @@ public class FirebaseUtil {
      */
     public static void getEventOrganizers(FirebaseFirestore db, String eventQR, OnSuccessListener<ArrayList<User>> successListener, OnFailureListener failureListener) {
         String docID = cleanDocumentId(eventQR);
-        db.collection("events").document(docID).get().addOnSuccessListener(documentSnapshot -> {
+        db.collection(EVENTS_COLLECTION).document(docID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 List<String> userIDs = (List<String>) documentSnapshot.get("organizers");
                 if (userIDs != null && !userIDs.isEmpty()) {
@@ -742,7 +745,7 @@ public class FirebaseUtil {
      * @param failureListener what to do in case of failure (database error)
      */
     public static void getUserObject(FirebaseFirestore db, String userID, OnSuccessListener<User> successListener, OnFailureListener failureListener) {
-        db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
+        db.collection(USERS_COLLECTION).document(userID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 User user = documentSnapshot.toObject(User.class);
                 if (user != null) {
@@ -768,8 +771,8 @@ public class FirebaseUtil {
      */
     public static void addEventAndAttendee(FirebaseFirestore db, String eventId, String attendee, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
         String docID = cleanDocumentId(eventId);
-        DocumentReference eventDoc = db.collection("events").document(docID);
-        DocumentReference userDoc = db.collection("users").document(attendee);
+        DocumentReference eventDoc = db.collection(EVENTS_COLLECTION).document(docID);
+        DocumentReference userDoc = db.collection(USERS_COLLECTION).document(attendee);
 
         db.runTransaction((Transaction.Function<Void>) transaction -> {
                     DocumentSnapshot eventSnapshot = transaction.get(eventDoc);
@@ -812,8 +815,8 @@ public class FirebaseUtil {
      */
     public static void addEventAndOrganizer(FirebaseFirestore db, String eventId, String organizer, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
         String docID = cleanDocumentId(eventId);
-        DocumentReference eventDoc = db.collection("events").document(docID);
-        DocumentReference userDoc = db.collection("users").document(organizer);
+        DocumentReference eventDoc = db.collection(EVENTS_COLLECTION).document(docID);
+        DocumentReference userDoc = db.collection(USERS_COLLECTION).document(organizer);
 
         db.runTransaction((Transaction.Function<Void>) transaction -> {
                     DocumentSnapshot eventSnapshot = transaction.get(eventDoc);
@@ -850,8 +853,8 @@ public class FirebaseUtil {
      */
     public static void addEventAndCheckedInUser(FirebaseFirestore db, String eventId, String user, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
         String docID = cleanDocumentId(eventId);
-        DocumentReference eventDoc = db.collection("events").document(docID);
-        DocumentReference userDoc = db.collection("users").document(user);
+        DocumentReference eventDoc = db.collection(EVENTS_COLLECTION).document(docID);
+        DocumentReference userDoc = db.collection(USERS_COLLECTION).document(user);
 
         db.runTransaction((Transaction.Function<Void>) transaction -> {
                     DocumentSnapshot eventSnapshot = transaction.get(eventDoc);
@@ -894,7 +897,7 @@ public class FirebaseUtil {
      */
     public static void getAnnouncements(FirebaseFirestore db, String eventID, OnSuccessListener<ArrayList<Announcement>> successListener, OnFailureListener failureListener){
         String docID = cleanDocumentId(eventID);
-        db.collection("events").document(docID).get().addOnSuccessListener(doc -> {
+        db.collection(EVENTS_COLLECTION).document(docID).get().addOnSuccessListener(doc -> {
             if (doc.exists()) {
                 if (doc.contains("announcements")) {
                     ArrayList<HashMap<String, Object>> announcementMaps = (ArrayList<HashMap<String, Object>>) doc.get("announcements");
@@ -926,7 +929,7 @@ public class FirebaseUtil {
      */
     public static void saveAnnouncement(FirebaseFirestore db, String eventID, Announcement announcement, OnSuccessListener<Void> successListener, OnFailureListener failureListener){
         String docID = cleanDocumentId(eventID);
-        DocumentReference eventDoc = db.collection("events").document(docID);
+        DocumentReference eventDoc = db.collection(EVENTS_COLLECTION).document(docID);
         db.runTransaction((Transaction.Function<Void>) transaction -> {
                     DocumentSnapshot eventSnapshot = transaction.get(eventDoc);
                     List<Announcement> announcements = (List<Announcement>) eventSnapshot.get("announcements");
@@ -971,7 +974,7 @@ public class FirebaseUtil {
 
     // for adding a location that a user has checked in from java docs are not real java docs cannot hurt me
     public static void sendCoordinatesToEvent(FirebaseFirestore db, Event event, GeoPoint geoPoint,OnSuccessListener<Void> successListener, OnFailureListener failureListener ){
-        db.collection("events").document(event.getQRcode())
+        db.collection(EVENTS_COLLECTION).document(event.getQRcode())
                 .update("checkInLocations", FieldValue.arrayUnion(geoPoint))
                 .addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);
@@ -979,7 +982,7 @@ public class FirebaseUtil {
 
 
     public static void getEventCheckInLocations(FirebaseFirestore db, Event event, OnSuccessListener<List<GeoPoint>> successListener, OnFailureListener failureListener) {
-        db.collection("events").document(event.getQRcode())
+        db.collection(EVENTS_COLLECTION).document(event.getQRcode())
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists() && documentSnapshot.contains("checkInLocations")) {
