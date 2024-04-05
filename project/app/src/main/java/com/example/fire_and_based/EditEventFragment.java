@@ -82,6 +82,7 @@ public class EditEventFragment extends Fragment {
 
         // gets the image view in the xml, uses image downloader to display banner given and even and field
         ImageView eventBannerImage = view.findViewById(R.id.eventEditImage);
+        String eventsBannerURL = event.getBannerQR();
         ImageDownloader ImageDownloader = new ImageDownloader();
         ImageDownloader.getBannerBitmap(event, eventBannerImage);
 
@@ -306,7 +307,6 @@ public class EditEventFragment extends Fragment {
         } else if (eventStartTimeString == "" || eventStartTimeString == null) { return false;
         } else if (eventEndDateString == "" || eventEndDateString == null){ return false;
         } else if (eventLocationString == "" || eventLocationString == null) { return false;
-        } else if (eventMaxAttendeeAmountString == "" || eventMaxAttendeeAmountString == null){return false;
         } else { return true;}
     }
 
