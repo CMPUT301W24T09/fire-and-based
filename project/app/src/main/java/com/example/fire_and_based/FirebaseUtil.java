@@ -18,6 +18,7 @@ import com.google.type.LatLng;
 
 import java.util.ArrayList;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -28,6 +29,7 @@ import java.util.Map;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This class has all the functions for accessing the necessary data from the firebase
@@ -278,7 +280,7 @@ public class FirebaseUtil {
     }
 
     /**
-     * Delete event from database
+     * Delete event from database and remove references to it from users' entries
      *
      * @param db    the database
      * @param event the event
@@ -288,10 +290,53 @@ public class FirebaseUtil {
      */
     public static void deleteEvent(FirebaseFirestore db, Event event, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
         String docID = cleanDocumentId(event.getQRcode());
-        db.collection("events")
-                .document(docID)
-                .delete()
-                .addOnSuccessListener(successListener)
+
+        // Start a new transaction
+        db.runTransaction((Transaction.Function<Void>) transaction -> {
+                    DocumentSnapshot eventSnapshot = transaction.get(db.collection("events").document(docID));
+
+                    // Get the properties of the event's entry
+                    Map<String, String> checkedInUsers = new HashMap<>((Map) eventSnapshot.get("checkedInUsers"));
+                    List<String> organizers = new ArrayList<>((Collection) eventSnapshot.get("organizers"));
+                    List<String> attendees = new ArrayList<>((Collection) eventSnapshot.get("attendees"));
+
+                    // For each user in "checkedInUsers", "organizers", and "attendees", remove the entry from their events
+                    Stream.of(checkedInUsers.keySet(), organizers, attendees)
+                            .flatMap(Collection::stream)
+                            .distinct()
+                            .forEach(userID -> {
+                                DocumentReference userRef = db.collection("users").document(userID);
+                                DocumentSnapshot userSnapshot = null;
+                                try {
+                                    userSnapshot = transaction.get(userRef);
+                                } catch (FirebaseFirestoreException e) {
+                                    failureListener.onFailure(e);
+                                }
+
+                                if (checkedInUsers.containsKey(userID)) {
+                                    Map<String, Long> checkedInEvents = new HashMap<>((Map) userSnapshot.get("checkedInEvents"));
+                                    checkedInEvents.remove(docID);
+                                    transaction.update(userRef, "checkedInEvents", checkedInEvents);
+                                }
+
+                                if (organizers.contains(userID)) {
+                                    List<String> organizerEvents = new ArrayList<>((Collection) userSnapshot.get("organizerEvents"));
+                                    organizerEvents.remove(docID);
+                                    transaction.update(userRef, "organizerEvents", organizerEvents);
+                                }
+
+                                if (attendees.contains(userID)) {
+                                    List<String> attendeeEvents = new ArrayList<>((Collection) userSnapshot.get("attendeeEvents"));
+                                    attendeeEvents.remove(docID);
+                                    transaction.update(userRef, "attendeeEvents", attendeeEvents);
+                                }
+                            });
+
+                    // Delete the event
+                    transaction.delete(db.collection("events").document(docID));
+
+                    return null;
+                }).addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);
     }
 
