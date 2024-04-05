@@ -30,7 +30,7 @@ public class QRCodeGenerator {
     }
 
 
-    private static String validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~%";
+    static String validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~%";
     public static String getValidChars(String input){
         StringBuilder result = new StringBuilder();
         for (char c : input.toCharArray()) {
