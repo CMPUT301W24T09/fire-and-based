@@ -65,12 +65,12 @@ import java.util.Random;
  * 4. Need to allow creation of event without making a poster
  */
 public class CreateEventFragment extends Fragment {
-    private User user;
+    public User user;
     public Date newEventDate;
 
-    private String QRCode = null;
-    private String PosterQRCode = null;
-    private String imageUrl = null;
+    public String QRCode = null;
+    public String PosterQRCode = null;
+    public String imageUrl = null;
 
     public String timeString;
     public String dateString;
@@ -78,7 +78,8 @@ public class CreateEventFragment extends Fragment {
 
 
     // private ImageView previewBanner;
-    private Uri imageUri;
+    public Uri imageUri;
+
     Context context = getContext();
 
     StorageReference fireRef = FirebaseStorage.getInstance().getReference();
@@ -191,7 +192,7 @@ public class CreateEventFragment extends Fragment {
         previewQRImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (QRCode != null){
+                if (QRCode != null && PosterQRCode != null){
                     displayQR(QRCode, PosterQRCode, eventName.getText().toString());
                 } else {
                     toast("ERROR: QR Code not set");
@@ -322,7 +323,6 @@ public class CreateEventFragment extends Fragment {
                         maxAttendeeLong = (long) -1;
                     }
 
-                    String imageUrl = null;
 
                     if (!(imageUri == null)) {
                         imageUrl = "events/" + QRCode;
@@ -345,7 +345,7 @@ public class CreateEventFragment extends Fragment {
 //                        });
                     }
 
-
+//                    imageUrl = "TESTING IMAGE URL";
                     Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, timeSince1970, eventLocationString, PosterQRCode, null, maxAttendeeLong, false);
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
 

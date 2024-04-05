@@ -28,6 +28,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.zxing.qrcode.encoder.QRCode;
 
 import java.util.Map;
 import java.util.Objects;
@@ -169,7 +170,20 @@ public class EventDetailsFragment extends Fragment {
         checkedInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             getLocation();
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                FirebaseUtil.addEventAndCheckedInUser(db, event.getQRcode(), user.getDeviceID(), new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                getLocation();
+
+                            }
+                        }, new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.e("TAG", "Check in fail");
+                            }
+                        });
+
             }
         });
 
