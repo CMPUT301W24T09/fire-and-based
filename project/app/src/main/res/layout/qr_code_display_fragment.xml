@@ -40,6 +40,26 @@
         android:textSize="30dp"
         android:layout_gravity="center_horizontal"/>
 
+    <com.google.android.material.button.MaterialButton
+        android:layout_gravity="right"
+
+        android:id="@+id/save_image_button"
+        android:layout_width="80dp"
+
+        android:layout_height="wrap_content"
+        android:text="Save"
+        app:cornerRadius="8dp"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/black"
+        app:strokeColor="@color/black"
+        app:strokeWidth="1dp"
+        android:layout_below="@id/qr_code_image_view"
+        android:layout_centerHorizontal="true"
+
+        android:layout_marginTop="450dp"/>
+
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_marginTop="530dp"
         android:layout_width="match_parent"

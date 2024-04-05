@@ -1,11 +1,17 @@
 package com.example.fire_and_based;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +28,9 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.zxing.WriterException;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Fragment for displaying a scannable QR Code
@@ -145,6 +155,18 @@ public class QRCodeDisplayFragment extends DialogFragment {
         });
 
 
+        MaterialButton saveImageButton = view.findViewById(R.id.save_image_button);
+        saveImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (bitmap != null) {
+                    saveImageToGallery(getContext(), bitmap, eventName + " " + eventNameTextView.getText().toString());
+                } else {
+                    logError("Bitmap is null. Cannot save image.");
+                }
+            }
+        });
+
 
     }
 
@@ -160,4 +182,48 @@ public class QRCodeDisplayFragment extends DialogFragment {
             Log.println(Log.ERROR, "QRCodeDisplayFragment", error);
         }
     }
+
+
+    private void saveImageToGallery(Context context, Bitmap bitmap, String text) {
+        // Create a mutable bitmap to draw text on
+        Bitmap mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+
+        // Create a Canvas object to draw on the bitmap
+        Canvas canvas = new Canvas(mutableBitmap);
+
+        // Create a Paint object to set the text color, size, etc.
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK); // Text color
+        paint.setTextSize(40); // Text size
+        paint.setAntiAlias(true); // Smooth edges
+
+        // Calculate text position (centered horizontally, near the top vertically)
+        Rect bounds = new Rect();
+        paint.getTextBounds(text, 0, text.length(), bounds);
+        int x = (canvas.getWidth() - bounds.width()) / 2;
+        int y = bounds.height() + 20; // Adjust as needed
+
+        // Draw the text on the canvas
+        canvas.drawText(text, x, y, paint);
+
+        // Save the modified bitmap to the gallery
+        // (The rest of the code remains the same)
+
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, "QRCode");
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+        Uri uri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        try {
+            OutputStream outputStream = context.getContentResolver().openOutputStream(uri);
+            mutableBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            if (outputStream != null) {
+                outputStream.close();
+                // Notify the user that the image has been saved successfully
+                Toast.makeText(context, "Image saved to Gallery", Toast.LENGTH_SHORT).show();
+            }
+        } catch (IOException e) {
+            logError("Failed to save image: " + e.getMessage());
+        }
+    }
+
 }

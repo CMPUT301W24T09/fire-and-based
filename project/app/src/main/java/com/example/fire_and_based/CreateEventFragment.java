@@ -457,6 +457,7 @@ public class CreateEventFragment extends Fragment {
                 // TODO remove debug confirmation maybe
                 toast("Scanned: " + result.getContents());
                 QRCode = QRCodeGenerator.getValidChars(result.getContents());
+                PosterQRCode = QRCodeGenerator.getValidString();
                 //TODO again up to you if you want to display this
                 displayQR(QRCode, PosterQRCode, "");
                 //showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
