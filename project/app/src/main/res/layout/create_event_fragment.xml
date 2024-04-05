@@ -76,7 +76,9 @@
                     android:background="@color/white"
                     android:clipChildren="false"
                     android:clipToPadding="false"
-                    app:cardCornerRadius="10dp">
+                    app:cardCornerRadius="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -201,30 +203,112 @@
                 </LinearLayout>
 
                 <!-- Date -->
-                <LinearLayout
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="2dp">
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/eventEditDescription">
 
 
-                    <TextView
-                        android:layout_width="60dp"
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/middle_guideline"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Date"
-                        android:textSize="18dp"/>
-
-                    <EditText
-                        android:id="@+id/event_date_editable"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:hint="Select a Date"
-                        android:inputType="none"
-                        android:focusable="false"
-                        />
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.5" />
 
 
-                </LinearLayout>
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/linearLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toStartOf="@+id/middle_guideline"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/textView3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/darker_gray"
+                            android:ems="23"
+                            android:fontFamily="@font/roboto"
+                            android:inputType="text"
+                            android:text=" Start Date"
+                            android:textColor="@color/black"
+                            android:textSize="14sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toTopOf="@id/event_date_editable"
+                            tools:fontFamily="@font/roboto" />
+
+                        <EditText
+                            android:id="@+id/event_date_editable"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/darker_gray"
+                            android:ems="23"
+                            android:fontFamily="@font/roboto"
+                            android:hint="Start Date"
+                            android:textColor="@color/black"
+                            android:textSize="14sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            tools:fontFamily="@font/roboto"
+                            android:inputType="none"
+                            android:focusable="false"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toEndOf="@+id/middle_guideline"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/darker_gray"
+                            android:ems="23"
+                            android:fontFamily="@font/roboto"
+                            android:inputType="text"
+                            android:text=" End Date"
+                            android:textColor="@color/black"
+                            android:textSize="14sp"
+                            tools:fontFamily="@font/roboto"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toTopOf="@id/event_date_editable_end"/>
+
+                        <EditText
+                            android:id="@+id/event_date_editable_end"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/darker_gray"
+                            android:ems="23"
+                            android:fontFamily="@font/roboto"
+                            android:hint="End Date"
+                            android:textColor="@color/black"
+                            android:textSize="14sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            tools:fontFamily="@font/roboto"
+                            android:inputType="none"
+                            android:focusable="false"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
                 <!-- Time -->
                 <LinearLayout

@@ -127,7 +127,7 @@ public class CreateEventFragment extends Fragment {
         EditText eventTime = view.findViewById(R.id.event_time_editable); // Initialize it as per your actual layout component
         EditText eventLocation = view.findViewById(R.id.event_location_editable);
         EditText eventMaxAttendees = view.findViewById(R.id.event_maximum_attendees_editable);
-
+        EditText eventDateEnd = view.findViewById(R.id.event_date_editable_end);
 
         // set textfield to the current date ( for making things more obvious and easier for them to click )
         final Calendar c = Calendar.getInstance();
@@ -152,6 +152,24 @@ public class CreateEventFragment extends Fragment {
                         (view, year, monthOfYear, dayOfMonth) -> {
                             dateString = String.format(dayOfMonth + " " + (monthOfYear + 1) + " " + year);
                             eventDate.setText(dayOfMonth + " " + (monthOfYear + 1) + " " + year);
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+            }
+        });
+
+        eventDateEnd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar c = Calendar.getInstance();
+                int mYear = c.get(Calendar.YEAR); // current year
+                int mMonth = c.get(Calendar.MONTH); // current month
+                int mDay = c.get(Calendar.DAY_OF_MONTH); // current day
+
+                // Date Picker Dialog
+                DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
+                        (view, year, monthOfYear, dayOfMonth) -> {
+                            dateString = String.format(dayOfMonth + " " + (monthOfYear + 1) + " " + year);
+                            eventDateEnd.setText(dayOfMonth + " " + (monthOfYear + 1) + " " + year);
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
             }
@@ -284,6 +302,7 @@ public class CreateEventFragment extends Fragment {
             String eventNameString = eventName.getText().toString();
             String eventDescriptionString = eventDescription.getText().toString();
             String eventDateString = eventDate.getText().toString();
+            String eventDateEndString = eventDateEnd.getText().toString();
             String eventTimeString = eventTime.getText().toString();
             String eventLocationString = eventLocation.getText().toString();
             String eventMaxAttendeesString = eventMaxAttendees.getText().toString();
@@ -294,6 +313,8 @@ public class CreateEventFragment extends Fragment {
             } else if (eventDescriptionString.length() < 5) {
                 Toast.makeText(requireContext(), "Desciption not long enough", Toast.LENGTH_SHORT).show();
             } else if (eventDateString.length() < 1) {
+                Toast.makeText(requireContext(), "You need an event Date", Toast.LENGTH_SHORT).show();
+            } else if (eventDateEndString.length() < 1) {
                 Toast.makeText(requireContext(), "You need an event Date", Toast.LENGTH_SHORT).show();
             } else if (eventTimeString.length() < 1) {
                 Toast.makeText(requireContext(), "You need an event time", Toast.LENGTH_SHORT).show();
@@ -312,11 +333,17 @@ public class CreateEventFragment extends Fragment {
                 String combinedDateTime = dateString + " " + timeString;
                 SimpleDateFormat sdf = new SimpleDateFormat("dd M yyyy HH:mm");  // this is used for just how the string is formatted we could change this easily if we need to
 
+                String endDateTime = eventDateEndString + " " + "12:00";
+
                 try {
 
                     // Parse the string into a Date object
                     Date date = sdf.parse(combinedDateTime);
                     long timeSince1970 = date.getTime();  // this is the time we store n the database -> put in the event object when its created
+
+                    Date endDate = sdf.parse(endDateTime);
+                    long endTimeSince1970 = date.getTime();
+
                     if (eventMaxAttendeesString.length() > 0) {
                         maxAttendeeLong = Long.parseLong(eventMaxAttendeesString);
                     } else {
@@ -346,7 +373,7 @@ public class CreateEventFragment extends Fragment {
                     }
 
 //                    imageUrl = "TESTING IMAGE URL";
-                    Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, timeSince1970, eventLocationString, PosterQRCode, null, maxAttendeeLong, false);
+                    Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, endTimeSince1970, eventLocationString, PosterQRCode, null, maxAttendeeLong, false);
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
                     FirebaseUtil.addEventToDB(db, newEvent, new FirebaseUtil.AddEventCallback() {
@@ -383,24 +410,24 @@ public class CreateEventFragment extends Fragment {
                     // we can create the event object
 
 
-                                    //this.eventName = eventName;
-                                    //this.eventDescription = eventDescription;
-                                    //this.eventBanner = eventBanner;
-                                    //this.QRcode = QRcode;
+                    //this.eventName = eventName;
+                    //this.eventDescription = eventDescription;
+                    //this.eventBanner = eventBanner;
+                    //this.QRcode = QRcode;
 
 
-                                    // then pass to database
-                                    // user was passed into this activity it is a public User object named 'user'
-                                    // use that to write to database and properly store in user events
-                                    // also make sure that in the event the user is an organizer :salute:
+                    // then pass to database
+                    // user was passed into this activity it is a public User object named 'user'
+                    // use that to write to database and properly store in user events
+                    // also make sure that in the event the user is an organizer :salute:
 
 
 //                                    Toast.makeText(requireContext(), Long.toString(timeSince1970), Toast.LENGTH_SHORT).show();
-                    } catch (Exception e) {
-                        // Handle the possibility that parsing fails
-                        Toast.makeText(requireContext(), (CharSequence) e, Toast.LENGTH_SHORT).show();
-                    }
+                } catch (Exception e) {
+                    // Handle the possibility that parsing fails
+                    Toast.makeText(requireContext(), (CharSequence) e, Toast.LENGTH_SHORT).show();
                 }
+            }
             }
         });
         return view;
