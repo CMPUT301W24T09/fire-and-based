@@ -80,10 +80,11 @@ public class FirebaseUtil {
                     String bannerQR = doc.getString("bannerQR");
                     ArrayList<Integer> milestones = (ArrayList<Integer>) doc.get("milestones");
                     Long maxAttendees = doc.getLong("maxAttendees");
+                    Long currentAttendees = doc.getLong("currentAttendees");
                     Boolean trackLocation = doc.getBoolean("trackLocation");
                     Log.d("Firestore", String.format("Event(%s, %s) fetched", eventName,
                             qrCode));
-                    eventsList.add(new Event(eventName, eventDescription, eventBanner, qrCode, eventStart, eventEnd, location, bannerQR, milestones, maxAttendees, trackLocation));
+                    eventsList.add(new Event(eventName, eventDescription, eventBanner, qrCode, eventStart, eventEnd, location, bannerQR, milestones, maxAttendees,currentAttendees, trackLocation));
                 }
                 Log.d("Firestore", String.format("Fetched %d events", eventsList.size()));
                 callback.onCallback(eventsList);
@@ -188,8 +189,10 @@ public class FirebaseUtil {
                             String bannerQR = doc.getString("bannerQR");
                             ArrayList<Integer> milestones = (ArrayList<Integer>) doc.get("milestones");
                             Long maxAttendees = (doc.getLong("maxAttendees"));
+                            Long currentAttendees = doc.getLong("currentAttendees");
+
                             boolean trackLocation = doc.getBoolean("trackLocation");
-                            eventsList.add(new Event(eventName, eventDescription, eventBanner, qrCode, eventStart, eventEnd, location, bannerQR, milestones, maxAttendees, trackLocation));
+                            eventsList.add(new Event(eventName, eventDescription, eventBanner, qrCode, eventStart, eventEnd, location, bannerQR, milestones, maxAttendees,currentAttendees, trackLocation));
                         }
                     }
                     // Invoke the callback with the list of events
@@ -371,11 +374,12 @@ public class FirebaseUtil {
                 String bannerQR = doc.getString("bannerQR");
                 ArrayList<Integer> milestones = (ArrayList<Integer>) doc.get("milestones");
                 Long maxAttendees = doc.getLong("maxAttendees");
+                Long currentAttendees = doc.getLong("currentAttendees");
                 Boolean trackLocation = doc.getBoolean("trackLocation");
 
                 Log.d("Firestore", String.format("Event(%s, %s) fetched", eventName,
                         qrCode));
-                Event event = new Event(eventName, eventDescription, eventBanner, qrCode, eventStart, eventEnd, location, bannerQR, milestones, maxAttendees, trackLocation);
+                Event event = new Event(eventName, eventDescription, eventBanner, qrCode, eventStart, eventEnd, location, bannerQR, milestones, maxAttendees,currentAttendees, trackLocation);
                 successListener.onSuccess(event);
             } else { //document not found, does not exist
                 failureListener.onFailure(new Exception("Event document not found"));
@@ -561,6 +565,53 @@ public class FirebaseUtil {
         }).addOnFailureListener(failureListener);
     }
 
+//    public static void getEventUserPool(FirebaseFirestore db, String eventQR,OnEventUserPoolResultListener listener)
+//    {
+//        //ArrayList<String> users = new ArrayList<>();
+//        String docID = cleanDocumentId(eventQR);
+//        Log.d(TAG, "ATTEMPT FOR "+docID);
+//
+//        db.collection("events").document(docID).get().addOnSuccessListener(documentSnapshot ->
+//        {
+//            if (documentSnapshot.exists())
+//            {
+//                Log.d(TAG, "EXISTS");
+//                List<String> userIDs = (List<String>) documentSnapshot.get("attendees");
+//
+//                if (userIDs != null && !userIDs.isEmpty())
+//                {
+//                    int size = userIDs.size();
+//                    Log.d(TAG, "SIZE:" + size);
+//                    listener.onSuccess(size); // Notify listener with the size of users
+//                }
+//                else
+//                {
+//                    Log.d(TAG, "EMPTY EMPTY EMPTY");
+//                    listener.onSuccess(0); // Notify listener with 0 if userIDs is empty
+//                }
+//            }
+//        }).addOnFailureListener(e -> {
+//            Log.e(TAG, "Error getting document", e);
+//            listener.onError(e); // Notify listener if an error occurs
+//        });
+//    }
+//    public interface OnEventUserPoolResultListener {
+//        void onSuccess(int userPoolSize);
+//        void onError(Exception e);
+//    }
+
+//    public static void addFieldstoUser(FirebaseFirestore db, User user, OnSuccessListener<Void> successListener, OnFailureListener failureListener ){
+//        db.collection(USERS_COLLECTION).document(user.getDeviceID())
+//                .update("attendeeEvents", FieldValue.arrayUnion())
+//                .addOnSuccessListener(successListener)
+//                .addOnFailureListener(failureListener);
+//
+//        db.collection(USERS_COLLECTION).document(user.getDeviceID())
+//                .update("organizerEvents", FieldValue.arrayUnion())
+//                .addOnSuccessListener(successListener)
+//                .addOnFailureListener(failureListener);
+//    }
+
     /**
      * Asynchronously get list of Users checked in to an event
      *
@@ -693,6 +744,8 @@ public class FirebaseUtil {
 
                     attendees.add(attendee);
                     transaction.update(eventDoc, "attendees", attendees);
+                    transaction.update(eventDoc, "currentAttendees", attendees.size());
+
 
 
                     List<String> attendeeEvents = (List<String>) userSnapshot.get("attendeeEvents");
@@ -853,7 +906,7 @@ public class FirebaseUtil {
      * @param docId the possibly invalid string
      * @return a valid Firebase ID
      */
-    private static String cleanDocumentId(String docId) {
+    public static String cleanDocumentId(String docId) {
         // Replace forward slashes with backward slashes
         docId = docId.replace("/", "\\");
 

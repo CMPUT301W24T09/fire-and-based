@@ -27,6 +27,7 @@ public class Event implements Parcelable {
     private String bannerQR;
     private ArrayList<Integer> milestones;
     private Long maxAttendees;
+    private Long currentAttendees;
     private Boolean trackLocation;
 
 
@@ -45,7 +46,7 @@ public class Event implements Parcelable {
      * @param maxAttendees     The maximum number of attendees for the event.
      * @param trackLocation    Whether the event is tracking location.
      */
-    Event(String eventName, String eventDescription, String eventBanner, String QRcode, Long startTimeStamp, Long endTimeStamp, String location, String bannerQR, ArrayList<Integer> milestones, Long maxAttendees, Boolean trackLocation) {
+    Event(String eventName, String eventDescription, String eventBanner, String QRcode, Long startTimeStamp, Long endTimeStamp, String location, String bannerQR, ArrayList<Integer> milestones, Long maxAttendees, Long currentAttendees, Boolean trackLocation) {
         this.eventName = eventName;
         this.eventDescription = eventDescription;
         this.eventBanner = eventBanner;
@@ -56,6 +57,7 @@ public class Event implements Parcelable {
         this.bannerQR = bannerQR;
         this.milestones = milestones;
         this.maxAttendees = maxAttendees;
+        this.currentAttendees = currentAttendees;
         this.trackLocation = trackLocation;
     }
 
@@ -80,6 +82,7 @@ public class Event implements Parcelable {
         bannerQR = in.readString();
         milestones = in.readArrayList(Integer.class.getClassLoader());
         maxAttendees = in.readLong();
+        currentAttendees = in.readLong();
         trackLocation = in.readByte() != 0;  // trackLocation == true if byte != 0
     }
 
@@ -232,6 +235,24 @@ public class Event implements Parcelable {
     public void setMaxAttendees(Long maxAttendees) {
         this.maxAttendees = maxAttendees;
     }
+
+    /**
+     * Returns the current number of attendees at the event.
+     *
+     * @return the current number of attendees at the event.
+     */
+    public Long getCurrentAttendees() {
+        return this.currentAttendees;
+    }
+
+    /**
+     * Sets the current number of attendees for the event.
+     *
+     * @param currentAttendees the current number of attendees
+     */
+    public void setCurrentAttendees(Long currentAttendees) {this.currentAttendees = currentAttendees;}
+
+
 
     /**
      * Returns whether the event is tracking location.

@@ -1,6 +1,7 @@
 package com.example.fire_and_based;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This class is the adapter for the events. It displays each event in the list.
@@ -21,6 +28,8 @@ import java.util.ArrayList;
 public class EventArrayAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
     private Context context;
+
+    protected FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private ImageDownloader imageDownloader = new ImageDownloader();
 
@@ -70,11 +79,27 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 
 
             TextView checkCount = view.findViewById(R.id.checkCount);
+//
+//            String checkNum = String.valueOf(FirebaseUtil.getEventUserPool(db,event.getQRcode()));
+//            String totalNum = String.valueOf(event.getMaxAttendees());
+//            checkCount.setText(checkNum+"/"+totalNum);
+
+
+            String checkNum = String.valueOf(event.getCurrentAttendees());
+            String totalNum = String.valueOf(event.getMaxAttendees());
+            checkCount.setText(checkNum + "/" + totalNum);
 
             //ArrayList<Integer> checkNums = event.getMilestones();
-            String checkNum = "0";
-            String totalNum = String.valueOf(event.getMaxAttendees());
-            checkCount.setText(checkNum+"/"+totalNum);
+
+//
+//            String docID = FirebaseUtil.cleanDocumentId(event.getQRcode());
+//            List<String> userIDs;
+//            db.collection("events").document(docID).get().addOnSuccessListener(documentSnapshot -> {
+//            if (documentSnapshot.exists()) {
+//                userIDs = (List<String>) documentSnapshot.get("attendees");
+//            }
+//            String checkNum = userIDs.size();
+//
 
 
 
