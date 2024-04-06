@@ -20,7 +20,7 @@ import java.util.Objects;
 /**
  * This fragment is hosted by EventDetailsFragment.
  * It displays the info for an event.
- * @author Sumayya
+ * @author Sumayya, Tyler
  * To-do (UI):
  * 1. Something wrong with XML
  */

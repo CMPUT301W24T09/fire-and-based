@@ -35,6 +35,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * fragment for editing an event
+ * @author Tyler
+ */
+
 public class EditEventFragment extends Fragment {
 
     private Event event;

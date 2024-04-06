@@ -34,6 +34,7 @@ import java.io.OutputStream;
 
 /**
  * Fragment for displaying a scannable QR Code
+ * @author Tyler
  */
 public class QRCodeDisplayFragment extends DialogFragment {
 

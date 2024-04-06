@@ -57,7 +57,7 @@ import java.util.Random;
 /**
  * This class is the activity for creating a new event.
  * It can be accessed by clicking the create event button on UserActivity.
- * @author Tyler, Ilya, Sumayya
+ * @author Tyler, Ilya, Sumayya, Aiden
  * To-do:
  * 1. AIDEN: run the app and click the blue plus in middle of screen -> you see the white rectangle at the top, its an imageview, i want you to set an onclick for image uploading there
  * 2. ILYA: run the app and see the two QR code buttons, there is zero code for them and no id's either go to create_event_and_edit.xml and connect those buttons to the qr code upload / generate functionality

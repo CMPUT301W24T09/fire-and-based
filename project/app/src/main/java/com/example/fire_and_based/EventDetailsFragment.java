@@ -48,7 +48,7 @@ import java.util.Objects;
  * 1. Delay in displaying checked in status
  * 2. Make edit details button functional
  *
- * @author Sumayya
+ * @author Sumayya, Tyler
  */
 public class EventDetailsFragment extends Fragment {
     private User user;
