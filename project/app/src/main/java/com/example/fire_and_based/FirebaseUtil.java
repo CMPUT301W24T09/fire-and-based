@@ -42,8 +42,8 @@ import java.util.stream.Stream;
 
 public class FirebaseUtil {
 
-    private static final String USERS_COLLECTION = "users";
-    private static final String EVENTS_COLLECTION = "events";
+    private static final String USERS_COLLECTION = "usersTEST";
+    private static final String EVENTS_COLLECTION = "eventsTEST";
 
     // FOR THHIS CLASS THERE ARE TWO ARGS YOU NEED
     // THE DATABASE AND THE OBJECT
@@ -174,15 +174,19 @@ public class FirebaseUtil {
                 // Get the user's attendingEvents and organizingEvents arrays
                 List<String> attendingEvents = (List<String>) documentSnapshot.get("attendeeEvents");
                 List<String> organizingEvents = (List<String>) documentSnapshot.get("organizerEvents");
+                if (attendingEvents == null) attendingEvents = new ArrayList<>();
+                if (organizingEvents == null) organizingEvents = new ArrayList<>();
 
                 // Query all events
+                List<String> finalAttendingEvents = attendingEvents;
+                List<String> finalOrganizingEvents = organizingEvents;
                 db.collection(EVENTS_COLLECTION).get().addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         String qrCode = doc.getId();
                         Log.d(TAG,"GETTING QRCODE FOR EVENT "+qrCode);
                         // Check if the user is already associated with the event
 
-                        if (!attendingEvents.contains(qrCode) && !organizingEvents.contains(qrCode)) {
+                        if (!finalAttendingEvents.contains(qrCode) && !finalOrganizingEvents.contains(qrCode)) {
                             // Event not associated with the user, add it to the events list
                             String eventName = doc.getString("eventName");
                             String eventDescription = doc.getString("eventDescription");
