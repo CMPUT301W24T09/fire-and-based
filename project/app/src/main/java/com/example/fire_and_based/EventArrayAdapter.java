@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,8 +27,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Used by EventListFragment.
  * @author Sumayya
  */
-public class EventArrayAdapter extends ArrayAdapter<Event> {
+public class EventArrayAdapter extends ArrayAdapter<Event> implements Filterable {
     private ArrayList<Event> events;
+    private ArrayList<Event> filteredEvents;
     private Context context;
 
     protected FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -41,7 +44,8 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
      */
     public EventArrayAdapter(Context context, ArrayList<Event> events) {
         super(context, 0, events);
-        this.events = events;
+        this.events = new ArrayList<>(events);
+        this.filteredEvents = new ArrayList<>(events);
         this.context = context;
     }
 
@@ -54,7 +58,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
                 view = LayoutInflater.from(context).inflate(R.layout.event_list_content, parent,false);
             }
 
-            Event event = events.get(position);
+            Event event = filteredEvents.get(position);
 
             /**
              * Downloads event banner and displays
@@ -101,11 +105,42 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 //            String checkNum = userIDs.size();
 //
 
-
-
-
-
-                    
             return view;
+    }
+
+    @NonNull
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults filterResults = new FilterResults();
+                ArrayList<Event> filteredList = new ArrayList<>();
+                String filterPattern = constraint.toString().toLowerCase().trim();
+
+                // Iterate through a copy of the original event list and add matching items to the filtered list
+                if (filterPattern.isEmpty()) {
+                    filteredList.addAll(events); // Assuming events is the original list
+                } else {
+                    // Iterate through the original event list and add matching items to the filtered list
+                    for (Event event : events) {
+                        if (event.getEventName().toLowerCase().contains(filterPattern)) {
+                            filteredList.add(event);
+                        }
+                    }
+                }
+                filterResults.values = filteredList;
+                filterResults.count = filteredList.size();
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                filteredEvents = (ArrayList<Event>) results.values;
+                clear();
+                addAll(filteredEvents);
+                notifyDataSetChanged();
+            }
+        };
     }
 }

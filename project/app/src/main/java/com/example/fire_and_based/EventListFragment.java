@@ -1,11 +1,14 @@
 package com.example.fire_and_based;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -13,10 +16,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+import static androidx.core.content.ContextCompat.getSystemService;
 
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -52,7 +57,7 @@ import android.location.Location;
  * Requires a user to be passed in as an argument as a Parcelable with a key "user"
  * Also requires a mode to be passed in as an argument as a String with a key "mode"
  * Note that a mode may be "Browse", "Attending", "Organizing", or "Admin"
- * @author Sumayya, Ilya
+ * @author Sumayya, Tyler, Aiden, Ilya
  * Issue: if you can a qr code for an event you're not registered in, it takes a long, long time for a failure message to pop up
  */
 
@@ -152,47 +157,45 @@ public class EventListFragment extends Fragment {
         dataList = new ArrayList<>();
         eventList = view.findViewById(R.id.event_list);
 
+        db = FirebaseFirestore.getInstance();
+        updateEventList();
 
-//        AutoCompleteTextView listSorter = view.findViewById(R.id.listSorter);
-//        String[] stringArray = getResources().getStringArray(R.array.eventSorting);
-//        List<String> stringList = Arrays.asList(stringArray);
-//        ArrayList<String> sortList = new ArrayList<>(stringList);
-//        ArrayAdapter<String> sortAdapter = new ArrayAdapter(requireContext(), R.layout.drop_down_options, sortList);
-//        listSorter.setAdapter(sortAdapter);
 
         AutoCompleteTextView listSorter = view.findViewById(R.id.listSorter);
         ArrayList<String> sortList =  filterSetup(listSorter);
-
-        //filter = String.valueOf(listSorter.getText());
 
         listSorter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 filterIndex = position;
                 filter = sortList.get(filterIndex);
-                updateEventList();
+                if (Objects.equals(filter, "Popular")) {
+                    // Sort dataList based on current attendees in descending order
+                    eventAdapter.sort(Comparator.comparing(Event::getCurrentAttendees).reversed());
+                } else if (Objects.equals(filter, "Upcoming")) {
+                    // Sort dataList based on event start time
+                    eventAdapter.sort(Comparator.comparing(Event::getEventStart));
+                }
             }
         });
 
-        EditText eventSearch= view.findViewById(R.id.event_search);
-        ImageButton searchButton = view.findViewById(R.id.search_button);
 
-        searchButton.setOnClickListener(new AdapterView.OnClickListener() {
+        SearchView searchView = view.findViewById(R.id.search);
+        int closeButtonId = searchView.getContext().getResources().getIdentifier("android:id/search_close_btn", null, null);
+        ImageView closeButton = (ImageView) searchView.findViewById(closeButtonId);
+        closeButton.setVisibility(View.GONE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onClick(View view)
-            {
-                Log.d(TAG,"BUTTON");
-                searchString = eventSearch.getText().toString();
-                updateEventList();
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                eventAdapter.getFilter().filter(newText);
+                return true;
             }
         });
-
-
-        eventAdapter = new EventArrayAdapter(requireContext(), dataList);
-        eventList.setAdapter(eventAdapter);
-
-        db = FirebaseFirestore.getInstance();
-        updateEventList();
 
         eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -212,61 +215,31 @@ public class EventListFragment extends Fragment {
      */
     public void updateEventList() {
         if (Objects.equals(mode, "Browse")) {
-            FirebaseUtil.getAllEventsUserIsNotIn(db, user.getDeviceID(), new FirebaseUtil.getAllEventsCallback() {
-                @Override
-                public void onCallback(List<Event> list) {
-                    dataList.clear();
-                    for (Event event : list) {
-                        dataList.add(event);
-                        //eventAdapter.notifyDataSetChanged();
-                    }
-                    dataList = listAlgorithm(dataList,searchString);
-                    Log.d(TAG,"dataList Size: "+dataList.size());
-                    eventAdapter.notifyDataSetChanged();
-                }
-            });
+            FirebaseUtil.getAllEventsUserIsNotIn(db, user.getDeviceID(), this::setUp);
         }
 
         if (Objects.equals(mode, "Attending")) {
-            FirebaseUtil.getUserEvents(db, user.getDeviceID(), events -> {
-                    dataList.clear();
-                    for (Event event : events) {
-                        dataList.add(event);
-                        //eventAdapter.notifyDataSetChanged();
-                    }
-                dataList = listAlgorithm(dataList,searchString);
-                eventAdapter.notifyDataSetChanged();
-                }, e -> {
+            FirebaseUtil.getUserEvents(db, user.getDeviceID(), this::setUp, e -> {
                     Log.e("FirebaseError", "Error fetching user events: " + e.getMessage());
                 });
         }
 
         if (Objects.equals(mode, "Organizing")) {
-            FirebaseUtil.getUserOrganizingEvents(db, user.getDeviceID(), events -> {
-                dataList.clear();
-                for (Event event : events) {
-                    dataList.add(event);
-                   // eventAdapter.notifyDataSetChanged();
-                }
-                dataList = listAlgorithm(dataList,searchString);
-                eventAdapter.notifyDataSetChanged();
-            }, e -> {
+            FirebaseUtil.getUserOrganizingEvents(db, user.getDeviceID(), this::setUp, e -> {
                 Log.e("FirebaseError", "Error fetching organizing events: " + e.getMessage());
             });
         }
 
         if (Objects.equals(mode, "Admin")) {
-            FirebaseUtil.getAllEvents(db, new FirebaseUtil.getAllEventsCallback() {
-                @Override
-                public void onCallback(List<Event> list) {
-                    dataList.clear();
-                    for (Event event: list) {
-                        dataList.add(event);
-                        eventAdapter.notifyDataSetChanged();
-                    }
-                }
-            });
+            FirebaseUtil.getAllEvents(db, this::setUp);
         }
+    }
+
+    private void setUp(List<Event> list) {
+        dataList.clear();
+        dataList.addAll(list);
+        eventAdapter = new EventArrayAdapter(requireContext(), dataList);
+        eventList.setAdapter(eventAdapter);
     }
 
     /**
@@ -354,14 +327,6 @@ public class EventListFragment extends Fragment {
         ActivityCompat.requestPermissions(requireActivity(),
                 new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION},
                 LOCATION_PERMISSION_REQUEST_CODE);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        db = FirebaseFirestore.getInstance();
-        updateEventList();
-        // Call your method to refresh the events list here
     }
 
     public ArrayList<String> filterSetup(AutoCompleteTextView listSorter)
