@@ -13,6 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.button.MaterialButton;
+
 import java.util.Objects;
 
 /**
@@ -55,9 +57,12 @@ public class InfoFragment extends Fragment {
         TextView eventDescription = view.findViewById(R.id.event_description);
         eventDescription.setText(event.getEventDescription());
 
+
+
+
         Button button = view.findViewById(R.id.additional_actions_button);
         if (Objects.equals(mode, "Organizing")) {
-            button.setText("Event QR Code");
+            button.setVisibility(View.INVISIBLE);
         }
         if (Objects.equals(mode, "Attending")) {
             button.setText("Leave Event");
@@ -65,6 +70,28 @@ public class InfoFragment extends Fragment {
             button.setBackgroundColor(resolvedColor);
         }
 
+        // qr code viewer button
+        MaterialButton QRCodeViewerButton = view.findViewById(R.id.view_qr_code);
+        QRCodeViewerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                displayQR(event.getQRcode(), event.getBannerQR(), event.getEventName());
+            }
+        });
+
+
+
         return view;
+    }
+
+
+    public void displayQR(String QRCode, String PosterQRCode, String eventName) {
+        QRCodeDisplayFragment fragment = new QRCodeDisplayFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("eventQR", QRCode);
+        bundle.putString("eventName", eventName);
+        bundle.putString("posterQR", PosterQRCode);
+        fragment.setArguments(bundle);
+        fragment.show(getParentFragmentManager(), "QRCodeDisplayFragment");
     }
 }

@@ -60,7 +60,7 @@ public class ImageDownloader
     public void getBannerBitmap(Event thisEvent, ImageView imagePreview)
     {
         //Bitmap imageMap;
-        String bannerUrl = thisEvent.getBannerQR();
+        String bannerUrl = thisEvent.getEventBanner();
         StorageReference uriRef;
         if (bannerUrl == null) {
             return;
