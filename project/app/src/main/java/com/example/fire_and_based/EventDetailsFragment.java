@@ -108,6 +108,7 @@ public class EventDetailsFragment extends Fragment {
 
         //Button checkedInButton = view.findViewById(R.id.checked_in_button);
         checkedInButton = view.findViewById(R.id.checked_in_button);
+        checkedInButton.setText("");
         Button editDetailsButton = view.findViewById(R.id.edit_details_button);
         Button attendeeListButton = view.findViewById(R.id.attendee_list_button);
 
@@ -117,7 +118,9 @@ public class EventDetailsFragment extends Fragment {
             FirebaseUtil.getUserCheckedInEvents(db, user.getDeviceID(), eventLongMap -> {
                 for (Map.Entry<Event, Long> entry: eventLongMap.entrySet()) {
                     if (Objects.equals(entry.getKey().getQRcode(), event.getQRcode())) {
-                        checkedInButton.setText("Checked in");
+                        Long numberTimesChecked = entry.getValue();
+                        int numberTimesCheckedAsInt = numberTimesChecked.intValue();
+                        checkedInButton.setText(numberTimesCheckedAsInt % 2 == 1 ? "Check Out" : "Check In");
                     }
                 }
             }, e -> {
@@ -237,8 +240,9 @@ public class EventDetailsFragment extends Fragment {
             return;
         }
 
-        if (!checkedInButton.getText().toString().equals("Not checked In")){
-            Toast.makeText(getContext(), "You are already checked in for this event!", Toast.LENGTH_SHORT).show();
+        if (!checkedInButton.getText().toString().equals("Check In")){
+            checkedInButton.setText("Check In");
+//            Toast.makeText(getContext(), "You are already checked in for this event!", Toast.LENGTH_SHORT).show();
         } else {
 
 
@@ -257,8 +261,8 @@ public class EventDetailsFragment extends Fragment {
                             FirebaseUtil.sendCoordinatesToEvent(db, event, geoPoint, new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    Toast.makeText(getContext(), "It wrote to db u did it kid proud of u ", Toast.LENGTH_SHORT).show();
-                                    checkedInButton.setText("Checked In");
+                                    Toast.makeText(getContext(), "Successfully Checked In", Toast.LENGTH_SHORT).show();
+                                    checkedInButton.setText("Check Out");
                                 }
                             }, new OnFailureListener() {
                                 @Override
