@@ -41,7 +41,7 @@
             android:id="@+id/dateText"
             android:layout_width="333dp"
             android:layout_height="31dp"
-            android:text="March 22, 2024 @ 6PM"
+            android:text="Date @ XPM"
             android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/calendar"
             app:layout_constraintTop_toBottomOf="@+id/event_title" />
@@ -60,7 +60,7 @@
             android:id="@+id/locationText"
             android:layout_width="373dp"
             android:layout_height="27dp"
-            android:text="ETLC 1-013"
+            android:text="Location"
             android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/point"
             app:layout_constraintTop_toBottomOf="@+id/dateText"/>
@@ -99,19 +99,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="?attr/colorPrimary"
-        android:text="Not checked In" />
+        android:text="Not checked In"
+        app:cornerRadius="10dp"/>
 
     <Button
         android:id="@+id/edit_details_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Edit Details" />
+        android:text="Edit Details"
+        app:cornerRadius="10dp"/>
 
     <Button
         android:id="@+id/attendee_list_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Attendee List" />
+        android:text="Attendee List"
+        app:cornerRadius="10dp"/>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/event_details_tablayout"

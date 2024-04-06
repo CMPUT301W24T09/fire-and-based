@@ -39,6 +39,7 @@
             android:gravity="left"
             android:text="Minecraft Club"
             android:textSize="40sp"
+            android:layout_marginLeft="15dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto"
-            android:text="March 22, 2024 @ 6PM"
+            android:text="Date @ #PM"
             android:textColor="#808080"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/event_location_browser"
@@ -63,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="60dp"
             android:fontFamily="@font/roboto"
-            android:text="ETLC 1-013"
+            android:text="Location"
             android:textColor="#808080"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/location_icon_browser"
