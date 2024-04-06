@@ -73,7 +73,9 @@ public class CreateEventFragment extends Fragment {
     public String imageUrl = null;
 
     public String timeString;
+    public String timeEndString;
     public String dateString;
+    public String dateEndString;
     public Long maxAttendeeLong;
 
 
@@ -128,7 +130,7 @@ public class CreateEventFragment extends Fragment {
         EditText eventLocation = view.findViewById(R.id.event_location_editable);
         EditText eventMaxAttendees = view.findViewById(R.id.event_maximum_attendees_editable);
         EditText eventDateEnd = view.findViewById(R.id.event_date_editable_end);
-
+        EditText eventTimeEnd = view.findViewById(R.id.event_time_editable_end);
         // set textfield to the current date ( for making things more obvious and easier for them to click )
         final Calendar c = Calendar.getInstance();
         int mYear = c.get(Calendar.YEAR); // current year
@@ -168,7 +170,7 @@ public class CreateEventFragment extends Fragment {
                 // Date Picker Dialog
                 DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
                         (view, year, monthOfYear, dayOfMonth) -> {
-                            dateString = String.format(dayOfMonth + " " + (monthOfYear + 1) + " " + year);
+                            dateEndString = String.format(dayOfMonth + " " + (monthOfYear + 1) + " " + year);
                             eventDateEnd.setText(dayOfMonth + " " + (monthOfYear + 1) + " " + year);
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
@@ -189,6 +191,23 @@ public class CreateEventFragment extends Fragment {
                             String formattedTime = String.format("%02d:%02d", hourOfDay, minute);
                             timeString = formattedTime;
                             eventTime.setText(formattedTime);
+                        }, mHour, mMinute, false); // 'false' for 12-hour clock or 'true' for 24-hour clock
+                timePickerDialog.show();
+            }
+        });
+
+        eventTimeEnd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int mHour = c.get(Calendar.HOUR_OF_DAY); // current hour
+                int mMinute = c.get(Calendar.MINUTE); // current minute
+
+                // Time Picker Dialog
+                TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(),
+                        (view, hourOfDay, minute) -> {
+                            String formattedTime = String.format("%02d:%02d", hourOfDay, minute);
+                            timeEndString = formattedTime;
+                            eventTimeEnd.setText(formattedTime);
                         }, mHour, mMinute, false); // 'false' for 12-hour clock or 'true' for 24-hour clock
                 timePickerDialog.show();
             }
@@ -304,6 +323,7 @@ public class CreateEventFragment extends Fragment {
             String eventDateString = eventDate.getText().toString();
             String eventDateEndString = eventDateEnd.getText().toString();
             String eventTimeString = eventTime.getText().toString();
+            String eventTimeEndString = eventTimeEnd.getText().toString();
             String eventLocationString = eventLocation.getText().toString();
             String eventMaxAttendeesString = eventMaxAttendees.getText().toString();
 
@@ -313,17 +333,20 @@ public class CreateEventFragment extends Fragment {
             } else if (eventDescriptionString.length() < 5) {
                 Toast.makeText(requireContext(), "Desciption not long enough", Toast.LENGTH_SHORT).show();
             } else if (eventDateString.length() < 1) {
-                Toast.makeText(requireContext(), "You need an event Date", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "You need an start date", Toast.LENGTH_SHORT).show();
             } else if (eventDateEndString.length() < 1) {
-                Toast.makeText(requireContext(), "You need an event Date", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "You need an end date", Toast.LENGTH_SHORT).show();
             } else if (eventTimeString.length() < 1) {
                 Toast.makeText(requireContext(), "You need an event time", Toast.LENGTH_SHORT).show();
+
+            } else if (eventTimeEndString.length() < 1){
+                Toast.makeText(requireContext(), "You need an event ending time", Toast.LENGTH_SHORT).show();
             } else if (eventLocationString.length() < 5) {
                 Toast.makeText(requireContext(), "Your event needs a location", Toast.LENGTH_SHORT).show();
 
             } else if (QRCode == null) {
                 //TODO change above to toast function as well for readability?
-                toast("You must generate or scan a QR Code");
+                toast("You must generate or upload a QR Code");
                 // add handling for qr code and banner as well
                 // add more handling here if needed
             } else {
@@ -332,8 +355,7 @@ public class CreateEventFragment extends Fragment {
                 // convert the date to time since 1970 jan 1 to store in the database
                 String combinedDateTime = dateString + " " + timeString;
                 SimpleDateFormat sdf = new SimpleDateFormat("dd M yyyy HH:mm");  // this is used for just how the string is formatted we could change this easily if we need to
-
-                String endDateTime = eventDateEndString + " " + "12:00";
+                String endDateTime = dateEndString + " " + timeEndString;
 
                 try {
 
@@ -342,7 +364,7 @@ public class CreateEventFragment extends Fragment {
                     long timeSince1970 = date.getTime();  // this is the time we store n the database -> put in the event object when its created
 
                     Date endDate = sdf.parse(endDateTime);
-                    long endTimeSince1970 = date.getTime();
+                    long endTimeSince1970 = endDate.getTime();
 
                     if (eventMaxAttendeesString.length() > 0) {
                         maxAttendeeLong = Long.parseLong(eventMaxAttendeesString);
@@ -358,18 +380,6 @@ public class CreateEventFragment extends Fragment {
                         Toast.makeText(getContext(), "MADE IT TO HERE ", Toast.LENGTH_SHORT).show();
                         selectionRef.putFile(imageUri);
 
-                        // this was causing the app to crash when uploading images
-//                        selectionRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                            @Override
-//                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                                Toast.makeText(requireContext(), "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
-//                            }
-//                        }).addOnFailureListener(new OnFailureListener() {
-//                            @Override
-//                            public void onFailure(@NonNull Exception e) {
-//                                Toast.makeText(requireContext(), "Image Upload Error", Toast.LENGTH_LONG).show();
-//                            }
-//                        });
                     }
 
 //                    imageUrl = "TESTING IMAGE URL";

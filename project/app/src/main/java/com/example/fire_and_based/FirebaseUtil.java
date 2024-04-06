@@ -324,11 +324,33 @@ public class FirebaseUtil {
      */
     public static void updateEvent(FirebaseFirestore db, Event event, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
         String docID = cleanDocumentId(event.getQRcode());
+        Map<String, Object> eventMap = eventToMap(event);
         db.collection("events")
                 .document(docID)
-                .set(event)
+                .update(eventMap)
                 .addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);
+    }
+
+    /**
+     * Used to map the event for updating event with the same QR Code
+     * @param event           he event
+     * @see Event
+     * @return Map<String, Object>
+     */
+    private static Map<String, Object> eventToMap(Event event) {
+        Map<String, Object> map = new HashMap<>();
+        // Populate the map with fields from the event. Example:
+        // map.put("fieldName", event.getFieldValue());
+        map.put("eventBanner", event.getEventBanner());
+        map.put("eventDescription", event.getEventDescription());
+        map.put("eventEnd", event.getEventEnd());
+        map.put("eventStart", event.getEventStart());
+        map.put("location", event.getLocation());
+        map.put("maxAttendees", event.getMaxAttendees());
+
+        // Add other fields as necessary...
+        return map;
     }
 
     /**
