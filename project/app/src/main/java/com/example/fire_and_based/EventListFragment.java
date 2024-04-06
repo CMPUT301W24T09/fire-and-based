@@ -65,7 +65,7 @@ public class EventListFragment extends Fragment {
                 } else {
                     db = FirebaseFirestore.getInstance();
                     String QRCode = QRCodeGenerator.getValidChars(result.getContents());
-                    FirebaseUtil.addEventAndCheckedInUser(db, QRCode, user.getDeviceID(), aVoid -> {
+                    FirebaseUtil.addEventAndCheckedInUser(db, FirebaseUtil.cleanDocumentId(QRCode), user.getDeviceID(), aVoid -> {
                         Toast.makeText(requireContext(), "Checked in!", Toast.LENGTH_LONG).show();
                         // write logic that gets user Lat and Long here so that it can be wrote to the databse
                         FirebaseUtil.getEvent(db, QRCode, new OnSuccessListener<Event>() {
@@ -73,6 +73,7 @@ public class EventListFragment extends Fragment {
                             public void onSuccess(Event event) {
                                 scannedEvent = event;
                                 getLocation();
+                                executeFragmentTransaction(event, "Attending");
                             }
                         }, new OnFailureListener() {
                             @Override
@@ -80,13 +81,6 @@ public class EventListFragment extends Fragment {
                                 Toast.makeText(getContext(), "Error finding that event make sure it exists!", Toast.LENGTH_SHORT).show();
                             }
                         });
-
-
-//                        FirebaseUtil.getEvent(db, result.getContents(), event -> {
-//                            executeFragmentTransaction(event, "Attending");
-//                        }, e -> {
-//                            Log.e("FirebaseError", "Error fetching event: " + e.getMessage());
-//                        });
                     }, e -> {
                         Toast.makeText(requireContext(), "Failed. Make sure you are registered.", Toast.LENGTH_LONG).show();
                     });

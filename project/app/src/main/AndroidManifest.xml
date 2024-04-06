@@ -20,7 +20,7 @@
         android:theme="@style/Theme.Fireandbased"
         tools:targetApi="tiramisu"
         android:largeHeap="true"
-        android:hardwareAccelerated="true">
+        android:hardwareAccelerated="false">
         <activity
             android:name=".MainActivity"
             android:exported="true">

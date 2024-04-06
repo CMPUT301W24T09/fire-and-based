@@ -875,7 +875,7 @@ public class FirebaseUtil {
      * @param docId the possibly invalid string
      * @return a valid Firebase ID
      */
-    private static String cleanDocumentId(String docId) {
+    public static String cleanDocumentId(String docId) {
         // Replace forward slashes with backward slashes
         docId = docId.replace("/", "\\");
 

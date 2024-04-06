@@ -14,7 +14,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="211dp"
+            android:layout_height="21dp"
             android:background="?attr/colorPrimary">
 
             <TextView
@@ -443,7 +443,7 @@
                 android:ems="23"
                 android:fontFamily="@font/roboto"
                 android:hint="Event Max Attendee Amount"
-                android:inputType="text"
+                android:inputType="number"
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
