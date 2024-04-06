@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,17 +24,22 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class EditEventFragment extends Fragment {
 
@@ -41,9 +47,13 @@ public class EditEventFragment extends Fragment {
     private User user;
     private Uri imageUri;
     private Boolean imageChanged = false;
+    public long eventMaxAttendeesLong;
+    private ArrayList<User> dataList = null; // for getting attendee amount
+
     private ImageView previewBanner;
     private String timeString;
     private ActivityResultLauncher<Intent> customActivityResultLauncher;
+
 
 
     @Nullable
@@ -61,7 +71,8 @@ public class EditEventFragment extends Fragment {
         EditText eventDescription = view.findViewById(R.id.eventEditDescription);
         EditText eventStartDate = view.findViewById(R.id.eventDateStartEdit);
         EditText eventEndDate = view.findViewById(R.id.eventDateEndEdit);
-        EditText eventStartTime = view.findViewById(R.id.eventTimeEdit);
+        EditText eventStartTime = view.findViewById(R.id.eventEditTime);
+        EditText eventEndTime = view.findViewById(R.id.eventEditTimeEnd);
         EditText eventLocation = view.findViewById(R.id.eventEditLocation);
         EditText eventAttendeeAmount = view.findViewById(R.id.eventEditAttendeeAmount);
         Button saveButton = view.findViewById(R.id.eventEditSaveButton);
@@ -76,11 +87,19 @@ public class EditEventFragment extends Fragment {
         String startTime = dateTime[1]; // time
         eventStartDate.setText(startCalendar);
         eventStartTime.setText(startTime);
-        Long eventEndDateLong = event.getEventEnd();         // sets end date after converting
-        String endCalendar = convertTimestampToCalendarDateAndTime(eventEndDateLong)[0];
+
+
+        Long eventEndDateLong = event.getEventEnd();
+        String[] dateTimeEnd = convertTimestampToCalendarDateAndTime(eventEndDateLong);
+        String endCalendar = dateTimeEnd[0]; // date
+        String endTime = dateTimeEnd[1]; // time
+
         eventEndDate.setText(endCalendar);
+        eventEndTime.setText(endTime);
+
         eventLocation.setText(event.getLocation());
-        eventAttendeeAmount.setText(event.getMaxAttendees().toString());
+        eventAttendeeAmount.setText(event.getMaxAttendees().toString().equals("-1") ? "" : event.getMaxAttendees().toString());
+
 
         final Calendar c = Calendar.getInstance();
 
@@ -141,6 +160,24 @@ public class EditEventFragment extends Fragment {
                 timePickerDialog.show();
             }
         });
+
+        eventEndTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int mHour = c.get(Calendar.HOUR_OF_DAY); // current hour
+                int mMinute = c.get(Calendar.MINUTE); // current minute
+
+                // Time Picker Dialog
+                TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(),
+                        (view, hourOfDay, minute) -> {
+                            String formattedTime = String.format("%02d:%02d", hourOfDay, minute);
+                            timeString = formattedTime;
+                            eventEndTime.setText(formattedTime);
+                        }, mHour, mMinute, false); // 'false' for 12-hour clock or 'true' for 24-hour clock
+                timePickerDialog.show();
+            }
+        });
+
         // onclick for the event date that opens a calendar ui for them to select a date idk how to function this tbh and idc XD
         eventStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,21 +220,19 @@ public class EditEventFragment extends Fragment {
                 registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                         new ActivityResultCallback<ActivityResult>() {
                             @Override
-                            public void onActivityResult(ActivityResult result)
-                            {//if (result.getResultCode() == RESULT_OK)
+                            public void onActivityResult(ActivityResult result) {//if (result.getResultCode() == RESULT_OK)
                                 try {
-                                    if (result.getData() != null)
-                                    {
+                                    if (result.getData() != null) {
                                         imageUri = result.getData().getData();
-                                        Toast.makeText(requireContext(), "Uri Selected", Toast.LENGTH_LONG).show();
+//                                        Toast.makeText(requireContext(), "Uri Selected", Toast.LENGTH_LONG).show();
                                         //buttonUpload.setEnabled(true);
                                         //Glide.with(context).load(imageUri).into(previewBanner);
                                         eventBannerImage.setImageURI(imageUri);
                                         imageChanged = true;
                                     }
+                                } catch (Exception e) {
+                                    Toast.makeText(requireContext(), "Please Select An Image", Toast.LENGTH_LONG).show();
                                 }
-                                catch(Exception e)
-                                {Toast.makeText(requireContext(), "Please Select An Image", Toast.LENGTH_LONG).show();}
                             }
                         });
 
@@ -208,11 +243,10 @@ public class EditEventFragment extends Fragment {
                 Intent imageIntent = new Intent(Intent.ACTION_PICK);
                 imageIntent.setType("image/*");
                 customActivityResultLauncher.launch(imageIntent);
-            }});
+            }
+        });
 
         // Setup the ActivityResultLauncher
-
-
 
 
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -222,30 +256,37 @@ public class EditEventFragment extends Fragment {
                 String eventDescriptionString = eventDescription.getText().toString();
                 String eventStartDateString = eventStartDate.getText().toString();
                 String eventStartTimeString = eventStartTime.getText().toString();
+                String eventEndTimeString = eventEndTime.getText().toString();
                 String eventEndDateString = eventEndDate.getText().toString();
                 String eventLocationString = eventLocation.getText().toString();
                 String eventMaxAttendeeAmountString = eventAttendeeAmount.getText().toString();
 
-                if (!checkValidFields(eventDescriptionString, eventStartDateString, eventStartTimeString, eventEndDateString, eventLocationString, eventMaxAttendeeAmountString)){
+                 if (!checkValidFields(eventDescriptionString, eventStartDateString, eventStartTimeString, eventEndTimeString, eventEndDateString, eventLocationString)) {
                     Toast.makeText(getContext(), "Fields must all be satisfied", Toast.LENGTH_SHORT).show();
+
                 } else {
 
 
                     // convert the date to time since 1970 jan 1 to store in the database
                     String combinedDateTime = eventStartDateString + " " + eventStartTimeString;
-                    String combinedDateTimeEnd = eventEndDateString + " " + eventStartTimeString;
+                    String combinedDateTimeEnd = eventEndDateString + " " + eventEndTimeString;
                     SimpleDateFormat sdf = new SimpleDateFormat("dd M yyyy HH:mm");  // this is used for just how the string is formatted we could change this easily if we need to
 
                     try {
+
 
                         // Parse the string into a Date object
                         Date date = sdf.parse(combinedDateTime);
                         long eventStartLong = date.getTime();  // this is the time we store n the database -> put in the event object when its created
                         Date endDate = sdf.parse(combinedDateTimeEnd);
-                        long eventEndLong  = endDate.getTime();
+                        long eventEndLong = endDate.getTime();
 
-                        long eventMaxAttendeesLong = Long.parseLong(eventMaxAttendeeAmountString);
 
+                        if (eventMaxAttendeeAmountString.length() > 0) {
+                            eventMaxAttendeesLong = Long.parseLong(eventMaxAttendeeAmountString);
+                        } else {
+                            eventMaxAttendeesLong = (long) -1;
+                        }
 
 
 //                        String eventDescriptionString = eventDescription.getText().toString();
@@ -260,13 +301,30 @@ public class EditEventFragment extends Fragment {
                         event.setEventEnd(eventEndLong);
                         event.setLocation(eventLocationString);
                         event.setMaxAttendees(eventMaxAttendeesLong);
-
+                        if (imageChanged){
+                            String QRCode = event.getQRcode();
+                            String imageUrl = "events/" + QRCode;
+                            event.setEventBanner(imageUrl);
+                        }
                         FirebaseFirestore db = FirebaseFirestore.getInstance();
                         FirebaseUtil.updateEvent(db, event, new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                if (!imageChanged){
+                                if (!imageChanged) {
                                     Toast.makeText(getContext(), "Event Details Updated", Toast.LENGTH_SHORT).show();
+
+                                    EventDetailsFragment fragment = new EventDetailsFragment();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putParcelable("user", user);
+                                    bundle.putParcelable("event", event);
+                                    bundle.putString("mode", "Organizing");
+                                    fragment.setArguments(bundle);
+                                    getParentFragmentManager().beginTransaction()
+                                            .replace(R.id.fragment_container_view, fragment)
+                                            .setReorderingAllowed(true)
+                                            .addToBackStack(null)
+                                            .commit();
+
                                 } else {
                                     String QRCode = event.getQRcode();
                                     String imageUrl = "events/" + QRCode;
@@ -278,6 +336,18 @@ public class EditEventFragment extends Fragment {
                                         @Override
                                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                             Toast.makeText(requireContext(), "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
+
+                                            EventDetailsFragment fragment = new EventDetailsFragment();
+                                            Bundle bundle = new Bundle();
+                                            bundle.putParcelable("user", user);
+                                            bundle.putParcelable("event", event);
+                                            bundle.putString("mode", "Organizing");
+                                            fragment.setArguments(bundle);
+                                            getParentFragmentManager().beginTransaction()
+                                                    .replace(R.id.fragment_container_view, fragment)
+                                                    .setReorderingAllowed(true)
+                                                    .addToBackStack(null)
+                                                    .commit();
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
@@ -287,17 +357,7 @@ public class EditEventFragment extends Fragment {
                                     });
                                 }
 
-                                EventDetailsFragment fragment = new EventDetailsFragment();
-                                Bundle bundle = new Bundle();
-                                bundle.putParcelable("user", user);
-                                bundle.putParcelable("event", event);
-                                bundle.putString("mode", "Organizing");
-                                fragment.setArguments(bundle);
-                                getParentFragmentManager().beginTransaction()
-                                        .replace(R.id.fragment_container_view, fragment)
-                                        .setReorderingAllowed(true)
-                                        .addToBackStack(null)
-                                        .commit();
+
                             }
 
                         }, new OnFailureListener() {
@@ -317,20 +377,24 @@ public class EditEventFragment extends Fragment {
         });
 
 
-
-
-
         return view;
     }
 
     // checks for valid fields function
     private boolean checkValidFields(String eventDescriptionString, String eventStartDateString, String eventStartTimeString, String eventEndDateString, String eventLocationString, String eventMaxAttendeeAmountString) {
-        if (eventDescriptionString == "" || eventDescriptionString == null){ return false;
-        } else if (eventStartDateString == "" || eventStartDateString == null) { return false;
-        } else if (eventStartTimeString == "" || eventStartTimeString == null) { return false;
-        } else if (eventEndDateString == "" || eventEndDateString == null){ return false;
-        } else if (eventLocationString == "" || eventLocationString == null) { return false;
-        } else { return true;}
+        if (eventDescriptionString == "" || eventDescriptionString == null) {
+            return false;
+        } else if (eventStartDateString == "" || eventStartDateString == null) {
+            return false;
+        } else if (eventStartTimeString == "" || eventStartTimeString == null) {
+            return false;
+        } else if (eventEndDateString == "" || eventEndDateString == null) {
+            return false;
+        } else if (eventLocationString == "" || eventLocationString == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 
@@ -353,7 +417,7 @@ public class EditEventFragment extends Fragment {
         String time = String.format("%02d:%02d", hour, minute);
 
         // Return an array with both date and time
-        return new String[] { date, time };
+        return new String[]{date, time};
     }
 
 

@@ -182,6 +182,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:id="@+id/event_dates_constrain"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/event_description_editable">
@@ -280,38 +281,109 @@
 
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="202dp"
-                android:backgroundTint="@android:color/darker_gray"
-                android:ems="23"
-                android:fontFamily="@font/roboto"
-                android:text=" Event Time"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:fontFamily="@font/roboto" />
+            <androidx.constraintlayout.widget.ConstraintLayout
 
-            <EditText
-                android:id="@+id/event_time_editable"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="216dp"
-                android:backgroundTint="@android:color/darker_gray"
-                android:ems="23"
-                android:fontFamily="@font/roboto"
-                android:hint="Event Time"
-                    android:textColor="@color/black"
-                android:textSize="14sp"
+                android:layout_marginTop="4dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:fontFamily="@font/roboto"
-                android:inputType="none"
-                android:focusable="false"/>
+                app:layout_constraintTop_toBottomOf="@+id/event_dates_constrain">
+
+
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/time_middle_guideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.5" />
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/event_timers"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@+id/time_middle_guideline"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/event_time_left"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@android:color/darker_gray"
+                        android:ems="23"
+                        android:fontFamily="@font/roboto"
+                        android:text=" Start Time"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/event_time_editable"
+                        tools:fontFamily="@font/roboto" />
+
+                    <EditText
+                        android:id="@+id/event_time_editable"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@android:color/darker_gray"
+                        android:ems="23"
+                        android:fontFamily="@font/roboto"
+                        android:hint="Start Time"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        tools:fontFamily="@font/roboto"
+                        android:inputType="none"
+                        android:focusable="false"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@+id/time_middle_guideline"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@android:color/darker_gray"
+                        android:ems="23"
+                        android:fontFamily="@font/roboto"
+                        android:text=" End Time"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        tools:fontFamily="@font/roboto"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/event_time_editable_end"/>
+
+                    <EditText
+                        android:id="@+id/event_time_editable_end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@android:color/darker_gray"
+                        android:ems="23"
+                        android:fontFamily="@font/roboto"
+                        android:hint="End Time"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        tools:fontFamily="@font/roboto"
+                        android:inputType="none"
+                        android:focusable="false"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 
 
             <TextView
@@ -338,7 +410,7 @@
                 android:backgroundTint="@android:color/darker_gray"
                 android:ems="23"
                 android:fontFamily="@font/roboto"
-                android:hint="Location"
+                android:hint="Event Location"
                 android:inputType="text"
                 android:textColor="@color/black"
                 android:textSize="14sp"
@@ -354,7 +426,7 @@
                 android:backgroundTint="@android:color/darker_gray"
                 android:ems="23"
                 android:fontFamily="@font/roboto"
-                android:text=" Event Location"
+                android:text=" Event Max Attendees"
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -370,7 +442,7 @@
                 android:backgroundTint="@android:color/darker_gray"
                 android:ems="23"
                 android:fontFamily="@font/roboto"
-                android:hint="Maximum Attendee Amount"
+                android:hint="Event Max Attendee Amount"
                 android:inputType="text"
                 android:textColor="@color/black"
                 android:textSize="14sp"
@@ -406,7 +478,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Use Old QR"
+                        android:text="Upload QR"
                         app:cornerRadius="10dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
