@@ -184,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
                 .addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);
 
+        // For some reason this isn't being added to the database despite it being an attribute of the user class so I did this
         db.collection("users").document(user.getDeviceID())
                 .update("profilePicture", user.getProfilePicture())
                 .addOnSuccessListener(successListener)

@@ -32,6 +32,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Firebase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -68,15 +69,19 @@ public class EditProfileFragment extends Fragment {
         EditText emailEdit = view.findViewById(R.id.editTextEmail);
         EditText phoneEdit = view.findViewById(R.id.editTextPhone);
         EditText homepageEdit = view.findViewById(R.id.editTextHomepage);
+
         Button saveButton = view.findViewById(R.id.save_text_view);
         Button cancelButton = view.findViewById(R.id.cancel_text_view);
         Button removeProfilePicButton = view.findViewById(R.id.remove_profile_pic_button);
+
         CircleImageView profilePictureView = view.findViewById(R.id.edit_profile_image);
         ImageView profilePictureEditButton = view.findViewById(R.id.edit_profile_picture_button);
 
         // Retrieves profile picture from db and sets it in view
         ImageDownloader downloader = new ImageDownloader();
         downloader.getProfilePicBitmap(user, profilePictureView);
+
+        final String[] imageUrl = {"profiles/" + user.getDeviceID()};
 
         // Fields may be "" or null, therefore only change text if exists
         if (!TextUtils.isEmpty(user.getFirstName()))
@@ -131,8 +136,6 @@ public class EditProfileFragment extends Fragment {
                 imageIntent.setType("image/*");
                 customActivityResultLauncher.launch(imageIntent);
             }});
-        // Only revert change to defaultProfiles/ path if user chooses to remove profile picture
-        final String[] imageUrl = {"profiles/" + user.getDeviceID()};
         removeProfilePicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,8 +178,6 @@ public class EditProfileFragment extends Fragment {
                     user.setPhoneNumber(newPhone);
                     user.setHomepage(newHomepage);
 
-                    // I believe this is where profile pictures are stored?
-
                     StorageReference selectionRef = fireRef.child(imageUrl[0]);
 
                     HashMap<String, Object> data = new HashMap<>();
@@ -201,6 +202,7 @@ public class EditProfileFragment extends Fragment {
 
                             // Uploads new profile picture, if it was changed
                             if (pictureChanged == 1) {
+                                user.setProfilePicture(imageUrl[0]);
                                 selectionRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
