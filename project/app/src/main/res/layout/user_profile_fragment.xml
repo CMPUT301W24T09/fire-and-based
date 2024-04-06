@@ -9,7 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="240dp"
         android:background="?attr/colorPrimary">
 
         <TextView
@@ -65,11 +65,31 @@
 
         <Button
             android:id="@+id/remove_profile_button"
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="40dp"
-            android:text="Edit"
+            android:text="Remove"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginBottom="5dp"
+            android:text="Times checked in: "
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/baseline_delete_circle_outline"
+            tools:layout_editor_absoluteX="229dp"
+            tools:layout_editor_absoluteY="140dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
