@@ -275,7 +275,7 @@ public class Event implements Parcelable {
      *
      * @return The banner image of the event.
      */
-    String getEventBanner() {
+    public String getEventBanner() {
         return this.eventBanner;
     }
 
@@ -284,17 +284,17 @@ public class Event implements Parcelable {
      *
      * @return The QR code of the event.
      */
-    String getQRcode() {
+    public String getQRcode() {
         return this.QRcode;
     }
 
     /**
      * Updates the event banner with the specified banner.
      *
-     * @param banner The new banner image for the event.
+     * @param eventBanner The new banner image for the event.
      */
-    void setEventBanner(String banner) {
-        this.eventBanner = banner;
+    public void setEventBanner(String eventBanner) {
+        this.eventBanner = eventBanner;
     }
 
     /**

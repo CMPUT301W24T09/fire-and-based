@@ -29,6 +29,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -64,15 +65,21 @@ import java.util.Random;
  * 4. Need to allow creation of event without making a poster
  */
 public class CreateEventFragment extends Fragment {
-    private User user;
+    public User user;
     public Date newEventDate;
 
-    private String QRCode = null;
+    public String QRCode = null;
+    public String PosterQRCode = null;
+    public String imageUrl = null;
+
     public String timeString;
     public String dateString;
+    public Long maxAttendeeLong;
 
-   // private ImageView previewBanner;
-    private Uri imageUri;
+
+    // private ImageView previewBanner;
+    public Uri imageUri;
+
     Context context = getContext();
 
     StorageReference fireRef = FirebaseStorage.getInstance().getReference();
@@ -120,7 +127,7 @@ public class CreateEventFragment extends Fragment {
         EditText eventTime = view.findViewById(R.id.event_time_editable); // Initialize it as per your actual layout component
         EditText eventLocation = view.findViewById(R.id.event_location_editable);
         EditText eventMaxAttendees = view.findViewById(R.id.event_maximum_attendees_editable);
-
+        EditText eventDateEnd = view.findViewById(R.id.event_date_editable_end);
 
         // set textfield to the current date ( for making things more obvious and easier for them to click )
         final Calendar c = Calendar.getInstance();
@@ -145,6 +152,24 @@ public class CreateEventFragment extends Fragment {
                         (view, year, monthOfYear, dayOfMonth) -> {
                             dateString = String.format(dayOfMonth + " " + (monthOfYear + 1) + " " + year);
                             eventDate.setText(dayOfMonth + " " + (monthOfYear + 1) + " " + year);
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+            }
+        });
+
+        eventDateEnd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar c = Calendar.getInstance();
+                int mYear = c.get(Calendar.YEAR); // current year
+                int mMonth = c.get(Calendar.MONTH); // current month
+                int mDay = c.get(Calendar.DAY_OF_MONTH); // current day
+
+                // Date Picker Dialog
+                DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
+                        (view, year, monthOfYear, dayOfMonth) -> {
+                            dateString = String.format(dayOfMonth + " " + (monthOfYear + 1) + " " + year);
+                            eventDateEnd.setText(dayOfMonth + " " + (monthOfYear + 1) + " " + year);
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
             }
@@ -181,27 +206,28 @@ public class CreateEventFragment extends Fragment {
 
 
         //TODO The QR Code viewer class got deleted, up to you if/how you want to display it
-//        previewQRImage = findViewById(R.id.create_event_preview_qr_image);
-//        previewQRImage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (QRCode != null){
-//                    displayQR(QRCode, eventName.getText().toString());
-//                } else {
-//                    toast("ERROR: QR Code not set");
-//                }
-//            }
-//        });
+        Button previewQRImage = view.findViewById(R.id.view_qr_code);
+        previewQRImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (QRCode != null && PosterQRCode != null){
+                    displayQR(QRCode, PosterQRCode, eventName.getText().toString());
+                } else {
+                    toast("ERROR: QR Code not set");
+                }
+            }
+        });
 
         Button generateQRButton = view.findViewById(R.id.generateQR);
         generateQRButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v) {
-                QRCodeGenerator.getValidString();
+                QRCode = QRCodeGenerator.getValidString();
+                PosterQRCode = QRCodeGenerator.getValidString();
                 //TODO add a thing that previews the QR Code string? at least for debug?
                 Toast.makeText(requireContext(), "Random QR Code Successfully Generated", Toast.LENGTH_SHORT).show();
-
+                displayQR(QRCode, PosterQRCode, eventName.getText().toString());
                 //showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
             }
         });
@@ -215,7 +241,7 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
-        ImageView imageButton = view.findViewById(R.id.add_banner_button);
+        Button imageButton = view.findViewById(R.id.add_banner_button);
         ImageView previewBanner = view.findViewById(R.id.roundedImageView);
 
 
@@ -246,12 +272,12 @@ public class CreateEventFragment extends Fragment {
                         //EVENT BANNERS SHOULD BE 640 x 480 pixels MINIMUM
                         int imageRatio = imageHeight * 4; // Width should be height x 4
 
-                        if(imageWidth < imageRatio)
-                        {
-                            Toast.makeText(requireContext(), "Banners are 4:1. Try another image", Toast.LENGTH_LONG).show();
-                            imageUri = null;
-                            //previewBanner.setImageURI(null);
-                            previewBanner.setImageResource(android.R.color.white);}
+//                        if(imageWidth < imageRatio)
+//                        {
+//                            Toast.makeText(requireContext(), "Banners are 4:1. Try another image", Toast.LENGTH_LONG).show();
+//                            imageUri = null;
+//                            //previewBanner.setImageURI(null);
+//                            previewBanner.setImageResource(android.R.color.white);}
                     }
                 }
                 catch(Exception e)
@@ -276,6 +302,7 @@ public class CreateEventFragment extends Fragment {
             String eventNameString = eventName.getText().toString();
             String eventDescriptionString = eventDescription.getText().toString();
             String eventDateString = eventDate.getText().toString();
+            String eventDateEndString = eventDateEnd.getText().toString();
             String eventTimeString = eventTime.getText().toString();
             String eventLocationString = eventLocation.getText().toString();
             String eventMaxAttendeesString = eventMaxAttendees.getText().toString();
@@ -287,57 +314,67 @@ public class CreateEventFragment extends Fragment {
                 Toast.makeText(requireContext(), "Desciption not long enough", Toast.LENGTH_SHORT).show();
             } else if (eventDateString.length() < 1) {
                 Toast.makeText(requireContext(), "You need an event Date", Toast.LENGTH_SHORT).show();
+            } else if (eventDateEndString.length() < 1) {
+                Toast.makeText(requireContext(), "You need an event Date", Toast.LENGTH_SHORT).show();
             } else if (eventTimeString.length() < 1) {
                 Toast.makeText(requireContext(), "You need an event time", Toast.LENGTH_SHORT).show();
             } else if (eventLocationString.length() < 5) {
                 Toast.makeText(requireContext(), "Your event needs a location", Toast.LENGTH_SHORT).show();
-            } else if (eventMaxAttendeesString.length() < 1) {
-                Toast.makeText(requireContext(), "Set the maximum number of attendees", Toast.LENGTH_SHORT).show();
+
             } else if (QRCode == null) {
                 //TODO change above to toast function as well for readability?
                 toast("You must generate or scan a QR Code");
                 // add handling for qr code and banner as well
                 // add more handling here if needed
-            } else if (imageUri == null){
-                Toast.makeText(context, "Please Upload an Image", Toast.LENGTH_SHORT).show();
             } else {
+
 
                 // convert the date to time since 1970 jan 1 to store in the database
                 String combinedDateTime = dateString + " " + timeString;
                 SimpleDateFormat sdf = new SimpleDateFormat("dd M yyyy HH:mm");  // this is used for just how the string is formatted we could change this easily if we need to
 
+                String endDateTime = eventDateEndString + " " + "12:00";
+
                 try {
+
                     // Parse the string into a Date object
                     Date date = sdf.parse(combinedDateTime);
                     long timeSince1970 = date.getTime();  // this is the time we store n the database -> put in the event object when its created
-                    long maxAttendeeLong = Long.parseLong(eventMaxAttendeesString);
 
-                    String imageUrl = null;
+                    Date endDate = sdf.parse(endDateTime);
+                    long endTimeSince1970 = date.getTime();
 
-                    if (!(imageUri == null))
-                    {
-                        imageUrl = "events/" + QRCode;
-                        //IMAGE UPLOAD TO FIREBASE
-                        StorageReference selectionRef = fireRef.child(imageUrl);
-                        selectionRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Toast.makeText(requireContext(), "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(requireContext(), "Image Upload Error", Toast.LENGTH_LONG).show();
-                            }
-                        });
+                    if (eventMaxAttendeesString.length() > 0) {
+                        maxAttendeeLong = Long.parseLong(eventMaxAttendeesString);
+                    } else {
+                        maxAttendeeLong = (long) -1;
                     }
 
 
-                    // EVENT CREATION GOES HERE
-                    // we can create the event object
-                    Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, timeSince1970, eventLocationString, imageUrl, null, maxAttendeeLong, false);
+                    if (!(imageUri == null)) {
+                        imageUrl = "events/" + QRCode;
+                        //IMAGE UPLOAD TO FIREBASE
+                        StorageReference selectionRef = fireRef.child(imageUrl);
+                        Toast.makeText(getContext(), "MADE IT TO HERE ", Toast.LENGTH_SHORT).show();
+                        selectionRef.putFile(imageUri);
+
+                        // this was causing the app to crash when uploading images
+//                        selectionRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                            @Override
+//                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                                Toast.makeText(requireContext(), "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
+//                            }
+//                        }).addOnFailureListener(new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception e) {
+//                                Toast.makeText(requireContext(), "Image Upload Error", Toast.LENGTH_LONG).show();
+//                            }
+//                        });
+                    }
+
+//                    imageUrl = "TESTING IMAGE URL";
+                    Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, endTimeSince1970, eventLocationString, PosterQRCode, null, maxAttendeeLong, false);
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
-//                    toast("adding event to db  ) ");
 
                     FirebaseUtil.addEventToDB(db, newEvent, new FirebaseUtil.AddEventCallback() {
                         @Override
@@ -346,11 +383,11 @@ public class CreateEventFragment extends Fragment {
                             Log.println(Log.DEBUG, "EventCreation", "New event with id: " + QRCode + " added");
                             getParentFragmentManager().popBackStack();
 
-                                FirebaseUtil.addEventAndOrganizer(db, newEvent.getQRcode(), user.getDeviceID(), aVoid -> {
-                                    Log.d("Firebase Success", "User registered successfully");
-                                }, e -> {
-                                    Log.e("FirebaseError", "Error setting up organizer of event " + e.getMessage());
-                                });
+                            FirebaseUtil.addEventAndOrganizer(db, newEvent.getQRcode(), user.getDeviceID(), aVoid -> {
+                                Log.d("Firebase Success", "User registered successfully");
+                            }, e -> {
+                                Log.e("FirebaseError", "Error setting up organizer of event " + e.getMessage());
+                            });
 
                             //TODO exit out maybe?
                         }
@@ -367,27 +404,33 @@ public class CreateEventFragment extends Fragment {
                             Log.println(Log.ERROR, "EventCreation", e.toString());
                         }
                     });
-                                    //this.eventName = eventName;
-                                    //this.eventDescription = eventDescription;
-                                    //this.eventBanner = eventBanner;
-                                    //this.QRcode = QRcode;
 
 
-                                    // then pass to database
-                                    // user was passed into this activity it is a public User object named 'user'
-                                    // use that to write to database and properly store in user events
-                                    // also make sure that in the event the user is an organizer :salute:
+                    // EVENT CREATION GOES HERE
+                    // we can create the event object
 
 
-                                    Toast.makeText(requireContext(), Long.toString(timeSince1970), Toast.LENGTH_SHORT).show();
-                                } catch (ParseException e) {
-                                    // Handle the possibility that parsing fails
-                                    Toast.makeText(requireContext(), dateString + " " + timeString, Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    });
-                    return view;
+                    //this.eventName = eventName;
+                    //this.eventDescription = eventDescription;
+                    //this.eventBanner = eventBanner;
+                    //this.QRcode = QRcode;
+
+
+                    // then pass to database
+                    // user was passed into this activity it is a public User object named 'user'
+                    // use that to write to database and properly store in user events
+                    // also make sure that in the event the user is an organizer :salute:
+
+
+//                                    Toast.makeText(requireContext(), Long.toString(timeSince1970), Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    // Handle the possibility that parsing fails
+                    Toast.makeText(requireContext(), (CharSequence) e, Toast.LENGTH_SHORT).show();
+                }
+            }
+            }
+        });
+        return view;
     }
 
 
@@ -441,7 +484,9 @@ public class CreateEventFragment extends Fragment {
                 // TODO remove debug confirmation maybe
                 toast("Scanned: " + result.getContents());
                 QRCode = QRCodeGenerator.getValidChars(result.getContents());
+                PosterQRCode = QRCodeGenerator.getValidString();
                 //TODO again up to you if you want to display this
+                displayQR(QRCode, PosterQRCode, "");
                 //showQRString.setText(getString(R.string.qr_code_display).replace("%s", qrCode));
             }
         }
@@ -466,5 +511,16 @@ public class CreateEventFragment extends Fragment {
         bottomNavigationView.setVisibility(View.VISIBLE);
         super.onDestroyView();
     }
+
+    public void displayQR(String QRCode, String PosterQRCode, String eventName) {
+        QRCodeDisplayFragment fragment = new QRCodeDisplayFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("eventQR", QRCode);
+        bundle.putString("eventName", eventName);
+        bundle.putString("posterQR", PosterQRCode);
+        fragment.setArguments(bundle);
+        fragment.show(getParentFragmentManager(), "QRCodeDisplayFragment");
+    }
+
 
 }

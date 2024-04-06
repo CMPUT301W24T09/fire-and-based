@@ -1,6 +1,7 @@
 package com.example.fire_and_based;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ public class EditEventFragment extends Fragment {
     private Uri imageUri;
     private Boolean imageChanged = false;
     private ImageView previewBanner;
+    private String timeString;
     private ActivityResultLauncher<Intent> customActivityResultLauncher;
 
 
@@ -80,8 +82,12 @@ public class EditEventFragment extends Fragment {
         eventLocation.setText(event.getLocation());
         eventAttendeeAmount.setText(event.getMaxAttendees().toString());
 
+        final Calendar c = Calendar.getInstance();
+
+
         // gets the image view in the xml, uses image downloader to display banner given and even and field
         ImageView eventBannerImage = view.findViewById(R.id.eventEditImage);
+        String eventsBannerURL = event.getBannerQR();
         ImageDownloader ImageDownloader = new ImageDownloader();
         ImageDownloader.getBannerBitmap(event, eventBannerImage);
 
@@ -115,6 +121,24 @@ public class EditEventFragment extends Fragment {
 
                     }
                 });
+            }
+        });
+
+
+        eventStartTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int mHour = c.get(Calendar.HOUR_OF_DAY); // current hour
+                int mMinute = c.get(Calendar.MINUTE); // current minute
+
+                // Time Picker Dialog
+                TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(),
+                        (view, hourOfDay, minute) -> {
+                            String formattedTime = String.format("%02d:%02d", hourOfDay, minute);
+                            timeString = formattedTime;
+                            eventStartTime.setText(formattedTime);
+                        }, mHour, mMinute, false); // 'false' for 12-hour clock or 'true' for 24-hour clock
+                timePickerDialog.show();
             }
         });
         // onclick for the event date that opens a calendar ui for them to select a date idk how to function this tbh and idc XD
@@ -306,7 +330,6 @@ public class EditEventFragment extends Fragment {
         } else if (eventStartTimeString == "" || eventStartTimeString == null) { return false;
         } else if (eventEndDateString == "" || eventEndDateString == null){ return false;
         } else if (eventLocationString == "" || eventLocationString == null) { return false;
-        } else if (eventMaxAttendeeAmountString == "" || eventMaxAttendeeAmountString == null){return false;
         } else { return true;}
     }
 
