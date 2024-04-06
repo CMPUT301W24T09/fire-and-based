@@ -3,6 +3,7 @@ package com.example.fire_and_based;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+import android.util.ArrayMap;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -18,6 +19,7 @@ import com.google.type.LatLng;
 
 import java.util.ArrayList;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -300,51 +302,66 @@ public class FirebaseUtil {
 
         // Start a new transaction
         db.runTransaction((Transaction.Function<Void>) transaction -> {
-                    DocumentSnapshot eventSnapshot = transaction.get(db.collection(EVENTS_COLLECTION).document(docID));
+            DocumentSnapshot eventSnapshot = transaction.get(db.collection(EVENTS_COLLECTION).document(docID));
 
-                    // Get the properties of the event's entry
-                    Map<String, String> checkedInUsers = new HashMap<>((Map) eventSnapshot.get("checkedInUsers"));
-                    List<String> organizers = new ArrayList<>((Collection) eventSnapshot.get("organizers"));
-                    List<String> attendees = new ArrayList<>((Collection) eventSnapshot.get("attendees"));
+            // Get the properties of the event's entry
+            Map<String, String> checkedInUsers = (Map) eventSnapshot.get("checkedInUsers");
+            if (checkedInUsers == null) checkedInUsers = new HashMap<>();
 
-                    // For each user in "checkedInUsers", "organizers", and "attendees", remove the entry from their events
-                    Stream.of(checkedInUsers.keySet(), organizers, attendees)
-                            .flatMap(Collection::stream)
-                            .distinct()
-                            .forEach(userID -> {
-                                DocumentReference userRef = db.collection(USERS_COLLECTION).document(userID);
-                                DocumentSnapshot userSnapshot = null;
-                                try {
-                                    userSnapshot = transaction.get(userRef);
-                                } catch (FirebaseFirestoreException e) {
-                                    failureListener.onFailure(e);
-                                }
+            List<String> organizers = new ArrayList<>((Collection) eventSnapshot.get("organizers"));
 
-                                if (checkedInUsers.containsKey(userID)) {
-                                    Map<String, Long> checkedInEvents = new HashMap<>((Map) userSnapshot.get("checkedInEvents"));
-                                    checkedInEvents.remove(docID);
-                                    transaction.update(userRef, "checkedInEvents", checkedInEvents);
-                                }
+            List<String> attendees = (ArrayList) eventSnapshot.get("attendees");
+            if (attendees == null) attendees = new ArrayList<>();
 
-                                if (organizers.contains(userID)) {
-                                    List<String> organizerEvents = new ArrayList<>((Collection) userSnapshot.get("organizerEvents"));
-                                    organizerEvents.remove(docID);
-                                    transaction.update(userRef, "organizerEvents", organizerEvents);
-                                }
+            // Prepare a map to hold user data
+            Map<String, DocumentSnapshot> userData = new HashMap<>();
 
-                                if (attendees.contains(userID)) {
-                                    List<String> attendeeEvents = new ArrayList<>((Collection) userSnapshot.get("attendeeEvents"));
-                                    attendeeEvents.remove(docID);
-                                    transaction.update(userRef, "attendeeEvents", attendeeEvents);
-                                }
-                            });
+            // Read all user data at once
+            Stream.of(checkedInUsers.keySet(), organizers, attendees)
+                    .flatMap(Collection::stream)
+                    .distinct()
+                    .forEach(userID -> {
+                        DocumentReference userRef = db.collection(USERS_COLLECTION).document(userID);
+                        DocumentSnapshot userSnapshot = null;
+                        try {
+                            userSnapshot = transaction.get(userRef);
+                        } catch (FirebaseFirestoreException e) {
+                            failureListener.onFailure(e);
+                        }
+                        userData.put(userID, userSnapshot);
+                    });
 
-                    // Delete the event
-                    transaction.delete(db.collection(EVENTS_COLLECTION).document(docID));
+            // Now perform all updates
+                    Map<String, String> finalCheckedInUsers = checkedInUsers;
+                    List<String> finalAttendees = attendees;
+                    userData.forEach((userID, userSnapshot) -> {
+                DocumentReference userRef = db.collection(USERS_COLLECTION).document(userID);
 
-                    return null;
-                }).addOnSuccessListener(successListener)
-                .addOnFailureListener(failureListener);
+                if (finalCheckedInUsers.containsKey(userID)) {
+                    Map<String, Long> checkedInEvents = new HashMap<>((Map) userSnapshot.get("checkedInEvents"));
+                    checkedInEvents.remove(docID);
+                    transaction.update(userRef, "checkedInEvents", checkedInEvents);
+                }
+
+                if (organizers.contains(userID)) {
+                    List<String> organizerEvents = new ArrayList<>((Collection) userSnapshot.get("organizerEvents"));
+                    organizerEvents.remove(docID);
+                    transaction.update(userRef, "organizerEvents", organizerEvents);
+                }
+
+                if (finalAttendees.contains(userID)) {
+                    List<String> attendeeEvents = new ArrayList<>((Collection) userSnapshot.get("attendeeEvents"));
+                    attendeeEvents.remove(docID);
+                    transaction.update(userRef, "attendeeEvents", attendeeEvents);
+                }
+            });
+
+            // Delete the event
+            transaction.delete(db.collection(EVENTS_COLLECTION).document(docID));
+
+            return null; // Add this line to avoid any runtime exception related to the return type.
+        }).addOnSuccessListener(successListener)
+        .addOnFailureListener(failureListener);
     }
 
     /**
@@ -359,16 +376,25 @@ public class FirebaseUtil {
     public static void deleteUser(FirebaseFirestore db, User user, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
         String docID = cleanDocumentId(user.getDeviceID());
 
+        // Prepare a list to hold events that need to be deleted
+        List<String> eventsToDelete = new ArrayList<>();
+
         // Start a new transaction
         db.runTransaction((Transaction.Function<Void>) transaction -> {
                     DocumentSnapshot userSnapshot = transaction.get(db.collection(USERS_COLLECTION).document(docID));
 
                     // Get the properties of the user's entry
-                    Map<String, Long> checkedInEvents = new HashMap<>((Map) userSnapshot.get("checkedInEvents"));
-                    List<String> organizerEvents = new ArrayList<>((Collection) userSnapshot.get("organizerEvents"));
-                    List<String> attendeeEvents = new ArrayList<>((Collection) userSnapshot.get("attendeeEvents"));
+                    Map<String, Long> checkedInEvents = (Map) userSnapshot.get("checkedInEvents");
+                    if (checkedInEvents == null) checkedInEvents = new HashMap<>();
+                    ArrayList<String> organizerEvents = (ArrayList<String>) userSnapshot.get("organizerEvents");
+                    if (organizerEvents == null) organizerEvents = new ArrayList<>();
+                    ArrayList<String> attendeeEvents = (ArrayList<String>) userSnapshot.get("attendeeEvents");
+                    if (attendeeEvents == null) attendeeEvents = new ArrayList<>();
 
-                    // For each event in "checkedInEvents", "organizerEvents", and "attendeeEvents", remove the user from their users
+                    // Prepare a map to hold event data
+                    Map<String, DocumentSnapshot> eventData = new HashMap<>();
+
+                    // Read all event data at once
                     Stream.of(checkedInEvents.keySet(), organizerEvents, attendeeEvents)
                             .flatMap(Collection::stream)
                             .distinct()
@@ -380,38 +406,54 @@ public class FirebaseUtil {
                                 } catch (FirebaseFirestoreException e) {
                                     failureListener.onFailure(e);
                                 }
-
-                                if (checkedInEvents.containsKey(eventID)) {
-                                    Map<String, String> checkedInUsers = new HashMap<>((Map) eventSnapshot.get("checkedInUsers"));
-                                    checkedInUsers.remove(docID);
-                                    transaction.update(eventRef, "checkedInUsers", checkedInUsers);
-                                }
-
-                                if (organizerEvents.contains(eventID)) {
-                                    List<String> organizers = new ArrayList<>((Collection) eventSnapshot.get("organizers"));
-                                    organizers.remove(docID);
-                                    transaction.update(eventRef, "organizers", organizers);
-
-                                    // If the "organizers" list is left blank, delete the event
-                                    if (organizers.isEmpty()) {
-                                        deleteEvent(db, eventID, successListener, failureListener);
-                                    }
-                                }
-
-                                if (attendeeEvents.contains(eventID)) {
-                                    List<String> attendees = new ArrayList<>((Collection) eventSnapshot.get("attendees"));
-                                    attendees.remove(docID);
-                                    transaction.update(eventRef, "attendees", attendees);
-                                }
+                                eventData.put(eventID, eventSnapshot);
                             });
+
+                    // Now perform all updates
+                    Map<String, Long> finalCheckedInEvents = checkedInEvents;
+                    ArrayList<String> finalOrganizerEvents = organizerEvents;
+                    ArrayList<String> finalAttendeeEvents = attendeeEvents;
+                    eventData.forEach((eventID, eventSnapshot) -> {
+                        DocumentReference eventRef = db.collection(EVENTS_COLLECTION).document(eventID);
+
+                        if (finalCheckedInEvents.containsKey(eventID)) {
+                            Map<String, String> checkedInUsers = new HashMap<>((Map) eventSnapshot.get("checkedInUsers"));
+                            checkedInUsers.remove(docID);
+                            transaction.update(eventRef, "checkedInUsers", checkedInUsers);
+                        }
+
+                        if (finalOrganizerEvents.contains(eventID)) {
+                            List<String> organizers = new ArrayList<>((Collection) eventSnapshot.get("organizers"));
+                            organizers.remove(docID);
+                            transaction.update(eventRef, "organizers", organizers);
+
+                            // If the "organizers" list is left blank, add the event to the delete list
+                            if (organizers.isEmpty()) {
+                                eventsToDelete.add(eventID);
+                            }
+                        }
+
+                        if (finalAttendeeEvents.contains(eventID)) {
+                            List<String> attendees = new ArrayList<>((Collection) eventSnapshot.get("attendeeEvents"));
+                            attendees.remove(docID);
+                            transaction.update(eventRef, "attendees", attendees);
+                        }
+                    });
 
                     // Delete the user
                     transaction.delete(db.collection(USERS_COLLECTION).document(docID));
 
-                    return null;
-                }).addOnSuccessListener(successListener)
+                    return null; // Add this line to avoid any runtime exception related to the return type.
+                }).addOnSuccessListener(aVoid -> {
+                    // After the transaction, delete the events
+                    Log.d("Deleting User", "Deleting events: " + Arrays.toString(eventsToDelete.toArray()));
+                    for (String eventID : eventsToDelete) {
+                        deleteEvent(db, eventID, successListener, failureListener);
+                    }
+                })
                 .addOnFailureListener(failureListener);
     }
+
 
 
     /**
