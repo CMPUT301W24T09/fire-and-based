@@ -391,10 +391,21 @@ public class CreateEventFragment extends Fragment {
                         public void onEventAdded() {
                             toast("Event successfully added!");
                             Log.println(Log.DEBUG, "EventCreation", "New event with id: " + QRCode + " added");
-                            getParentFragmentManager().popBackStack();
 
                             FirebaseUtil.addEventAndOrganizer(db, newEvent.getQRcode(), user.getDeviceID(), aVoid -> {
-                                Log.d("Firebase Success", "User registered successfully");
+                                Log.d("Firebase Success", "User is organizer of event now");
+                                getParentFragmentManager().popBackStack();
+                                EventDetailsFragment fragment = new EventDetailsFragment();
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable("user", user);
+                                bundle.putParcelable("event", newEvent);
+                                bundle.putString("mode", "Organizing");
+                                fragment.setArguments(bundle);
+                                getParentFragmentManager().beginTransaction()
+                                        .replace(R.id.fragment_container_view, fragment)
+                                        .setReorderingAllowed(true)
+                                        .addToBackStack(null)
+                                        .commit();
                             }, e -> {
                                 Log.e("FirebaseError", "Error setting up organizer of event " + e.getMessage());
                             });

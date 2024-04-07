@@ -208,6 +208,46 @@ public class FirebaseUtil {
         });
     }
 
+    /**
+     * Asynchronously checks the user's involvement in the specified event.
+     *
+     * @param db                the database reference
+     * @param userID            the ID of the user
+     * @param eventID           the ID of the event to check the user's involvement
+     * @param successListener   listener to be called upon successful determination of user's involvement
+     *                          It receives a string indicating the user's involvement ("Attending", "Organizing", or "Browse")
+     * @param failureListener   listener to be called upon failure in determining user's involvement
+     *                          It receives an exception indicating the failure reason
+     */
+    public static void getUserInvolvementInEvent(FirebaseFirestore db, String userID, String eventID,
+                                                 OnSuccessListener<String> successListener,
+                                                 OnFailureListener failureListener) {
+        // Retrieve user document
+        db.collection("users").document(userID).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                // Get the user's attendingEvents and organizingEvents arrays
+                List<String> attendingEvents = (List<String>) documentSnapshot.get("attendeeEvents");
+                List<String> organizingEvents = (List<String>) documentSnapshot.get("organizerEvents");
+
+                // Check if the user is attending the event
+                if (attendingEvents != null && attendingEvents.contains(eventID)) {
+                    successListener.onSuccess("Attending");
+                }
+                // Check if the user is organizing the event
+                else if (organizingEvents != null && organizingEvents.contains(eventID)) {
+                    successListener.onSuccess("Organizing");
+                } else {
+                    successListener.onSuccess("Browse");
+                }
+            } else {
+                // Invoke the success listener with "Browse" if user document not found
+                successListener.onSuccess("Browse");
+            }
+        }).addOnFailureListener(e -> {
+            // Invoke the failure listener on failure
+            failureListener.onFailure(e);
+        });
+    }
 
 
     /**
@@ -405,6 +445,54 @@ public class FirebaseUtil {
         }).addOnFailureListener(failureListener);
     }
 
+    /**
+     * Asynchronously retrieves an event based on the provided poster QR code.
+     *
+     * @param db               the database reference
+     * @param QRCode           the poster QR code to search for
+     * @param successListener  listener to be called upon successful retrieval of the event
+     *                         It receives the event object
+     * @param failureListener  listener to be called upon failure in retrieving the event
+     *                         It receives an exception indicating the failure reason
+     */
+    public static void getEventByPosterQR(FirebaseFirestore db, String QRCode, OnSuccessListener<Event> successListener, OnFailureListener failureListener) {
+        db.collection("events")
+                .whereEqualTo("bannerQR", QRCode)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    // Check if any matching event is found
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        // Retrieve the first matching event
+                        QueryDocumentSnapshot documentSnapshot = (QueryDocumentSnapshot) queryDocumentSnapshots.getDocuments().get(0);
+
+                        // Extract event details
+                        String eventName = documentSnapshot.getString("eventName");
+                        String eventDescription = documentSnapshot.getString("eventDescription");
+                        String eventBanner = documentSnapshot.getString("eventBanner");
+                        String eventId = documentSnapshot.getId();
+                        long eventStart = documentSnapshot.getLong("eventStart");
+                        long eventEnd = documentSnapshot.getLong("eventEnd");
+                        String location = documentSnapshot.getString("location");
+                        String bannerQR = documentSnapshot.getString("bannerQR");
+                        ArrayList<Integer> milestones = (ArrayList<Integer>) documentSnapshot.get("milestones");
+                        Long maxAttendees = documentSnapshot.getLong("maxAttendees");
+                        boolean trackLocation = documentSnapshot.getBoolean("trackLocation");
+
+                        // Create Event object
+                        Event event = new Event(eventName, eventDescription, eventBanner, eventId, eventStart, eventEnd,
+                                location, bannerQR, milestones, maxAttendees, trackLocation);
+
+                        // Invoke the success listener with the event object
+                        successListener.onSuccess(event);
+                    } else {
+                        // If no matching event found, invoke the success listener with null
+                        failureListener.onFailure(new Exception("Event document not found"));
+                    }
+                })
+                .addOnFailureListener(failureListener);
+    }
+
+
 
     /**
      * Asynchronously get list of Events a user is attending
@@ -448,6 +536,7 @@ public class FirebaseUtil {
             }
         }).addOnFailureListener(failureListener);
     }
+
 
     /**
      * Asynchronously get list of Events a user is organizing
@@ -537,8 +626,6 @@ public class FirebaseUtil {
             }
         }).addOnFailureListener(failureListener);
     }
-
-
 
 
     /**

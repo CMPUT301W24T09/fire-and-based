@@ -1,5 +1,7 @@
 package com.example.fire_and_based;
 
+import static androidx.constraintlayout.motion.widget.Debug.getLocation;
+
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -67,15 +69,25 @@ public class EventListFragment extends Fragment {
                     String QRCode = QRCodeGenerator.getValidChars(result.getContents());
                     FirebaseUtil.getEvent(db, QRCode, event -> {
                         scannedEvent = event;
-                        getLocation();
-                        FirebaseUtil.addEventAndCheckedInUser(db, FirebaseUtil.cleanDocumentId(QRCode), user.getDeviceID(), aVoid -> {
-                            Toast.makeText(requireContext(), "Checked in!", Toast.LENGTH_LONG).show();
+                        FirebaseUtil.addEventAndCheckedInUser(db, event.getQRcode(), user.getDeviceID(), aVoid -> {
+                            Toast.makeText(getContext(), "Checked in", Toast.LENGTH_SHORT).show();
+                            getLocation();
                             executeFragmentTransaction(event, "Attending");
                         }, e -> {
-                            Toast.makeText(requireContext(), "Failed. Make sure you are registered.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "Failed to check in. Make sure you are registered", Toast.LENGTH_SHORT).show();
+                            FirebaseUtil.getUserInvolvementInEvent(db, user.getDeviceID(), event.getQRcode(), mode -> {
+                                Log.d("HELLOOOOO", mode);
+                                executeFragmentTransaction(event, mode);
+                            }, exception -> {});
                         });
                     }, e -> {
-                        Toast.makeText(getContext(), "Event does not exist", Toast.LENGTH_SHORT).show();
+                        FirebaseUtil.getEventByPosterQR(db, QRCode, event -> {
+                            FirebaseUtil.getUserInvolvementInEvent(db, user.getDeviceID(), event.getQRcode(), mode -> {
+                                executeFragmentTransaction(event, mode);
+                            }, exception -> {});
+                        }, exception -> {
+                            Toast.makeText(getContext(), "Unknown QR code", Toast.LENGTH_SHORT).show();
+                        });
                     });
                 }
             }
