@@ -533,6 +533,7 @@ public class FirebaseUtil {
         map.put("eventStart", event.getEventStart());
         map.put("location", event.getLocation());
         map.put("maxAttendees", event.getMaxAttendees());
+        map.put("trackLocation", event.isTrackLocation());
 
         // Add other fields as necessary...
         return map;
