@@ -51,6 +51,9 @@ dependencies {
     //Firebase
     //Core dependency
     implementation(platform("com.google.firebase:firebase-bom:32.7.3"))
+    implementation("androidx.core:core:1.7.0")
+
+
     //Firestore (NoSQL Database, stores users and events data)
     implementation("com.google.firebase:firebase-firestore")
     //Storage stores image assets

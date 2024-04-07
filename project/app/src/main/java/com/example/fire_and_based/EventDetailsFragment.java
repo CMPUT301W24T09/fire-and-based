@@ -82,6 +82,9 @@ public class EventDetailsFragment extends Fragment {
         TextView eventTitle = view.findViewById(R.id.event_title);
         eventTitle.setText(event.getEventName());
 
+        TextView eventLocation = view.findViewById(R.id.locationText);
+        eventLocation.setText(event.getLocation());
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         /* we will add this when event banner gets fixed in xml

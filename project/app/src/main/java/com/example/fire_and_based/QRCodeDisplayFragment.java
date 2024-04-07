@@ -3,12 +3,14 @@ package com.example.fire_and_based;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -23,12 +25,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.zxing.WriterException;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -166,6 +171,48 @@ public class QRCodeDisplayFragment extends DialogFragment {
                 }
             }
         });
+
+
+        ImageView qrCodeImage = view.findViewById(R.id.qr_code_image_view);
+        MaterialButton shareImageButton = view.findViewById(R.id.share_qr_code_button);
+        shareImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // Assuming qrCodeImage is your ImageView from which you're getting the Bitmap
+                try {
+                    BitmapDrawable drawable = (BitmapDrawable) qrCodeImage.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    // Your existing code to save and share the bitmap...
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "Error sharing image", Toast.LENGTH_SHORT).show();
+                }
+
+                // Saving the Bitmap to cache directory
+                File cachePath = new File(getContext().getCacheDir(), "images");
+                cachePath.mkdirs();
+                File file = new File(cachePath, "image_to_share.png");
+                try (FileOutputStream stream = new FileOutputStream(file)) {
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                // Getting URI for the saved file using FileProvider
+                Uri photoURI = FileProvider.getUriForFile(getContext(), getContext().getApplicationContext().getPackageName() + ".provider", file);
+
+                if (photoURI != null) {
+                    Intent shareIntent = new Intent();
+                    shareIntent.setAction(Intent.ACTION_SEND);
+                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // Temporary permission for receiving app to read this file
+                    shareIntent.setType(getContext().getContentResolver().getType(photoURI)); // Correctly setting the type based on the URI
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, photoURI); // Using photoURI here
+                    startActivity(Intent.createChooser(shareIntent, "Choose an app"));
+                }
+            }
+        });
+
 
 
     }
