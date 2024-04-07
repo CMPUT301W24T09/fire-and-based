@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -921,6 +923,28 @@ public class FirebaseUtil {
                 .addOnFailureListener(failureListener);
     }
 
+    public static void removeUserFromEvent(FirebaseFirestore db, User user, Event event, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
+
+        Task<Void> removeEventFromUser = db.collection("users").document(user.getDeviceID())
+
+                .update("attendeeEvents", FieldValue.arrayRemove(event.getQRcode()));
+
+        Task<Void> removeUserFromEvent = db.collection("events").document(event.getQRcode())
+                .update("attendees", FieldValue.arrayRemove(user.getDeviceID()));
+
+
+        Map<String, Object> checkedInEventsUpdate = new HashMap<>();
+        checkedInEventsUpdate.put("checkedInEvents." + event.getQRcode(), 0); // Constructs a map with the key and sets its value to 0
+
+        Task<Void> updateCheckedInEventValue = db.collection("users").document(user.getDeviceID())
+                .update(checkedInEventsUpdate);
+
+        // Use Tasks.whenAll() to wait for all updates to complete
+        Task<Void> combinedTask = Tasks.whenAll(removeEventFromUser, removeUserFromEvent, updateCheckedInEventValue);
+
+        combinedTask.addOnSuccessListener(successListener)
+                .addOnFailureListener(failureListener);
+    }
 
 
 }

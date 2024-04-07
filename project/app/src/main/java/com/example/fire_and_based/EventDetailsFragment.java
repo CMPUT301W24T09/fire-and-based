@@ -17,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -108,7 +110,7 @@ public class EventDetailsFragment extends Fragment {
 
         //Button checkedInButton = view.findViewById(R.id.checked_in_button);
         checkedInButton = view.findViewById(R.id.checked_in_button);
-        checkedInButton.setText("");
+        checkedInButton.setText("Check In");
         Button editDetailsButton = view.findViewById(R.id.edit_details_button);
         Button attendeeListButton = view.findViewById(R.id.attendee_list_button);
 
