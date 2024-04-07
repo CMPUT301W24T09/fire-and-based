@@ -152,7 +152,6 @@ public class EditProfileFragment extends Fragment {
                     user.setHomepage(newHomepage);
 
                     // I believe this is where profile pictures are stored?
-                    // yes excelnt
                     String imageUrl = "profiles/" + user.getDeviceID();
                     StorageReference selectionRef = fireRef.child(imageUrl);
 
@@ -164,7 +163,6 @@ public class EditProfileFragment extends Fragment {
 
                             // Uploads new profile picture, if it was changed
                             if (pictureChanged) {
-                                user.setCustomPicUrl(imageUrl);
                                 selectionRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

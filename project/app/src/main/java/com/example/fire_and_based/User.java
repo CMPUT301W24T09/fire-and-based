@@ -22,8 +22,6 @@ public class User implements Parcelable {
     private String homepage;
     private Boolean admin = false;
 
-    private String defaultPicUrl;
-    private String customPicUrl;
     private String messageID;
 
     /**
@@ -41,7 +39,7 @@ public class User implements Parcelable {
      * @param admin           Whether or not the user is an admin of the app
      */
     User(String deviceID, String userName, String profilePicture, String firstName, String lastName,
-        String phoneNumber, String email, String homepage, Boolean admin, String defaultPicUrl, String customPicUrl, String messageID) {
+        String phoneNumber, String email, String homepage, Boolean admin, String messageID) {
         this.deviceID = deviceID;
         this.userName = userName;
         this.profilePicture = profilePicture;
@@ -51,8 +49,6 @@ public class User implements Parcelable {
         this.email = email;
         this.homepage = homepage;
         this.admin = admin;
-        this.defaultPicUrl = defaultPicUrl;
-        this.customPicUrl = customPicUrl;
         this.messageID = messageID;
 
     }
@@ -78,8 +74,6 @@ public class User implements Parcelable {
         phoneNumber = in.readString();
         email = in.readString();
         homepage = in.readString();
-        defaultPicUrl = in.readString();
-        customPicUrl = in.readString();
         admin = (in.readInt() == 1);
     }
 
@@ -101,8 +95,6 @@ public class User implements Parcelable {
         dest.writeString(email);
         dest.writeString(homepage);
         dest.writeInt(admin ? 1 : 0);  // write boolean as int
-        dest.writeString(defaultPicUrl);
-        dest.writeString(customPicUrl);
         dest.writeString(messageID);
     }
 
@@ -122,41 +114,6 @@ public class User implements Parcelable {
     };
 
     // GETTERS AND SETTERS
-
-    /**
-     * Gets the custom pic url of the user
-     *
-     * @return the custom url
-     */
-    public String getCustomPicUrl() {
-        return this.customPicUrl;
-    }
-    /**
-     * Sets custom pic url of user
-     *
-     * @param customPicUrl the url!?!!!
-     */
-    public void setCustomPicUrl(String customPicUrl) {this.customPicUrl = customPicUrl;}
-
-
-    /**
-     * Gets the default pic url of the user
-     *
-     * @return the default url
-     */
-    public String getDefaultPicUrl() {
-        return this.defaultPicUrl;
-    }
-    /**
-     * Sets default pic url of user
-     *
-     * @param defaultPicUrl url
-     */
-    public void setDefaultPicUrl(String defaultPicUrl) {this.defaultPicUrl = defaultPicUrl;}
-
-
-
-
 
     /**
      * Gets the device ID of the user.

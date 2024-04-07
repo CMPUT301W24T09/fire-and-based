@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             String token = task.getResult();
                             Log.d(TAG, "Token: " + token);
-                            currentUser = new User(finalUuid, "", "", "", "", "", "", "", false,"","", token);
+                            currentUser = new User(finalUuid, "", "", "", "", "", "", "", false, token);
                             FirebaseUtil.addUserToDB(db, currentUser,
                                     aVoid -> {
                                         addFieldstoUser(db, currentUser, new OnSuccessListener<Void>() {
@@ -209,11 +209,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Profile pictures referenced by device id
         String imageUrl = "profiles/" + uuid;
-
-        //SET BOTH IMAGE FIELDS
-        currentUser.setCustomPicUrl(imageUrl);
-        currentUser.setDefaultPicUrl(imageUrl);
-
         StorageReference selectionRef = fireRef.child(imageUrl);
         // Uploads profile image as URI
         selectionRef.putFile(profilePicUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
