@@ -19,6 +19,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 import org.junit.Before;
@@ -124,7 +125,9 @@ public class UserActivityTest {
      */
     @Test
     public void clickItemInListView() {
-        User user = new User("123");
+
+
+        User user = new User("testUser123");
         Intent startIntent = new Intent();
         startIntent.putExtra("user", user);
 
