@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/info_fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingStart="15dp"
@@ -10,54 +11,58 @@
     android:paddingBottom="15dp"
     >
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/scrollable_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/scrollable_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
+        <ScrollView
+            android:id="@+id/event_description_scroll"
+            android:layout_width="0dp"
+            android:layout_height="270dp"
+            android:maxHeight="250dp"
+            android:scrollbars="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/view_qr_code" >
 
             <TextView
                 android:id="@+id/event_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:text=""
+                android:textSize="20sp" />
+        </ScrollView>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/view_qr_code"
-                android:layout_width="wrap_content"
-                android:layout_height="45dp"
-                android:layout_marginTop="20dp"
-                android:backgroundTint="@color/figmaBlue"
-                android:fontFamily="@font/roboto"
-                app:cornerRadius="7dp"
-                android:text="View Event QR Codes"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/event_description" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/view_qr_code"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/figmaBlue"
+            android:fontFamily="@font/roboto"
+            android:text="View Event QR Codes"
+            app:cornerRadius="7dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/event_description_scroll" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/additional_actions_button"
-                android:layout_width="wrap_content"
-                android:layout_height="45dp"
-                android:layout_marginTop="20dp"
-                android:backgroundTint="@color/red"
-                android:fontFamily="@font/roboto"
-                android:text="Leave Event"
-                app:cornerRadius="7dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/view_qr_code"
-                app:layout_constraintTop_toBottomOf="@+id/event_description" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/additional_actions_button"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/red"
+            android:fontFamily="@font/roboto"
+            android:text="Leave Event"
+            app:cornerRadius="7dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/view_qr_code"
+            app:layout_constraintTop_toBottomOf="@+id/event_description_scroll" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

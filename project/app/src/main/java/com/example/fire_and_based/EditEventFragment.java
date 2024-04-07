@@ -125,7 +125,7 @@ public class EditEventFragment extends Fragment {
                 FragmentManager fragmentManager = getParentFragmentManager();
 
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
-                FirebaseUtil.deleteEvent(db, event, new OnSuccessListener<Void>() {
+                FirebaseUtil.deleteEvent(db, event.getQRcode(), new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
                         Toast.makeText(getContext(), "Event deleted from database :) ", Toast.LENGTH_SHORT).show();
