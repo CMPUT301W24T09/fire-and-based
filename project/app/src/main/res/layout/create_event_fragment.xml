@@ -50,6 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8sp"
                 android:background="?attr/colorPrimary"
+                android:fontFamily="@font/roboto_bold"
                 android:text="New Event"
                 android:textColor="@color/white"
                 android:textSize="27sp"
@@ -107,11 +108,12 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="518dp"
-            android:background="@drawable/background"
             android:paddingStart="18dp"
-            android:paddingEnd="18dp">
+            android:paddingEnd="18dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/background">
+
 
 
             <TextView
@@ -137,7 +139,6 @@
                 android:backgroundTint="@android:color/darker_gray"
                 android:ems="23"
                 android:fontFamily="@font/roboto"
-                android:hint="Event Name"
                 android:inputType="text"
                 android:textColor="@color/black"
                 android:textSize="14sp"
@@ -169,7 +170,6 @@
                 android:backgroundTint="@android:color/darker_gray"
                 android:ems="23"
                 android:fontFamily="@font/roboto"
-                android:hint="Event Description"
                 android:inputType="text"
                 android:textColor="@color/black"
                 android:textSize="14sp"
@@ -181,13 +181,14 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
 
-                android:id="@+id/event_dates_constrain"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:id="@+id/event_dates_constrain"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/event_description_editable">
+
 
 
                 <androidx.constraintlayout.widget.Guideline
@@ -229,7 +230,6 @@
                         android:ems="23"
                         android:focusable="false"
                         android:fontFamily="@font/roboto"
-                        android:hint="Start Date"
                         android:inputType="none"
                         android:textColor="@color/black"
                         android:textSize="14sp"
@@ -268,7 +268,6 @@
                         android:ems="23"
                         android:focusable="false"
                         android:fontFamily="@font/roboto"
-                        android:hint="End Date"
                         android:inputType="none"
                         android:textColor="@color/black"
                         android:textSize="14sp"
@@ -328,10 +327,7 @@
                         android:layout_height="wrap_content"
                         android:backgroundTint="@android:color/darker_gray"
                         android:ems="23"
-                        android:focusable="false"
                         android:fontFamily="@font/roboto"
-                        android:hint="Start Time"
-                        android:inputType="none"
                         android:textColor="@color/black"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -368,8 +364,6 @@
                         android:backgroundTint="@android:color/darker_gray"
                         android:ems="23"
                         android:focusable="false"
-                        android:fontFamily="@font/roboto"
-                        android:hint="End Time"
                         android:inputType="none"
                         android:textColor="@color/black"
                         android:textSize="14sp"
@@ -406,7 +400,6 @@
                 android:backgroundTint="@android:color/darker_gray"
                 android:ems="23"
                 android:fontFamily="@font/roboto"
-                android:hint="Event Location"
                 android:inputType="text"
                 android:textColor="@color/black"
                 android:textSize="14sp"
@@ -438,7 +431,6 @@
                 android:backgroundTint="@android:color/darker_gray"
                 android:ems="23"
                 android:fontFamily="@font/roboto"
-                android:hint="Event Max Attendee Amount"
                 android:inputType="number"
                 android:textColor="@color/black"
                 android:textSize="14sp"

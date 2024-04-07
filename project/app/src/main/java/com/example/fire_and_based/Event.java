@@ -14,7 +14,7 @@ import java.util.Calendar;
 /**
  * Represents an event.
  * This class implements Parcelable to allow event objects to be passed between activities.
- * @author Ilya, Tyler
+ * @author Ilya, Tyler, Carson
  */
 public class Event implements Parcelable {
     private String eventName;

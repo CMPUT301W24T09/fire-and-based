@@ -14,6 +14,11 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * announcement service
+ * @author Ilya
+ */
+
 public class AnnouncementService extends FirebaseMessagingService {
     private static final String CHANNEL_ID = "Announcement_Channel";
 

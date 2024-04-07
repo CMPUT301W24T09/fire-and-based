@@ -41,6 +41,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * fragment for editing an event
+ * @author Tyler
+ */
+
 public class EditEventFragment extends Fragment {
 
     private Event event;

@@ -22,6 +22,7 @@ public class AnnouncementArrayAdapter extends ArrayAdapter<Announcement> {
      *
      * @param context       The context (usually an Activity) in which the adapter is used
      * @param announcements The list of announcements to be displayed
+     * @author Sumayya
      */
     public AnnouncementArrayAdapter(Context context, ArrayList<Announcement> announcements) {
         super(context, 0, announcements);

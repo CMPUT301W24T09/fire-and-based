@@ -140,8 +140,8 @@
                 android:layout_width="54dp"
                 android:layout_height="35dp"
                 android:layout_below="@+id/cardView2"
-                android:layout_marginTop="47dp"
-                android:layout_marginEnd="48dp"
+                android:layout_marginTop="45dp"
+                android:layout_marginEnd="3dp"
                 android:layout_toStartOf="@+id/imageView5"
                 app:srcCompat="@drawable/fire_icon_free_png" />
 

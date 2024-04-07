@@ -31,6 +31,7 @@ public class AnnouncementUtil {
      * Can be used to send a message to a given user or all users subscribed to a topic
      * @param recipient a users device ID, or a topic prefixed with /topics/
      * @return whether or not the message was sent successfully
+     * @author Ilya
      */
     public static boolean sendToRecipient(Announcement announcement, String recipient){
         OkHttpClient client = new OkHttpClient();

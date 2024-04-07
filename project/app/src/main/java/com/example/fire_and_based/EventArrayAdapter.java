@@ -29,6 +29,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
      *
      * @param context The context (usually an Activity) in which the adapter is used
      * @param events  The list of events to be displayed
+     * @author Tyler, Aiden
      */
     public EventArrayAdapter(Context context, ArrayList<Event> events) {
         super(context, 0, events);

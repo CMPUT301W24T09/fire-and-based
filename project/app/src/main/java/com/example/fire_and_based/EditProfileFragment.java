@@ -41,6 +41,11 @@ import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+/**
+ * fragment for editing a profile page
+ * @author Carson
+ */
+
 
 public class EditProfileFragment extends Fragment {
     private User user;
