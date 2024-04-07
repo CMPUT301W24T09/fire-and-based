@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+        android:layout_width="409dp"
         android:layout_height="wrap_content">
 
         <ImageView
@@ -41,7 +41,8 @@
             android:id="@+id/dateText"
             android:layout_width="333dp"
             android:layout_height="31dp"
-            android:text="Date @ XPM"
+            android:layout_marginLeft="15dp"
+            android:text="Date @ Time"
             android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/calendar"
             app:layout_constraintTop_toBottomOf="@+id/event_title" />
@@ -51,6 +52,7 @@
             android:layout_width="28dp"
             android:layout_height="29dp"
             android:layout_alignParentStart="true"
+            android:layout_marginLeft="15dp"
             android:contentDescription="calendar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/event_title"
@@ -60,16 +62,18 @@
             android:id="@+id/locationText"
             android:layout_width="373dp"
             android:layout_height="27dp"
+            android:layout_marginLeft="15dp"
             android:text="Location"
             android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/point"
-            app:layout_constraintTop_toBottomOf="@+id/dateText"/>
+            app:layout_constraintTop_toBottomOf="@+id/dateText" />
 
         <ImageView
             android:id="@+id/point"
             android:layout_width="28dp"
             android:layout_height="29dp"
             android:layout_alignParentStart="true"
+            android:layout_marginLeft="15dp"
             android:layout_marginTop="2dp"
             android:contentDescription="point"
             app:layout_constraintStart_toStartOf="parent"
@@ -82,6 +86,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_bold"
             android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/banner_image" />
         <!--        <ImageView-->
@@ -94,27 +99,48 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
-        android:id="@+id/checked_in_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="?attr/colorPrimary"
-        android:text="Not checked In"
-        app:cornerRadius="10dp"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="409dp"
+        android:layout_height="109dp">
 
-    <Button
-        android:id="@+id/edit_details_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Edit Details"
-        app:cornerRadius="10dp"/>
+        <Button
+            android:id="@+id/checked_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="?attr/colorPrimary"
+            android:text="Not checked In"
+            app:cornerRadius="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.06"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/attendee_list_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Attendee List"
-        app:cornerRadius="10dp"/>
+        <Button
+            android:id="@+id/attendee_list_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="5dp"
+            android:text="Attendee List"
+            app:cornerRadius="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/edit_details_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit Details"
+            app:cornerRadius="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/attendee_list_button"
+            app:layout_constraintHorizontal_bias="0.114"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="5dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/event_details_tablayout"
