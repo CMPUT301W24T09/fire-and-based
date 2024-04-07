@@ -42,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8sp"
             android:background="?attr/colorPrimary"
+            android:fontFamily="@font/roboto_bold"
             android:text="Edit Profile"
             android:textColor="@color/white"
             android:textSize="27sp"
