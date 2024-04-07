@@ -10,13 +10,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="175dp"
-        android:background="?attr/colorPrimary">
+        android:background="?attr/colorPrimary"
+        android:layout_marginBottom="20dp">
 
         <TextView
             android:id="@+id/save_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14sp"
+            android:layout_marginTop="20sp"
             android:layout_marginEnd="20sp"
             android:fontFamily="@font/roboto"
             android:text="Save"
@@ -29,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20sp"
-            android:layout_marginTop="14sp"
+            android:layout_marginTop="20sp"
             android:fontFamily="@font/roboto"
             android:text="Cancel"
             android:textColor="@color/white"
@@ -40,12 +41,13 @@
             android:id="@+id/eventEditTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8sp"
             android:background="?attr/colorPrimary"
             android:fontFamily="@font/roboto_bold"
             android:text="Edit Profile"
             android:textColor="@color/white"
             android:textSize="27sp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -55,6 +57,8 @@
             android:layout_width="96dp"
             android:layout_height="96dp"
             app:civ_border_width="0dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
