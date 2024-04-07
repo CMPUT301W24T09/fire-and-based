@@ -548,13 +548,26 @@ public class FirebaseUtil {
      * @see User
      */
     public static void updateUser(FirebaseFirestore db, User user, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
+        Map<String, Object> userMap = userToMap(user);
         db.collection(USERS_COLLECTION).document(user.getDeviceID())
-                .set(user)
+                .update(userMap)
                 .addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);
     }
 
-    // get an event object from Firebase by QR Code
+
+    // map for the user to update the fields
+    private static Map<String, Object> userToMap(User user) {
+        Map<String, Object> map = new HashMap<>();
+        // Populate the map with fields from the event. Example:
+        // map.put("fieldName", event.getFieldValue());
+        map.put("userName", user.getUserName());
+        map.put("email", user.getEmail());
+        map.put("firstName", user.getFirstName());
+        map.put("lastName", user.getLastName());
+        map.put("homepage", user.getHomepage());
+        return map;
+    }
 
     /**
      * @param db       the database
