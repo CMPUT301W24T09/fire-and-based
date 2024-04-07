@@ -14,6 +14,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.android.material.textview.MaterialTextView;
 
 /**
  * This fragment is hosted by UserActivity.
@@ -39,8 +40,8 @@ public class AttendeeFragment extends Fragment {
         adapter = new AttendeeListAdapter(this, event);
         viewPager.setAdapter(adapter);
 
-        ImageView backArrow = view.findViewById(R.id.back_arrow_attendee_fragment);
-        backArrow.setOnClickListener(new View.OnClickListener() {
+        MaterialTextView backButton = view.findViewById(R.id.back_arrow_attendee_fragment);
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getParentFragmentManager().popBackStack();

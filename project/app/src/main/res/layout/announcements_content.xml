@@ -9,27 +9,27 @@
         android:id="@+id/notif_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="40dp"
         android:fontFamily="@font/roboto_bold"
         android:text="Username"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/notif_time"
-        app:layout_constraintHorizontal_bias="0.678"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/profile_picture"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/notif_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="176dp"
+        android:layout_width="59dp"
+        android:layout_height="29dp"
+        android:layout_marginEnd="216dp"
         android:text="time ago"
         android:textColor="#808080"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/notif_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.857" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/notif_description"
@@ -37,8 +37,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="description text"
+        android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.136"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/profile_picture"
         app:layout_constraintTop_toBottomOf="@+id/notif_user" />
 

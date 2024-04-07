@@ -17,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -28,6 +30,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.zxing.qrcode.encoder.QRCode;
 
 import java.util.Map;
 import java.util.Objects;
@@ -47,7 +50,7 @@ import java.util.Objects;
  * 1. Delay in displaying checked in status
  * 2. Make edit details button functional
  *
- * @author Sumayya
+ * @author Sumayya, Tyler
  */
 public class EventDetailsFragment extends Fragment {
     private User user;
@@ -79,6 +82,9 @@ public class EventDetailsFragment extends Fragment {
         TextView eventTitle = view.findViewById(R.id.event_title);
         eventTitle.setText(event.getEventName());
 
+        TextView eventLocation = view.findViewById(R.id.locationText);
+        eventLocation.setText(event.getLocation());
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         /* we will add this when event banner gets fixed in xml
@@ -107,6 +113,7 @@ public class EventDetailsFragment extends Fragment {
 
         //Button checkedInButton = view.findViewById(R.id.checked_in_button);
         checkedInButton = view.findViewById(R.id.checked_in_button);
+        checkedInButton.setText("Check In");
         Button editDetailsButton = view.findViewById(R.id.edit_details_button);
         Button attendeeListButton = view.findViewById(R.id.attendee_list_button);
 
@@ -116,7 +123,9 @@ public class EventDetailsFragment extends Fragment {
             FirebaseUtil.getUserCheckedInEvents(db, user.getDeviceID(), eventLongMap -> {
                 for (Map.Entry<Event, Long> entry: eventLongMap.entrySet()) {
                     if (Objects.equals(entry.getKey().getQRcode(), event.getQRcode())) {
-                        checkedInButton.setText("Checked in");
+                        Long numberTimesChecked = entry.getValue();
+                        int numberTimesCheckedAsInt = numberTimesChecked.intValue();
+                        checkedInButton.setText(numberTimesCheckedAsInt % 2 == 1 ? "Check Out" : "Check In");
                     }
                 }
             }, e -> {
@@ -169,7 +178,20 @@ public class EventDetailsFragment extends Fragment {
         checkedInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             getLocation();
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                FirebaseUtil.addEventAndCheckedInUser(db, event.getQRcode(), user.getDeviceID(), new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                getLocation();
+
+                            }
+                        }, new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.e("TAG", "Check in fail");
+                            }
+                        });
+
             }
         });
 
@@ -223,8 +245,9 @@ public class EventDetailsFragment extends Fragment {
             return;
         }
 
-        if (!checkedInButton.getText().toString().equals("Not checked In")){
-            Toast.makeText(getContext(), "You are already checked in for this event!", Toast.LENGTH_SHORT).show();
+        if (!checkedInButton.getText().toString().equals("Check In")){
+            checkedInButton.setText("Check In");
+//            Toast.makeText(getContext(), "You are already checked in for this event!", Toast.LENGTH_SHORT).show();
         } else {
 
 
@@ -243,8 +266,8 @@ public class EventDetailsFragment extends Fragment {
                             FirebaseUtil.sendCoordinatesToEvent(db, event, geoPoint, new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    Toast.makeText(getContext(), "It wrote to db u did it kid proud of u ", Toast.LENGTH_SHORT).show();
-                                    checkedInButton.setText("Checked In");
+                                    Toast.makeText(getContext(), "Successfully Checked In", Toast.LENGTH_SHORT).show();
+                                    checkedInButton.setText("Check Out");
                                 }
                             }, new OnFailureListener() {
                                 @Override

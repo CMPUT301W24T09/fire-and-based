@@ -24,6 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:fontFamily="@font/roboto_bold"
             android:text="TextView"
             android:textColor="#FDF9F9"
             android:textSize="20dp" />
@@ -56,29 +57,19 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:hint="Sort Events"
+            android:hint="Sort by"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:startIconDrawable="@drawable/baseline_filter_list_24">
+            app:layout_constraintTop_toTopOf="parent">
 
             <AutoCompleteTextView
-                android:id="@+id/listSorter"
-                android:layout_width="wrap_content"
+                android:id="@+id/sort_menu"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:inputType="none"
-                android:paddingStart="30dp"
-                android:paddingTop="4dp"
-                android:paddingEnd="30dp"
-                android:paddingBottom="8dp"
-                android:text=" "
-                android:textAlignment="viewStart" />
-
+                app:simpleItems="@array/sort_options" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

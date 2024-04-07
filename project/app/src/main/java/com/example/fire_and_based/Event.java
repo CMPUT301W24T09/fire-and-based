@@ -14,9 +14,9 @@ import java.util.Calendar;
 /**
  * Represents an event.
  * This class implements Parcelable to allow event objects to be passed between activities.
- * @author Ilya, Tyler
+ * @author Ilya, Tyler, Carson
  */
-public class Event implements Parcelable {
+public class Event implements Parcelable, Comparable <Event> {
     private String eventName;
     private String eventDescription;
     private String eventBanner;
@@ -296,7 +296,7 @@ public class Event implements Parcelable {
      *
      * @return The banner image of the event.
      */
-    String getEventBanner() {
+    public String getEventBanner() {
         return this.eventBanner;
     }
 
@@ -305,17 +305,17 @@ public class Event implements Parcelable {
      *
      * @return The QR code of the event.
      */
-    String getQRcode() {
+    public String getQRcode() {
         return this.QRcode;
     }
 
     /**
      * Updates the event banner with the specified banner.
      *
-     * @param banner The new banner image for the event.
+     * @param eventBanner The new banner image for the event.
      */
-    void setEventBanner(String banner) {
-        this.eventBanner = banner;
+    public void setEventBanner(String eventBanner) {
+        this.eventBanner = eventBanner;
     }
 
     /**
@@ -369,5 +369,10 @@ public class Event implements Parcelable {
             return (((Event) o).getQRcode().equals(this.getQRcode()));
         }
         return false;
+    }
+
+    @Override
+    public int compareTo(Event o) {
+        return this.getEventName().compareTo(o.getEventName());
     }
 }

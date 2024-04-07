@@ -19,7 +19,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -131,6 +133,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> implements Filterable
                 }
                 filterResults.values = filteredList;
                 filterResults.count = filteredList.size();
+
                 return filterResults;
             }
 
@@ -142,5 +145,12 @@ public class EventArrayAdapter extends ArrayAdapter<Event> implements Filterable
                 notifyDataSetChanged();
             }
         };
+    }
+
+    public void sortEvents(CharSequence sortMethod, CharSequence constraint) {
+        if (sortMethod == "A-Z") {
+            events.sort(Comparator.comparing(Event::getEventName));
+            getFilter().filter(constraint);
+        }
     }
 }

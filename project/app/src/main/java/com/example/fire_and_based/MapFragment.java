@@ -35,9 +35,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * map
+ * @author Tyler, Sumayya
+ */
+
 public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap mMap;
-
     Event event;
     String mode;
 

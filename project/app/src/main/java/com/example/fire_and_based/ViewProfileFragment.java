@@ -17,7 +17,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * This class is a fragment hosted by UserActivity.
  * Requires a user to be passed in as an argument as a Parcelable with a key "currentUser"
- * @author Sumayya
+ * @author Sumayya, Carson
  */
 public class ViewProfileFragment extends Fragment {
     private User user;

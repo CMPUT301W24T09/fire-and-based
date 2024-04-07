@@ -1,6 +1,8 @@
 package com.example.fire_and_based;
 
 import android.content.Context;
+import static androidx.constraintlayout.motion.widget.Debug.getLocation;
+
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -77,7 +79,8 @@ public class EventListFragment extends Fragment {
 
     LatLng userLocation = new LatLng(53.5, -113.5);
 
-    public String searchString;
+    public SearchView searchView;
+    private AutoCompleteTextView autoCompleteTextView;
 
 
     private final ActivityResultLauncher<ScanOptions> qrLauncher = registerForActivityResult(
@@ -88,37 +91,31 @@ public class EventListFragment extends Fragment {
                 } else {
                     db = FirebaseFirestore.getInstance();
                     String QRCode = QRCodeGenerator.getValidChars(result.getContents());
-                    FirebaseUtil.addEventAndCheckedInUser(db, QRCode, user.getDeviceID(), aVoid -> {
-                        Toast.makeText(requireContext(), "Checked in!", Toast.LENGTH_LONG).show();
-                        // write logic that gets user Lat and Long here so that it can be wrote to the databse
-                        FirebaseUtil.getEvent(db, QRCode, new OnSuccessListener<Event>() {
-                            @Override
-                            public void onSuccess(Event event) {
-                                scannedEvent = event;
-                                getLocation();
-                            }
-                        }, new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getContext(), "Error finding that event make sure it exists!", Toast.LENGTH_SHORT).show();
-                            }
+                    FirebaseUtil.getEvent(db, QRCode, event -> {
+                        scannedEvent = event;
+                        FirebaseUtil.addEventAndCheckedInUser(db, event.getQRcode(), user.getDeviceID(), aVoid -> {
+                            Toast.makeText(getContext(), "Checked in", Toast.LENGTH_SHORT).show();
+                            getLocation();
+                            executeFragmentTransaction(event, "Attending");
+                        }, e -> {
+                            Toast.makeText(getContext(), "Failed to check in. Make sure you are registered", Toast.LENGTH_SHORT).show();
+                            FirebaseUtil.getUserInvolvementInEvent(db, user.getDeviceID(), event.getQRcode(), mode -> {
+                                Log.d("HELLOOOOO", mode);
+                                executeFragmentTransaction(event, mode);
+                            }, exception -> {});
                         });
-
-
-//                        FirebaseUtil.getEvent(db, result.getContents(), event -> {
-//                            executeFragmentTransaction(event, "Attending");
-//                        }, e -> {
-//                            Log.e("FirebaseError", "Error fetching event: " + e.getMessage());
-//                        });
                     }, e -> {
-                        Toast.makeText(requireContext(), "Failed. Make sure you are registered.", Toast.LENGTH_LONG).show();
+                        FirebaseUtil.getEventByPosterQR(db, QRCode, event -> {
+                            FirebaseUtil.getUserInvolvementInEvent(db, user.getDeviceID(), event.getQRcode(), mode -> {
+                                executeFragmentTransaction(event, mode);
+                            }, exception -> {});
+                        }, exception -> {
+                            Toast.makeText(getContext(), "Unknown QR code", Toast.LENGTH_SHORT).show();
+                        });
                     });
                 }
             }
     );
-
-
-
 
     @Nullable
     @Override
@@ -161,26 +158,7 @@ public class EventListFragment extends Fragment {
         updateEventList();
 
 
-        AutoCompleteTextView listSorter = view.findViewById(R.id.listSorter);
-        ArrayList<String> sortList =  filterSetup(listSorter);
-
-        listSorter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                filterIndex = position;
-                filter = sortList.get(filterIndex);
-                if (Objects.equals(filter, "Popular")) {
-                    // Sort dataList based on current attendees in descending order
-                    eventAdapter.sort(Comparator.comparing(Event::getCurrentAttendees).reversed());
-                } else if (Objects.equals(filter, "Upcoming")) {
-                    // Sort dataList based on event start time
-                    eventAdapter.sort(Comparator.comparing(Event::getEventStart));
-                }
-            }
-        });
-
-
-        SearchView searchView = view.findViewById(R.id.search);
+        searchView = view.findViewById(R.id.search);
         int closeButtonId = searchView.getContext().getResources().getIdentifier("android:id/search_close_btn", null, null);
         ImageView closeButton = (ImageView) searchView.findViewById(closeButtonId);
         closeButton.setVisibility(View.GONE);
@@ -197,6 +175,20 @@ public class EventListFragment extends Fragment {
             }
         });
 
+        autoCompleteTextView = view.findViewById(R.id.sort_menu);
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Retrieve the selected item
+                String selectedItem = (String) parent.getItemAtPosition(position);
+                if (selectedItem.equals("A-Z")) {
+                    eventAdapter.sortEvents("A-Z", searchView.getQuery());
+                } else if (selectedItem.equals("Sort by Start Time")) {
+                }
+                // Add more conditions for other sorting options as needed
+            }
+        });
+
         eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -207,6 +199,16 @@ public class EventListFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        autoCompleteTextView.setText("");
+        if (eventAdapter != null) {
+            searchView.setQuery("", false);
+            searchView.clearFocus();
+        }
     }
 
     /**
@@ -292,6 +294,7 @@ public class EventListFragment extends Fragment {
     private void getLocation() {
         if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestLocationPermission();
+            return;
         }
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
@@ -319,9 +322,7 @@ public class EventListFragment extends Fragment {
 
                         }
                     }
-
                 });
-
     }
     private void requestLocationPermission() {
         ActivityCompat.requestPermissions(requireActivity(),
