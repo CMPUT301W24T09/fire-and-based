@@ -10,7 +10,7 @@
     android:layout_marginTop="20dp">
 
     <TextView
-        android:id="@+id/confirm_user"
+        android:id="@+id/confirm_user_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto"
