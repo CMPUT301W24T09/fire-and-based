@@ -20,7 +20,8 @@
             android:fontFamily="@font/roboto_bold"
             android:text="TextView"
             android:textColor="#FDF9F9"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:layout_marginLeft="30dp"/>
 
         <ImageView
             android:id="@+id/qr_code_scanner"
