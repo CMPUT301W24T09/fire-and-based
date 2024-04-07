@@ -56,6 +56,8 @@ public class ImageDownloader
 
     /**
      * Gets the bitmap of the banner for a particular event and displays it to the given ImageView
+     * @param thisEvent the event
+     * @param imagePreview guess
      */
     public void getBannerBitmap(Event thisEvent, ImageView imagePreview)
     {
@@ -81,12 +83,15 @@ public class ImageDownloader
 
     }
     /**
-     * Gets the bitmap of the profilepic for a user and displays it to the given ImageView
+     * Gets the bitmap of the profile for a particular user and displays it to the given ImageView
+     * @param thisUser the user
+     * @param profilePreview guess
      */
         public void getProfilePicBitmap(User thisUser, CircleImageView profilePreview) {
             //Bitmap imageMap;
 
-            String profileUrl = "profiles/" + thisUser.getDeviceID();
+            //String profileUrl = "profiles/" + thisUser.getDeviceID();
+            String profileUrl = thisUser.getCustomPicUrl();
             Log.d(TAG, profileUrl);
             StorageReference uriRef = fireRef.child(profileUrl);
             uriRef.getBytes(10000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -101,6 +106,32 @@ public class ImageDownloader
                 }
             });
         }
+    /**
+     * Deletes the custom profile pic from storage and sets the default to the custom
+     * @param thisUser the user
+     */
+        //SUMAYA USE THIS OK? OK.
+        public void deleteProfilePic(User thisUser)
+        {
+            //We can only default the custom pics. We default back to default default default default
+            String customProfileUrl = thisUser.getCustomPicUrl();
+            StorageReference uriRef = fireRef.child(customProfileUrl);
+            uriRef.delete();
+            thisUser.setCustomPicUrl(thisUser.getDefaultPicUrl());
+        }
+
+    /**
+     * Deletes the banner from storage and sets the default to the null
+     * @param thisEvent the event
+     */
+        public void deleteEventPic(Event thisEvent)
+        {
+            String eventBannerUrl = thisEvent.getEventBanner();
+            StorageReference uriRef = fireRef.child(eventBannerUrl);
+            uriRef.delete();
+            thisEvent.setEventBanner(null);
+        }
+
 
 
 

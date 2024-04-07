@@ -131,9 +131,11 @@ public class FirebaseUtil {
                         String homepage = doc.getString("homepage");
                         String messageID = doc.getString("messageID");
                         Boolean admin = false;
+                        String defaultPicUrl = doc.getString("defaultPicUrl");
+                        String customPicUrl = doc.getString("customPicUrl");
                         Log.d("Firestore", String.format("User(%s, %s) fetched", userName,
                                 deviceID));
-                        usersList.add(new User(deviceID, userName, profilePicture, firstName, lastName, phoneNumber, email, homepage, admin, messageID));
+                        usersList.add(new User(deviceID, userName, profilePicture, firstName, lastName, phoneNumber, email, homepage, admin,defaultPicUrl,customPicUrl, messageID));
                     }
                 }
                 Log.d("Firestore", String.format("Fetched %d users", usersList.size()));
