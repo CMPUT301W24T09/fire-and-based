@@ -58,6 +58,15 @@ public class AnnouncementsFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Initializes UI elements and displays announcements for the event.
+     * Handles posting new announcements based on user permissions.
+     * @param inflater The LayoutInflater object for inflating views.
+     * @param container The parent view to which the fragment's UI should be attached.
+     * @param savedInstanceState Previous saved state of the fragment.
+     * @return The view of the inflated layout for the fragment.
+     */
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

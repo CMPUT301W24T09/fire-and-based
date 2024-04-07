@@ -42,7 +42,6 @@ import java.util.Objects;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap mMap;
-
     Event event;
     String mode;
 

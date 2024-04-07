@@ -44,7 +44,6 @@ import java.io.OutputStream;
 public class QRCodeDisplayFragment extends DialogFragment {
 
     public Bitmap bitmap = null;
-
     public String eventName;
     public String EventQRCode;
     public String PosterQRCode;

@@ -23,6 +23,17 @@ public class Announcement {
     private String sender;
     private String eventID;
 
+
+    /**
+     * Constructs an Announcement with detailed information, including title, content, timestamp,
+     * sender, and the ID of the event.
+     *
+     * @param title        The announcement title.
+     * @param content      The announcement's content.
+     * @param timestamp    The time that the announcement was posted.
+     * @param sender       The individual who sent the announcement.
+     * @param eventID      The eventID of the event that the announcement is for.
+     */
     public Announcement(String title, String content, long timestamp, String sender, String eventID) {
         this.title = title;
         this.content = content;
@@ -31,22 +42,50 @@ public class Announcement {
         this.eventID = eventID;
     }
 
+    // GETTERS AND SETTERS
+
+    /**
+     * Gets the title of the announcement.
+     *
+     * @return The title.
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Gets the content of the announcement.
+     *
+     * @return The content.
+     */
     public String getContent() {
         return content;
     }
 
+    /**
+     * Gets the time stamp of the announcement.
+     *
+     * @return The time stamp.
+     */
     public long getTimestamp() {
         return timestamp;
     }
 
+    /**
+     * Gets the sender of the announcement.
+     *
+     * @return The sender.
+     */
     public String getSender() {
         return sender;
     }
 
+
+    /**
+     * Gets the event ID of the announcement.
+     *
+     * @return The event ID.
+     */
     public String getEventID(){
         return eventID;
     }

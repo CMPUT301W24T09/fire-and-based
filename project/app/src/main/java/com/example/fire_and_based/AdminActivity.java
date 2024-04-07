@@ -22,6 +22,10 @@ import com.google.android.material.navigation.NavigationBarView;
  */
 public class AdminActivity extends AppCompatActivity {
 
+    /**
+     * Initializes the activity, sets the content view, and displays the initial fragment.
+     * @param savedInstanceState The saved instance state
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

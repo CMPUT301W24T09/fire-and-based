@@ -60,6 +60,12 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity {
     private static User currentUser;
     StorageReference fireRef = FirebaseStorage.getInstance().getReference();
+
+    /**
+     * Initializes the main activity, checks for existing user UUID,
+     * generates a UUID if none exists, and proceeds to create or fetch user data accordingly.
+     * @param savedInstanceState The saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,10 +168,15 @@ public class MainActivity extends AppCompatActivity {
                     });
         }
 
-
-
     }
 
+    /**
+     * Adds fields to the user document in Firebase, specifically for attendeeEvents and organizerEvents.
+     * @param db The instance of FirebaseFirestore
+     * @param user The user object
+     * @param successListener Listener for successful update
+     * @param failureListener Listener for failed update
+     */
     public static void addFieldstoUser(FirebaseFirestore db, User user, OnSuccessListener<Void> successListener, OnFailureListener failureListener ){
         db.collection("users").document(user.getDeviceID())
                 .update("attendeeEvents", FieldValue.arrayUnion())
@@ -178,10 +189,22 @@ public class MainActivity extends AppCompatActivity {
                 .addOnFailureListener(failureListener);
     }
 
+    /**
+     * Gets the device ID of the current user.
+     *
+     * @return The device ID.
+     */
     protected static String getDeviceID() {
         return currentUser.getDeviceID();
     }
 
+    /**
+     * Generates a bitmap image with specified text, width, and height.
+     * @param text The text to be drawn on the bitmap
+     * @param width The width of the bitmap
+     * @param height The height of the bitmap
+     * @return The generated bitmap
+     */
     private Bitmap generateBitmap(String text, int width, int height) {
         // This is all subjective to change, I don't really like how they look currently so open to suggestions
 
@@ -199,6 +222,15 @@ public class MainActivity extends AppCompatActivity {
 
         return bitmap;
     }
+
+    /**
+     * Uploads the user's profile picture to Firebase Storage.
+     * Converts the provided bitmap image to a URI and inserts it into the MediaStore.
+     * Then, uploads the profile picture to the Firebase Storage using the URI.
+     * @param bitmap The bitmap representation of the profile picture.
+     * @param uuid The unique identifier associated with the user.
+     *             This identifier is used to reference the profile picture in the storage.
+     */
 
     private void uploadProfilePicture(Bitmap bitmap, String uuid) {
         // Converts bitmap to URI
