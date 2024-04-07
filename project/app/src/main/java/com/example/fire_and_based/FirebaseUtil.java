@@ -1113,6 +1113,15 @@ public class FirebaseUtil {
                 .addOnFailureListener(failureListener);
     }
 
+    /**
+     * Sends the user's coordinates to the event's check-in locations.
+     *
+     * @param db               The instance of FirebaseFirestore.
+     * @param event            The event object to which the user is checking in.
+     * @param geoPoint         The GeoPoint object containing the user's coordinates.
+     * @param successListener  Listener to be invoked when the operation is successful.
+     * @param failureListener  Listener to be invoked when the operation fails.
+     */
     // for adding a location that a user has checked in from java docs are not real java docs cannot hurt me
     public static void sendCoordinatesToEvent(FirebaseFirestore db, Event event, GeoPoint geoPoint,OnSuccessListener<Void> successListener, OnFailureListener failureListener ){
         db.collection(EVENTS_COLLECTION).document(event.getQRcode())
@@ -1121,7 +1130,14 @@ public class FirebaseUtil {
                 .addOnFailureListener(failureListener);
     }
 
-
+    /**
+     * Retrieves the check-in locations for a specific event.
+     *
+     * @param db               The instance of FirebaseFirestore.
+     * @param event            The event object for which check-in locations are to be retrieved.
+     * @param successListener  Listener to be invoked with the list of check-in locations when the operation is successful.
+     * @param failureListener  Listener to be invoked when the operation fails.
+     */
     public static void getEventCheckInLocations(FirebaseFirestore db, Event event, OnSuccessListener<List<GeoPoint>> successListener, OnFailureListener failureListener) {
         db.collection(EVENTS_COLLECTION).document(event.getQRcode())
                 .get()
@@ -1137,6 +1153,15 @@ public class FirebaseUtil {
                 .addOnFailureListener(failureListener);
     }
 
+    /**
+     * Removes a user from a specific event.
+     *
+     * @param db               The instance of FirebaseFirestore.
+     * @param user             The user object to be removed from the event.
+     * @param event            The event object from which the user is to be removed.
+     * @param successListener  Listener to be invoked when the operation is successful.
+     * @param failureListener  Listener to be invoked when the operation fails.
+     */
     public static void removeUserFromEvent(FirebaseFirestore db, User user, Event event, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
 
         Task<Void> removeEventFromUser = db.collection(USERS_COLLECTION).document(user.getDeviceID())

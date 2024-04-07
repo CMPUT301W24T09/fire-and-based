@@ -60,11 +60,18 @@ public class EventDetailsFragment extends Fragment {
     private FragmentStateAdapter adapter;
     private ImageDownloader imageDownloader = new ImageDownloader();
 
-
     private FusedLocationProviderClient fusedLocationClient;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1; // Define a request code
     public Button checkedInButton;
 
+    /**
+     * Creates the view for the event details fragment.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState This fragment is being re-constructed from a previous saved state
+     * @return The View for the fragment's UI.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -95,9 +102,6 @@ public class EventDetailsFragment extends Fragment {
 
          */
 
-        
-        
-
         ImageView imagePreview = view.findViewById(R.id.banner_image);
         if (event.getBannerQR() != null)
         {
@@ -108,7 +112,6 @@ public class EventDetailsFragment extends Fragment {
         Long startLong = event.getEventStart();
         String startString = event.dateFromLong(startLong);
         eventDate.setText(startString);
-
 
 
         //Button checkedInButton = view.findViewById(R.id.checked_in_button);
@@ -196,7 +199,6 @@ public class EventDetailsFragment extends Fragment {
         });
 
 
-
         viewPager = view.findViewById(R.id.event_details_viewpager);
         adapter = new EventDetailsAdapter(this, event, mode, user);
         viewPager.setAdapter(adapter);
@@ -238,7 +240,10 @@ public class EventDetailsFragment extends Fragment {
     }
 
 
-
+    /**
+     * Retrieves the user's location and sends it to the event in the Firebase database upon checking in.
+     * If location permission is not granted, requests permission.
+     */
     private void getLocation() {
         if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestLocationPermission();
@@ -281,6 +286,10 @@ public class EventDetailsFragment extends Fragment {
                 });
         }
     }
+
+    /**
+     * Requests the necessary location permissions from the user.
+     */
     private void requestLocationPermission() {
         ActivityCompat.requestPermissions(requireActivity(),
                 new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION},

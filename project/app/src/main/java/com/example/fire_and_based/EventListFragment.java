@@ -93,6 +93,14 @@ public class EventListFragment extends Fragment {
             }
     );
 
+    /**
+     * Inflates the event list fragment layout.
+     *
+     * @param inflater           LayoutInflater object to inflate fragment views.
+     * @param container          Parent view to attach the fragment's UI.
+     * @param savedInstanceState Previous saved state of the fragment.
+     * @return Root view of the inflated layout.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -242,6 +250,10 @@ public class EventListFragment extends Fragment {
         }
     }
 
+    /**
+     * Launches the QR code scanner.
+     */
+
     private void launchQRScanner() {
         ScanOptions options = new ScanOptions();
         options.setPrompt("Scan a QR Code");
@@ -250,6 +262,11 @@ public class EventListFragment extends Fragment {
 
         qrLauncher.launch(options);
     }
+
+    /**
+     * Retrieves the device's last known location and sends it to the event database.
+     * If location permissions are not granted, requests permission.
+     */
 
     private void getLocation() {
         if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -284,12 +301,20 @@ public class EventListFragment extends Fragment {
                     }
                 });
     }
+
+    /**
+     * Requests permission to access the device's location.
+     */
+
     private void requestLocationPermission() {
         ActivityCompat.requestPermissions(requireActivity(),
                 new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION},
                 LOCATION_PERMISSION_REQUEST_CODE);
     }
 
+    /**
+     * Called when the fragment is visible to the user and actively running.
+     */
     @Override
     public void onResume() {
         super.onResume();
