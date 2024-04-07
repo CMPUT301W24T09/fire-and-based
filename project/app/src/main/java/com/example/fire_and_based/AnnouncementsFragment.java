@@ -95,7 +95,7 @@ public class AnnouncementsFragment extends Fragment {
             postButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String announcement_content = announcement_textview.toString().trim();
+                    String announcement_content = announcement_textview.getText().toString().trim();
                     if (announcement_content.isEmpty()) {
                         Toast.makeText(requireContext(), "Notification may not be empty", Toast.LENGTH_LONG).show();
                     } else {
