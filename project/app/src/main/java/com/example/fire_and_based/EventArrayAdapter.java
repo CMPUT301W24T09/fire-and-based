@@ -16,7 +16,7 @@ import java.util.ArrayList;
 /**
  * This class is the adapter for the events. It displays each event in the list.
  * Used by EventListFragment.
- * @author Sumayya
+ * @author Sumayya, Tyler, Aiden
  */
 public class EventArrayAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
@@ -29,7 +29,6 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
      *
      * @param context The context (usually an Activity) in which the adapter is used
      * @param events  The list of events to be displayed
-     * @author Tyler, Aiden
      */
     public EventArrayAdapter(Context context, ArrayList<Event> events) {
         super(context, 0, events);
@@ -37,6 +36,16 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         this.context = context;
     }
 
+
+    /**
+     * Get a View that displays the data at the specified position.
+     * If convertView is null, inflates a new view from the layout.
+     *
+     * @param position    The position of the item in the data set.
+     * @param convertView The old view to reuse, if possible.
+     * @param parent      The parent ViewGroup to which the view will be attached.
+     * @return A View displaying the data at the specified position.
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -69,7 +78,6 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 
 
 
-
             TextView checkCount = view.findViewById(R.id.checkCount);
 
             //ArrayList<Integer> checkNums = event.getMilestones();
@@ -78,10 +86,6 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
             checkCount.setText(checkNum+"/"+totalNum);
 
 
-
-
-
-                    
             return view;
     }
 }

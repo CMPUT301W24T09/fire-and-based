@@ -26,6 +26,15 @@ public class AttendeeFragment extends Fragment {
     private ViewPager2 viewPager;
     private FragmentStateAdapter adapter;
 
+    /**
+     * Inflates the layout for the AttendeeFragment and initializes its components.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState A Bundle object containing the fragment's previously saved state.
+     * @return The inflated view for the fragment.
+     */
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

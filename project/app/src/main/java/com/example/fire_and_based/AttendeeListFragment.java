@@ -46,6 +46,17 @@ public class AttendeeListFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Inflates the layout and initializes the attendee list based on the event and checked-in status.
+     * Retrieves event and checked-in status from arguments.
+     * Populates the attendee list from Firebase Firestore.
+     *
+     * @param inflater           The LayoutInflater object.
+     * @param container          The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState The previous saved state of the fragment.
+     * @return The View for the fragment's UI, or null.
+     */
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -68,6 +79,11 @@ public class AttendeeListFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Updates the list of attendees based on the checked-in status.
+     * If checkedIn is true, retrieves and updates the list of checked-in users.
+     * If checkedIn is false, retrieves and updates the list of all attendees.
+     */
     public void updateEventList() {
         if (checkedIn) {
             FirebaseUtil.getEventCheckedInUsers(db, event.getQRcode(), userIntegerMap -> {

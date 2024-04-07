@@ -47,20 +47,25 @@ import java.util.List;
  */
 
 public class EditEventFragment extends Fragment {
-
     private Event event;
     private User user;
     private Uri imageUri;
     private Boolean imageChanged = false;
     public long eventMaxAttendeesLong;
     private ArrayList<User> dataList = null; // for getting attendee amount
-
     private ImageView previewBanner;
     private String timeString;
     private ActivityResultLauncher<Intent> customActivityResultLauncher;
 
 
-
+    /**
+     * Initializes the UI components and handles user interactions for editing an event.
+     *
+     * @param inflater           The LayoutInflater object.
+     * @param container          The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState The previous saved state of the fragment.
+     * @return The View for the fragment's UI, or null.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -385,6 +390,17 @@ public class EditEventFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Checks if the provided event fields are valid.
+     *
+     * @param eventDescriptionString     The event description string.
+     * @param eventStartDateString       The event start date string.
+     * @param eventStartTimeString       The event start time string.
+     * @param eventEndDateString         The event end date string.
+     * @param eventLocationString        The event location string.
+     * @param eventMaxAttendeeAmountString The maximum number of attendees string.
+     * @return True if all fields are valid, otherwise false.
+     */
     // checks for valid fields function
     private boolean checkValidFields(String eventDescriptionString, String eventStartDateString, String eventStartTimeString, String eventEndDateString, String eventLocationString, String eventMaxAttendeeAmountString) {
         if (eventDescriptionString == "" || eventDescriptionString == null) {
@@ -402,7 +418,12 @@ public class EditEventFragment extends Fragment {
         }
     }
 
-
+    /**
+     * Converts a timestamp to a calendar date and time.
+     *
+     * @param timestamp The timestamp to convert.
+     * @return An array containing the formatted date and time strings.
+     */
     public static String[] convertTimestampToCalendarDateAndTime(Long timestamp) {
         // Create a Calendar instance and set the time using the given timestamp
         Calendar calendar = Calendar.getInstance();
@@ -424,7 +445,5 @@ public class EditEventFragment extends Fragment {
         // Return an array with both date and time
         return new String[]{date, time};
     }
-
-
 
 }

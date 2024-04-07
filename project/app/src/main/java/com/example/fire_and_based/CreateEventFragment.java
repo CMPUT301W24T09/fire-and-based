@@ -78,7 +78,6 @@ public class CreateEventFragment extends Fragment {
     public String dateEndString;
     public Long maxAttendeeLong;
 
-
     // private ImageView previewBanner;
     public Uri imageUri;
 
@@ -105,7 +104,13 @@ public class CreateEventFragment extends Fragment {
 //        }
 //    });
 
-
+    /**
+     * Initializes the UI components and handles user interactions for creating an event.
+     * @param inflater           The LayoutInflater object.
+     * @param container          The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState The previous saved state of the fragment.
+     * @return The View for the fragment's UI, or null.
+     */
 
     @Nullable
     @Override
@@ -471,7 +476,12 @@ public class CreateEventFragment extends Fragment {
 //        startActivity(intent);
 //    }
 
-
+    /**
+     * Retrieves the dimensions (width and height) of an image file from the given Uri.
+     *
+     * @param uri The Uri of the image file.
+     * @return A Pair object containing the width and height of the image.
+     */
 
     private Pair<Integer, Integer> getDropboxIMGSize(Uri uri)
     {
@@ -486,6 +496,8 @@ public class CreateEventFragment extends Fragment {
 //    Pair<Integer, Integer> size = getDropboxIMGSize(imageUri);
 //    int width = size.first;
 //    int height = size.second;
+
+
     /**
      * Makes a toast popup
      *
@@ -496,6 +508,9 @@ public class CreateEventFragment extends Fragment {
         Toast.makeText(requireContext(), text, Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * ActivityResultLauncher for QR code scanning.
+     */
     private final ActivityResultLauncher<ScanOptions> qrLauncher = registerForActivityResult(
         new ScanContract(),
         result ->
@@ -513,9 +528,9 @@ public class CreateEventFragment extends Fragment {
         }
     );
 
-            /**
-             * Prepares the QR Code scanner
-             */
+    /**
+     * Prepares the QR Code scanner
+     */
     private void launchQRScanner()
     {
         ScanOptions options = new ScanOptions();
@@ -526,6 +541,10 @@ public class CreateEventFragment extends Fragment {
         qrLauncher.launch(options);
     }
 
+    /**
+     * Called when the fragment's view is destroyed.
+     * Restores visibility of the bottom navigation bar.
+     */
     public void onDestroyView()
     {
         NavigationBarView bottomNavigationView = getActivity().findViewById(R.id.bottom_nav);
@@ -533,6 +552,13 @@ public class CreateEventFragment extends Fragment {
         super.onDestroyView();
     }
 
+    /**
+     * Displays a QR code using a dialog fragment.
+     *
+     * @param QRCode      The QR code string for the event.
+     * @param PosterQRCode The QR code string for the poster.
+     * @param eventName   The name of the event.
+     */
     public void displayQR(String QRCode, String PosterQRCode, String eventName) {
         QRCodeDisplayFragment fragment = new QRCodeDisplayFragment();
         Bundle bundle = new Bundle();

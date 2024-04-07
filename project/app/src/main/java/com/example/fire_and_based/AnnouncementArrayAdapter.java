@@ -13,6 +13,11 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
+/**
+ * An ArrayAdapter for displaying announcements.
+ * @author Sumayya
+ */
+
 public class AnnouncementArrayAdapter extends ArrayAdapter<Announcement> {
     private ArrayList<Announcement> announcements;
     private Context context;
@@ -22,7 +27,6 @@ public class AnnouncementArrayAdapter extends ArrayAdapter<Announcement> {
      *
      * @param context       The context (usually an Activity) in which the adapter is used
      * @param announcements The list of announcements to be displayed
-     * @author Sumayya
      */
     public AnnouncementArrayAdapter(Context context, ArrayList<Announcement> announcements) {
         super(context, 0, announcements);

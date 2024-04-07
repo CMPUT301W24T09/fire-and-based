@@ -46,7 +46,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * @author Carson
  */
 
-
 public class EditProfileFragment extends Fragment {
     private User user;
     private Uri imageUri;
@@ -54,6 +53,14 @@ public class EditProfileFragment extends Fragment {
     StorageReference fireRef = FirebaseStorage.getInstance().getReference();
     boolean pictureChanged = false;
 
+    /**
+     * Initializes the UI components and handles user interactions for editing a profile.
+     *
+     * @param inflater           The LayoutInflater object.
+     * @param container          The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState The previous saved state of the fragment.
+     * @return The View for the fragment's UI, or null.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -203,6 +210,17 @@ public class EditProfileFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Validates the entries for profile information.
+     *
+     * @param first    The first name.
+     * @param last     The last name.
+     * @param username The username.
+     * @param email    The email address.
+     * @param phone    The phone number.
+     * @param homepage The homepage URL.
+     * @return True if all entries are valid, false otherwise.
+     */
     private boolean validEntries(String first, String last, String username, String email, String phone, String homepage) {
         if (!validName(first))
             Toast.makeText(requireContext(), "Invalid First Name", Toast.LENGTH_SHORT).show();
@@ -220,6 +238,12 @@ public class EditProfileFragment extends Fragment {
         return validName(first) && validName(last) && validEmail(email) && validPhone(phone) && validHomepage(homepage);
     }
 
+    /**
+     * Validates an email address using regex.
+     *
+     * @param email The email address to validate.
+     * @return True if the email address is valid, false otherwise.
+     */
     public static boolean validEmail(String email) {
         if (TextUtils.isEmpty(email))
             return true;
@@ -230,6 +254,12 @@ public class EditProfileFragment extends Fragment {
         return matcher.matches();
     }
 
+    /**
+     * Validates a phone number
+     *
+     * @param phoneNumber The phone number to validate.
+     * @return True if the phone number is valid, false otherwise.
+     */
     public static boolean validPhone(String phoneNumber) {
         if (TextUtils.isEmpty(phoneNumber))
             return true;
@@ -238,6 +268,13 @@ public class EditProfileFragment extends Fragment {
         Matcher matcher = pattern.matcher(phoneNumber);
         return matcher.matches();
     }
+
+    /**
+     * Validates a name
+     *
+     * @param name The name to validate.
+     * @return True if the name is valid, false otherwise.
+     */
     public static boolean validName(String name) {
         if (TextUtils.isEmpty(name))
             return true;
@@ -250,6 +287,12 @@ public class EditProfileFragment extends Fragment {
         return true;
     }
 
+    /**
+     * Validates a user name
+     *
+     * @param username The user name to validate.
+     * @return True if the user name is valid, false otherwise.
+     */
     public boolean validUsername(String username) {
         return username.length() < 20;
     }

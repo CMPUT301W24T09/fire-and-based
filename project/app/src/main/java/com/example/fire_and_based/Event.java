@@ -341,7 +341,12 @@ public class Event implements Parcelable {
         dest.writeInt(trackLocation ? 1 : 0);  // write boolean as int
     }
 
-
+    /**
+     * checks for matching QRCodes
+     *
+     * @param o The reference object with which to compare.
+     * @return True if the QRcode is the same as the obj QRCode; false otherwise.
+     */
     @Override
     public boolean equals(Object o){
         if (o instanceof Event){
