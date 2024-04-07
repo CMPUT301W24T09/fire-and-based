@@ -20,6 +20,8 @@ import androidx.fragment.app.Fragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -80,6 +82,13 @@ public class AnnouncementsFragment extends Fragment {
             dataList.clear();
             for (Announcement announcement: announcements) {
                 dataList.add(announcement);
+                Collections.sort(dataList, new Comparator<Announcement>() {
+                    @Override
+                    public int compare(Announcement a1, Announcement a2) {
+                        // Compare timestamps in reverse order to sort by most recent
+                        return Long.compare(a2.getTimestamp(), a1.getTimestamp());
+                    }
+                });
                 announcementAdapter.notifyDataSetChanged();
             }
         }, e -> {
@@ -102,8 +111,21 @@ public class AnnouncementsFragment extends Fragment {
                         AnnouncementUtil.newAnnouncement(db, announcement_content, event, aVoid -> {
                             announcement_textview.setText("");
                             Toast.makeText(AnnouncementsFragment.this.getActivity(), "Announcement issued successfully", Toast.LENGTH_SHORT).show();
+                            dataList.clear();
+                            FirebaseUtil.getAnnouncements(db, event.getQRcode(), announcements -> {
+                                for (Announcement announcement : announcements) {
+                                    dataList.add(announcement);
+                                    Collections.sort(dataList, new Comparator<Announcement>() {
+                                        @Override
+                                        public int compare(Announcement a1, Announcement a2) {
+                                            // Compare timestamps in reverse order to sort by most recent
+                                            return Long.compare(a2.getTimestamp(), a1.getTimestamp());
+                                        }
+                                    });
+                                    announcementAdapter.notifyDataSetChanged();
+                                }
+                            }, e -> {});
                         }, e -> {
-                            Log.e("FirebaseError", "Error creating announcement" + e.getMessage());
                             Toast.makeText(AnnouncementsFragment.this.getActivity(), "An error has occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }, new Handler(Looper.getMainLooper()));
                     }
