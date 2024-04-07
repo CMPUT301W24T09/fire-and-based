@@ -187,6 +187,7 @@ public class EventDetailsFragment extends Fragment {
                             public void onSuccess(Void unused) {
                                 getLocation();
 
+
                             }
                         }, new OnFailureListener() {
                             @Override
@@ -245,6 +246,10 @@ public class EventDetailsFragment extends Fragment {
      * If location permission is not granted, requests permission.
      */
     private void getLocation() {
+        if (!event.isTrackLocation()){
+            return;
+        }
+
         if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestLocationPermission();
             return;
@@ -267,21 +272,20 @@ public class EventDetailsFragment extends Fragment {
                             double longitude = location.getLongitude();
                             FirebaseFirestore db = FirebaseFirestore.getInstance();
                             GeoPoint geoPoint = new GeoPoint(latitude, longitude);
+                                FirebaseUtil.sendCoordinatesToEvent(db, event, geoPoint, new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(getContext(), "Successfully Checked In", Toast.LENGTH_SHORT).show();
+                                        checkedInButton.setText("Check Out");
+                                    }
+                                }, new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(getContext(), "Error sending location to database :( ", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
 
-                            FirebaseUtil.sendCoordinatesToEvent(db, event, geoPoint, new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    Toast.makeText(getContext(), "Successfully Checked In", Toast.LENGTH_SHORT).show();
-                                    checkedInButton.setText("Check Out");
-                                }
-                            }, new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getContext(), "Error sending location to database :( ", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-
-                        }
                     }
                 });
         }

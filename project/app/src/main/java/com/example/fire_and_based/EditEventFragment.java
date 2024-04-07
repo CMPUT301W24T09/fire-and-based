@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -87,6 +88,7 @@ public class EditEventFragment extends Fragment {
         EditText eventAttendeeAmount = view.findViewById(R.id.eventEditAttendeeAmount);
         Button saveButton = view.findViewById(R.id.eventEditSaveButton);
         TextView deleteButton = view.findViewById(R.id.eventEditDeleteButton);
+        com.google.android.material.switchmaterial.SwitchMaterial geoTracking = view.findViewById(R.id.eventEditGeotrackToggle);
 
         // setting all the forms
         eventTitle.setText(event.getEventName());
@@ -97,6 +99,9 @@ public class EditEventFragment extends Fragment {
         String startTime = dateTime[1]; // time
         eventStartDate.setText(startCalendar);
         eventStartTime.setText(startTime);
+        Boolean locationTracking = event.isTrackLocation();
+        geoTracking.setChecked(locationTracking);
+
 
 
         Long eventEndDateLong = event.getEventEnd();
@@ -270,8 +275,10 @@ public class EditEventFragment extends Fragment {
                 String eventEndDateString = eventEndDate.getText().toString();
                 String eventLocationString = eventLocation.getText().toString();
                 String eventMaxAttendeeAmountString = eventAttendeeAmount.getText().toString();
+                Boolean eventTrackLocation = geoTracking.isChecked();
 
-                 if (!checkValidFields(eventDescriptionString, eventStartDateString, eventStartTimeString, eventEndTimeString, eventEndDateString, eventLocationString)) {
+
+                if (!checkValidFields(eventDescriptionString, eventStartDateString, eventStartTimeString, eventEndTimeString, eventEndDateString, eventLocationString)) {
                     Toast.makeText(getContext(), "Fields must all be satisfied", Toast.LENGTH_SHORT).show();
 
                 } else {
@@ -311,6 +318,7 @@ public class EditEventFragment extends Fragment {
                         event.setEventEnd(eventEndLong);
                         event.setLocation(eventLocationString);
                         event.setMaxAttendees(eventMaxAttendeesLong);
+                        event.setTrackLocation(eventTrackLocation);
                         if (imageChanged){
                             String QRCode = event.getQRcode();
                             String imageUrl = "events/" + QRCode;
