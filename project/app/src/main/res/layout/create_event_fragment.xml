@@ -327,6 +327,8 @@
                         android:layout_height="wrap_content"
                         android:backgroundTint="@android:color/darker_gray"
                         android:ems="23"
+                        android:focusable="false"
+                        android:inputType="none"
                         android:fontFamily="@font/roboto"
                         android:textColor="@color/black"
                         android:textSize="14sp"
