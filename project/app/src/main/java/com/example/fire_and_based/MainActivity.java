@@ -82,69 +82,12 @@ public class MainActivity extends AppCompatActivity {
             manager.createNotificationChannel(channel);
         }
 
-        sharedPref.edit().remove("uuid_key").commit();
         Log.d("MainActivity", "Getting UUID");
         String uuid = sharedPref.getString("uuid_key", "");
         Log.d("MainActivity", "UUID is: " + uuid);
 
         if (TextUtils.isEmpty(uuid)) {
-            Log.d("MainActivity", "No UUID found, generating...");
-            uuid = UUID.randomUUID().toString();
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("uuid_key", uuid);
-
-            // First time users get deterministically (on device id) generated profile picture
-            Bitmap bitmap = generateProfilePic(uuid, 200);
-
-            try {
-                uploadProfilePicture(bitmap, uuid);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-
-            Log.d(TAG, "Getting FCM Token");
-            String finalUuid = uuid;
-            FirebaseMessaging.getInstance().getToken()
-                    .addOnCompleteListener(new OnCompleteListener<String>() {
-                        @Override
-                        public void onComplete(@NonNull Task<String> task) {
-                            if (!task.isSuccessful()) {
-                                Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-                                return;
-                            }
-                            String token = task.getResult();
-                            Log.d(TAG, "Token: " + token);
-                            currentUser = new User(finalUuid, "", "defaultProfiles/" + finalUuid, "", "", "", "", "", false, token);
-                            FirebaseUtil.addUserToDB(db, currentUser,
-                                    aVoid -> {
-                                        addFieldstoUser(db, currentUser, new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void unused)
-                                            {
-                                                Log.d(TAG, "Extra Fields Added to User in DB");
-
-                                            }
-                                        }, new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e)
-                                            {
-                                                Log.d(TAG, "Extra fields not added");
-
-                                            }
-                                        });
-
-                                        Log.d(TAG, "User added successfully");
-                                        AnnouncementUtil.subscribeToTopic("system");
-                                        Intent intent = new Intent(MainActivity.this, UserActivity.class);
-                                        intent.putExtra("user", currentUser);  // we can switch activities now that a user has been created
-                                        startActivity(intent);
-                                    },
-                                    e -> {
-                                        Log.d("Failed to add user: ", e.getMessage());
-                                    });
-                            editor.commit();
-                        }
-                    });
+            createNewUser(db, sharedPref);
         }
         else {
             Log.d("MainActivity", "Found UUID, getting user...");
@@ -165,7 +108,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     },
                     e -> {
-                        Log.d(TAG, e.toString());
+                        sharedPref.edit().remove("uuid_key").commit();
+                        createNewUser(db, sharedPref);
                     });
         }
 
@@ -286,5 +230,65 @@ public class MainActivity extends AppCompatActivity {
                 Log.w(TAG, "death");
            }
         });
+    }
+
+    private void createNewUser(FirebaseFirestore db, SharedPreferences sharedPref) {
+        Log.d("MainActivity", "No UUID found, generating...");
+        String uuid = UUID.randomUUID().toString();
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("uuid_key", uuid);
+
+        // First time users get deterministically (on device id) generated profile picture
+        Bitmap bitmap = generateProfilePic(uuid, 200);
+
+        try {
+            uploadProfilePicture(bitmap, uuid);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        Log.d(TAG, "Getting FCM Token");
+        String finalUuid = uuid;
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+                        String token = task.getResult();
+                        Log.d(TAG, "Token: " + token);
+                        currentUser = new User(finalUuid, "", "defaultProfiles/" + finalUuid, "", "", "", "", "", false, token);
+                        FirebaseUtil.addUserToDB(db, currentUser,
+                                aVoid -> {
+                                    addFieldstoUser(db, currentUser, new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused)
+                                        {
+                                            Log.d(TAG, "Extra Fields Added to User in DB");
+
+                                        }
+                                    }, new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e)
+                                        {
+                                            Log.d(TAG, "Extra fields not added");
+
+                                        }
+                                    });
+
+                                    Log.d(TAG, "User added successfully");
+                                    AnnouncementUtil.subscribeToTopic("system");
+                                    Intent intent = new Intent(MainActivity.this, UserActivity.class);
+                                    intent.putExtra("user", currentUser);  // we can switch activities now that a user has been created
+                                    startActivity(intent);
+                                },
+                                e -> {
+                                    Log.d("Failed to add user: ", e.getMessage());
+                                });
+                        editor.commit();
+                    }
+                });
     }
 }

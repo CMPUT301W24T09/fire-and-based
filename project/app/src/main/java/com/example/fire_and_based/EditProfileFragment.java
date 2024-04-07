@@ -72,7 +72,7 @@ public class EditProfileFragment extends Fragment {
 
         Button saveButton = view.findViewById(R.id.save_text_view);
         Button cancelButton = view.findViewById(R.id.cancel_text_view);
-        Button removeProfilePicButton = view.findViewById(R.id.remove_profile_pic_button);
+        ImageView removeProfilePicButton = view.findViewById(R.id.remove_profile_pic);
 
         CircleImageView profilePictureView = view.findViewById(R.id.edit_profile_image);
         ImageView profilePictureEditButton = view.findViewById(R.id.edit_profile_picture_button);
@@ -102,6 +102,9 @@ public class EditProfileFragment extends Fragment {
         if (!TextUtils.isEmpty(user.getHomepage()))
             homepageEdit.setText(user.getHomepage());
 
+        if (user.getProfilePicture().startsWith("defaultProfiles/"))
+            removeProfilePicButton.setVisibility(View.GONE);
+
         // Idrk how this stuff works I copied from Aiden
         // Real
         ActivityResultLauncher<Intent> customActivityResultLauncher =
@@ -119,6 +122,7 @@ public class EditProfileFragment extends Fragment {
                                         //Glide.with(context).load(imageUri).into(previewBanner);
                                         profilePictureView.setImageURI(imageUri);
                                         pictureChanged = 1;
+                                        removeProfilePicButton.setVisibility(View.VISIBLE);
                                     }
                                 }
                                 catch(Exception e)
@@ -126,16 +130,6 @@ public class EditProfileFragment extends Fragment {
                             }
                         });
 
-        // Probably just make the profile picture itself clickable instead
-        profilePictureEditButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v) {
-                // Idrk how this stuff works I also copied from Aiden
-                Intent imageIntent = new Intent(Intent.ACTION_PICK);
-                imageIntent.setType("image/*");
-                customActivityResultLauncher.launch(imageIntent);
-            }});
         removeProfilePicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,8 +138,10 @@ public class EditProfileFragment extends Fragment {
                         .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 imageUrl[0] = "defaultProfiles/" + user.getDeviceID();
+                                user.setProfilePicture(imageUrl[0]);
                                 downloader.getProfilePicBitmap(user, profilePictureView);
                                 pictureChanged = 2;
+                                removeProfilePicButton.setVisibility(View.GONE);
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -158,6 +154,17 @@ public class EditProfileFragment extends Fragment {
                 alert.show();
             }
         });
+
+        // Probably just make the profile picture itself clickable instead
+        profilePictureEditButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                // Idrk how this stuff works I also copied from Aiden
+                Intent imageIntent = new Intent(Intent.ACTION_PICK);
+                imageIntent.setType("image/*");
+                customActivityResultLauncher.launch(imageIntent);
+            }});
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override

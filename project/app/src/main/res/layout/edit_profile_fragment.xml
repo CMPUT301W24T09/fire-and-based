@@ -9,7 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="175dp"
         android:background="?attr/colorPrimary">
 
         <Button
@@ -64,23 +64,22 @@
             android:id="@+id/edit_profile_picture_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="52dp"
+            android:layout_marginBottom="28dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.594"
+            app:layout_constraintHorizontal_bias="0.614"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/baseline_add_a_photo_24" />
 
-        <Button
-            android:id="@+id/remove_profile_pic_button"
-            android:layout_width="195dp"
-            android:layout_height="40dp"
-            android:text="Remove Profile Picture"
-            android:textColor="@color/red"
-            android:textSize="14sp"
+        <ImageView
+            android:id="@+id/remove_profile_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="150dp"
+            android:layout_marginBottom="28dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/baseline_delete_circle_outline" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -123,21 +122,6 @@
             tools:textColor="@color/black" />
 
         <EditText
-            android:id="@+id/editTextUsername"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="108dp"
-            android:backgroundTint="@android:color/darker_gray"
-            android:ems="23"
-            android:fontFamily="@font/roboto"
-            android:hint="Username"
-            android:inputType="text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:textSize="14sp" />
-
-        <EditText
             android:id="@+id/editTextEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -178,6 +162,20 @@
             android:inputType="phone"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/editTextUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="108dp"
+            android:backgroundTint="@android:color/darker_gray"
+            android:ems="23"
+            android:hint="Username"
+            android:inputType="text"
+            android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

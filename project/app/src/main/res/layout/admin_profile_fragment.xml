@@ -9,56 +9,87 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="175dp"
+        android:layout_height="240dp"
         android:background="?attr/colorPrimary">
 
         <TextView
-            android:id="@+id/delete_text_view"
+            android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14sp"
-            android:layout_marginEnd="20sp"
-            android:fontFamily="@font/roboto"
-            android:text="Delete"
-            android:textColor="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/admin_cancel_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20sp"
-            android:layout_marginTop="14sp"
-            android:fontFamily="@font/roboto"
-            android:text="Cancel"
-            android:textColor="@color/white"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/profile_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8sp"
+            android:layout_marginTop="4dp"
             android:background="?attr/colorPrimary"
-            android:text="User Profile"
+            android:text="Profile"
             android:textColor="@color/white"
             android:textSize="27sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/admin_edit_profile_image"
+            android:id="@+id/profile_image"
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:src="@drawable/frog"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
             app:civ_border_width="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_title" />
+            app:layout_constraintTop_toBottomOf="@+id/textView4"
+            app:layout_constraintVertical_bias="0.241" />
+
+        <TextView
+            android:id="@+id/firstAndLastText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="N/A"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+
+        <Button
+            android:id="@+id/back_button"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:text="Back"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/remove_profile_button"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:text="Remove"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/checked_in_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginBottom="5dp"
+            android:text="Times checked in: "
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/delete_profile_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/baseline_delete_circle_outline"
+            tools:layout_editor_absoluteX="229dp"
+            tools:layout_editor_absoluteY="140dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -67,104 +98,133 @@
         android:layout_height="match_parent"
         android:background="@drawable/background">
 
-        <EditText
-            android:id="@+id/first_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            android:backgroundTint="@android:color/darker_gray"
-            android:ems="23"
-            android:fontFamily="@font/roboto"
-            android:hint="First Name"
-            android:inputType="none"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            android:editable="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:fontFamily="@font/roboto" />
-
-        <EditText
-            android:id="@+id/last_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="72dp"
-            android:backgroundTint="@android:color/darker_gray"
-            android:ems="23"
-            android:fontFamily="@font/roboto"
-            android:hint="Last Name"
-            android:inputType="none"
-            android:textSize="14sp"
-            android:editable="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:textColor="@color/black" />
-
-        <EditText
-            android:id="@+id/username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="108dp"
-            android:backgroundTint="@android:color/darker_gray"
-            android:ems="23"
-            android:fontFamily="@font/roboto"
-            android:hint="Username"
-            android:inputType="none"
-            android:editable="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:textSize="14sp" />
-
-        <EditText
-            android:id="@+id/email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="144dp"
-            android:backgroundTint="@android:color/darker_gray"
-            android:ems="23"
-            android:fontFamily="@font/roboto"
-            android:hint="Email"
-            android:inputType="none"
-            android:textSize="14sp"
-            android:editable="false"
+        <View
+            android:id="@+id/divider4"
+            android:layout_width="372dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="182dp"
+            android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/homepage"
+        <TextView
+            android:id="@+id/textView7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="216dp"
-            android:backgroundTint="@android:color/darker_gray"
-            android:ems="23"
-            android:hint="Homepage"
-            android:inputType="none"
-            android:textSize="14sp"
-            android:editable="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/phone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="180dp"
-            android:backgroundTint="@android:color/darker_gray"
-            android:ems="23"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="50dp"
             android:fontFamily="@font/roboto"
-            android:hint="Phone"
-            android:inputType="none"
-            android:textSize="14sp"
-            android:editable="false"
+            android:text="Username"
+            android:textColor="@android:color/darker_gray"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="120dp"
+            android:fontFamily="@font/roboto"
+            android:text="Phone"
+            android:textColor="@android:color/darker_gray"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="155dp"
+            android:fontFamily="@font/roboto"
+            android:text="Homepage"
+            android:textColor="@android:color/darker_gray"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="85dp"
+            android:fontFamily="@font/roboto"
+            android:text="Email"
+            android:textColor="@android:color/darker_gray"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="372dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="77dp"
+            android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="372dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="112dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/divider3"
+            android:layout_width="372dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="147dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/username_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="20dp"
+            android:text="N/A"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/email_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="85dp"
+            android:layout_marginEnd="20dp"
+            android:text="N/A"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/phone_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="120dp"
+            android:layout_marginEnd="20dp"
+            android:text="N/A"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/homepage_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="155dp"
+            android:layout_marginEnd="20dp"
+            android:text="N/A"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>
