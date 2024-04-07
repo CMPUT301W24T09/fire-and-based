@@ -30,6 +30,7 @@
                 android:layout_height="wrap_content"
                 android:text="TextView"
                 android:textSize="20sp"
+                android:layout_marginTop="15dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,7 +38,7 @@
                 android:id="@+id/view_qr_code"
                 android:layout_width="wrap_content"
                 android:layout_height="45dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="40dp"
                 android:backgroundTint="@color/figmaBlue"
                 android:fontFamily="@font/roboto"
                 app:cornerRadius="7dp"
@@ -49,7 +50,7 @@
                 android:id="@+id/additional_actions_button"
                 android:layout_width="wrap_content"
                 android:layout_height="45dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="40dp"
                 android:backgroundTint="@color/red"
                 android:fontFamily="@font/roboto"
                 android:text="Leave Event"
