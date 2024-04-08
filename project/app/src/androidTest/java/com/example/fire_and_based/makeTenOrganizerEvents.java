@@ -36,7 +36,11 @@ public class makeTenOrganizerEvents {
         }
     }
 
-
+    /**
+     * A test class designed to validate the functionality of creating ten organizer events
+     * within the application. It ensures that the process for an organizer to create an event,
+     * including filling out event details and generating a QR code, works as expected.
+     */
     @Test
     public void makeTenEvents() throws InterruptedException {
         User user = new User("testUser123");

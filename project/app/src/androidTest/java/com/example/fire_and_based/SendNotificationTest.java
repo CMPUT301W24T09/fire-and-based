@@ -28,7 +28,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+/**
+ * Tests the functionality of sending notifications within the app, ensuring that users can
+ * create and send notifications successfully through the UI. This includes navigating to the
+ * notification sending interface, entering notification content, and the process of sending it.
+ */
 @RunWith(AndroidJUnit4.class)
 public class SendNotificationTest {
 

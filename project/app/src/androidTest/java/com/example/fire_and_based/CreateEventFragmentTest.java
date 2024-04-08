@@ -21,7 +21,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+/**
+ * Test class for CreateEventFragment, intended to validate the functionality of event creation
+ * and QR code generation within the application. This class performs UI tests to ensure that the
+ * event creation flow works as expected from the user's perspective.
+ */
 @RunWith(AndroidJUnit4.class)
 public class CreateEventFragmentTest {
 
@@ -29,7 +33,12 @@ public class CreateEventFragmentTest {
     public IntentsTestRule<UserActivity> intentsTestRule =
             new IntentsTestRule<>(UserActivity.class, true, false); // Do not launch activity immediately
 
-
+    /**
+     * Tests if the organizing list is correctly displayed and if the UI behaves as expected
+     * through the event creation process.
+     *
+     * @throws InterruptedException if the thread sleeping is interrupted
+     */
     @Test
     public void testOrganizingListDisplayed() throws InterruptedException {
         User user = new User("testUser123");

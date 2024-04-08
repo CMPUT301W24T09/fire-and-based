@@ -23,7 +23,11 @@ import com.example.fire_and_based.UserActivity;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+/**
+ * Tests the functionality of deleting an event by an organizer within the app.
+ * This class simulates the user interactions required to delete an event
+ * from the list of events they are organizing.
+ */
 @RunWith(AndroidJUnit4.class)
 public class DeleteOrganizerEvent {
 
