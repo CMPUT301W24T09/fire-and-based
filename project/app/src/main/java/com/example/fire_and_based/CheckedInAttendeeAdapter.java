@@ -19,6 +19,13 @@ public class CheckedInAttendeeAdapter extends ArrayAdapter<User> {
     private List<Long> mLongList;
     private ImageDownloader imageDownloader = new ImageDownloader();
 
+    /**
+     * Constructs a new CheckedInAttendeeAdapter.
+     *
+     * @param context  The context in which the adapter is being used.
+     * @param dataList The list of User objects to be displayed.
+     * @param longList The list of associated data for each user.
+     */
     public CheckedInAttendeeAdapter(Context context, List<User> dataList, List<Long> longList) {
         super(context, 0, dataList);
         mContext = context;

@@ -124,6 +124,10 @@ public class EventArrayAdapter extends ArrayAdapter<Event> implements Filterable
             return view;
     }
 
+    /**
+     * Returns a filter that performs filtering on the event list based on the specified constraint.
+     * @return A filter for the event list.
+     */
     @NonNull
     @Override
     public Filter getFilter() {
@@ -161,6 +165,12 @@ public class EventArrayAdapter extends ArrayAdapter<Event> implements Filterable
         };
     }
 
+    /**
+     * Sorts the event list based on the specified sorting method and applies filtering if a constraint is provided.
+     *
+     * @param sortMethod  The sorting method to be applied ("A-Z", "Upcoming", or "Popular").
+     * @param constraint  The constraint for filtering the event list.
+     */
     public void sortEvents(String sortMethod, CharSequence constraint) {
         if (Objects.equals(sortMethod, "A-Z")) {
             events.sort(Comparator.comparing(Event::getEventName, String.CASE_INSENSITIVE_ORDER));
