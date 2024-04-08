@@ -34,14 +34,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/admin_profile_date"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginStart="17dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="12dp"
-                android:layout_toEndOf="@+id/profile_picture_admin"
+                android:layout_marginStart="97dp"
+                android:layout_marginTop="21dp"
+                android:layout_marginBottom="4dp"
                 android:fontFamily="@font/roboto_bold"
                 android:text="Username/EventName"
-                android:textSize="24sp" />
+                android:textSize="27sp" />
 
             <TextView
                 android:id="@+id/admin_profile_date"
@@ -62,9 +62,9 @@
                 android:layout_height="16dp"
                 android:layout_below="@+id/user_name"
                 android:layout_alignParentBottom="true"
-                android:layout_marginStart="17dp"
+                android:layout_marginStart="97dp"
                 android:layout_marginBottom="20dp"
-                android:layout_toEndOf="@+id/profile_picture_admin"
+                android:layout_alignParentStart="true"
                 app:srcCompat="@drawable/baseline_calendar_month_24" />
 
             <de.hdodenhof.circleimageview.CircleImageView

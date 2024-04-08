@@ -35,7 +35,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="97dp"
-                android:layout_marginTop="22dp"
+                android:layout_marginTop="20dp"
                 android:fontFamily="@font/roboto_bold"
                 android:text="Username"
                 android:textSize="30dp" />
@@ -48,7 +48,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginStart="97dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="3dp"
                 android:layout_marginBottom="13dp"
                 android:text="description text"
                 android:textColor="#808080"
