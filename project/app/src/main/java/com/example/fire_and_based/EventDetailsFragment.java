@@ -1,5 +1,7 @@
 package com.example.fire_and_based;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -185,7 +187,32 @@ public class EventDetailsFragment extends Fragment {
                 FirebaseUtil.addEventAndCheckedInUser(db, event.getQRcode(), user.getDeviceID(), new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                getLocation();
+                                if (checkedInButton.getText() == "Check Out"){
+                                    checkedInButton.setText("Check In");
+
+                                }  else if (event.isTrackLocation()) {
+
+                                    new AlertDialog.Builder(v.getContext())
+                                            .setTitle("User Location Data") // Set the dialog title
+                                            .setMessage("This event uses location tracking. \nDo you want to share your location where you check in?") // Set the dialog message
+                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    // User clicked Yes, call getLocation()
+                                                    getLocation();
+                                                }
+                                            })
+                                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    // User clicked No, do nothing or handle as needed
+                                                    String checkInStatus = checkedInButton.getText().toString();
+                                                    checkedInButton.setText(checkInStatus.equals("Check In") ? "Check Out" : "Check In");
+                                                }
+                                            })
+                                            .show(); // Display the dialog
+
+                                }
 
 
                             }

@@ -3,9 +3,11 @@ package com.example.fire_and_based;
 import static android.app.Activity.RESULT_OK;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.Image;
@@ -136,6 +138,9 @@ public class CreateEventFragment extends Fragment {
         EditText eventMaxAttendees = view.findViewById(R.id.event_maximum_attendees_editable);
         EditText eventDateEnd = view.findViewById(R.id.event_date_editable_end);
         EditText eventTimeEnd = view.findViewById(R.id.event_time_editable_end);
+        com.google.android.material.switchmaterial.SwitchMaterial geoTracking = view.findViewById(R.id.eventEditGeotrackToggleCreate);
+        geoTracking.setChecked(true);
+
         // set textfield to the current date ( for making things more obvious and easier for them to click )
         final Calendar c = Calendar.getInstance();
         int mYear = c.get(Calendar.YEAR); // current year
@@ -332,8 +337,11 @@ public class CreateEventFragment extends Fragment {
             String eventLocationString = eventLocation.getText().toString();
             String eventMaxAttendeesString = eventMaxAttendees.getText().toString();
 
+            Boolean isTracking = geoTracking.isChecked();
 
-            if (eventNameString.length() < 5) {
+
+
+                if (eventNameString.length() < 5) {
                 Toast.makeText(requireContext(), "Title not long enough", Toast.LENGTH_SHORT).show();
             } else if (eventDescriptionString.length() < 5) {
                 Toast.makeText(requireContext(), "Desciption not long enough", Toast.LENGTH_SHORT).show();
@@ -356,103 +364,125 @@ public class CreateEventFragment extends Fragment {
                 // add more handling here if needed
             } else {
 
+                    new AlertDialog.Builder(v.getContext())
+                            .setTitle("Create New Event") // Set the dialog title
+                            .setMessage("You cannot change the event name after this screen. Are you sure you want to make this event?")
+                            .setPositiveButton("Make Event", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // User clicked Yes, call getLocation()
+                                    // convert the date to time since 1970 jan 1 to store in the database
+                                    String combinedDateTime = dateString + " " + timeString;
+                                    SimpleDateFormat sdf = new SimpleDateFormat("dd M yyyy HH:mm");  // this is used for just how the string is formatted we could change this easily if we need to
+                                    String endDateTime = dateEndString + " " + timeEndString;
 
-                // convert the date to time since 1970 jan 1 to store in the database
-                String combinedDateTime = dateString + " " + timeString;
-                SimpleDateFormat sdf = new SimpleDateFormat("dd M yyyy HH:mm");  // this is used for just how the string is formatted we could change this easily if we need to
-                String endDateTime = dateEndString + " " + timeEndString;
+                                    try {
 
-                try {
+                                        // Parse the string into a Date object
+                                        Date date = sdf.parse(combinedDateTime);
+                                        long timeSince1970 = date.getTime();  // this is the time we store n the database -> put in the event object when its created
 
-                    // Parse the string into a Date object
-                    Date date = sdf.parse(combinedDateTime);
-                    long timeSince1970 = date.getTime();  // this is the time we store n the database -> put in the event object when its created
+                                        Date endDate = sdf.parse(endDateTime);
+                                        long endTimeSince1970 = endDate.getTime();
 
-                    Date endDate = sdf.parse(endDateTime);
-                    long endTimeSince1970 = endDate.getTime();
-
-                    if (eventMaxAttendeesString.length() > 0) {
-                        maxAttendeeLong = Long.parseLong(eventMaxAttendeesString);
-                    } else {
-                        maxAttendeeLong = (long) -1;
-                    }
+                                        if (eventMaxAttendeesString.length() > 0) {
+                                            maxAttendeeLong = Long.parseLong(eventMaxAttendeesString);
+                                        } else {
+                                            maxAttendeeLong = (long) -1;
+                                        }
 
 
-                    if (!(imageUri == null)) {
-                        imageUrl = "events/" + QRCode;
-                        //IMAGE UPLOAD TO FIREBASE
-                        StorageReference selectionRef = fireRef.child(imageUrl);
-                        Toast.makeText(getContext(), "MADE IT TO HERE ", Toast.LENGTH_SHORT).show();
-                        selectionRef.putFile(imageUri);
+                                        if (!(imageUri == null)) {
+                                            imageUrl = "events/" + QRCode;
+                                            //IMAGE UPLOAD TO FIREBASE
+                                            StorageReference selectionRef = fireRef.child(imageUrl);
+                                            Toast.makeText(getContext(), "MADE IT TO HERE ", Toast.LENGTH_SHORT).show();
+                                            selectionRef.putFile(imageUri);
 
-                    }
+                                        }
+
 
 //                    imageUrl = "TESTING IMAGE URL";
-                    Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, endTimeSince1970, eventLocationString, PosterQRCode, null, maxAttendeeLong, false);
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                        Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, endTimeSince1970, eventLocationString, PosterQRCode, null, maxAttendeeLong, isTracking);
+                                        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                    FirebaseUtil.addEventToDB(db, newEvent, new FirebaseUtil.AddEventCallback() {
-                        @Override
-                        public void onEventAdded() {
-                            toast("Event successfully added!");
-                            Log.println(Log.DEBUG, "EventCreation", "New event with id: " + QRCode + " added");
+                                        FirebaseUtil.addEventToDB(db, newEvent, new FirebaseUtil.AddEventCallback() {
+                                            @Override
+                                            public void onEventAdded() {
+                                                toast("Event successfully added!");
+                                                Log.println(Log.DEBUG, "EventCreation", "New event with id: " + QRCode + " added");
 
-                            FirebaseUtil.addEventAndOrganizer(db, newEvent.getQRcode(), user.getDeviceID(), aVoid -> {
-                                Log.d("Firebase Success", "User is organizer of event now");
-                                getParentFragmentManager().popBackStack();
-                                EventDetailsFragment fragment = new EventDetailsFragment();
-                                Bundle bundle = new Bundle();
-                                bundle.putParcelable("user", user);
-                                bundle.putParcelable("event", newEvent);
-                                bundle.putString("mode", "Organizing");
-                                fragment.setArguments(bundle);
-                                getParentFragmentManager().beginTransaction()
-                                        .replace(R.id.fragment_container_view, fragment)
-                                        .setReorderingAllowed(true)
-                                        .addToBackStack(null)
-                                        .commit();
-                            }, e -> {
-                                Log.e("FirebaseError", "Error setting up organizer of event " + e.getMessage());
-                            });
+                                                FirebaseUtil.addEventAndOrganizer(db, newEvent.getQRcode(), user.getDeviceID(), aVoid -> {
+                                                    Log.d("Firebase Success", "User is organizer of event now");
+                                                    getParentFragmentManager().popBackStack();
+                                                    EventDetailsFragment fragment = new EventDetailsFragment();
+                                                    Bundle bundle = new Bundle();
+                                                    bundle.putParcelable("user", user);
+                                                    bundle.putParcelable("event", newEvent);
+                                                    bundle.putString("mode", "Organizing");
+                                                    fragment.setArguments(bundle);
+                                                    getParentFragmentManager().beginTransaction()
+                                                            .replace(R.id.fragment_container_view, fragment)
+                                                            .setReorderingAllowed(true)
+                                                            .addToBackStack(null)
+                                                            .commit();
+                                                }, e -> {
+                                                    Log.e("FirebaseError", "Error setting up organizer of event " + e.getMessage());
+                                                });
 
-                            //TODO exit out maybe?
-                        }
+                                                //TODO exit out maybe?
+                                            }
 
-                        @Override
-                        public void onEventExists() {
-                            toast("ERROR: Event with the same ID already exists in the database.");
-                            Log.println(Log.DEBUG, "EventCreation", "Event with id: " + QRCode + " found a duplicate");
-                        }
+                                            @Override
+                                            public void onEventExists() {
+                                                toast("ERROR: Event with the same ID already exists in the database.");
+                                                Log.println(Log.DEBUG, "EventCreation", "Event with id: " + QRCode + " found a duplicate");
+                                            }
 
-                        @Override
-                        public void onError(Exception e) {
-                            toast("An internal error occurred, please try again later");
-                            Log.println(Log.ERROR, "EventCreation", e.toString());
-                        }
-                    });
-
-
-                    // EVENT CREATION GOES HERE
-                    // we can create the event object
+                                            @Override
+                                            public void onError(Exception e) {
+                                                toast("An internal error occurred, please try again later");
+                                                Log.println(Log.ERROR, "EventCreation", e.toString());
+                                            }
+                                        });
 
 
-                    //this.eventName = eventName;
-                    //this.eventDescription = eventDescription;
-                    //this.eventBanner = eventBanner;
-                    //this.QRcode = QRcode;
+                                        // EVENT CREATION GOES HERE
+                                        // we can create the event object
 
 
-                    // then pass to database
-                    // user was passed into this activity it is a public User object named 'user'
-                    // use that to write to database and properly store in user events
-                    // also make sure that in the event the user is an organizer :salute:
+                                        //this.eventName = eventName;
+                                        //this.eventDescription = eventDescription;
+                                        //this.eventBanner = eventBanner;
+                                        //this.QRcode = QRcode;
+
+
+                                        // then pass to database
+                                        // user was passed into this activity it is a public User object named 'user'
+                                        // use that to write to database and properly store in user events
+                                        // also make sure that in the event the user is an organizer :salute:
 
 
 //                                    Toast.makeText(requireContext(), Long.toString(timeSince1970), Toast.LENGTH_SHORT).show();
-                } catch (Exception e) {
-                    // Handle the possibility that parsing fails
-                    Toast.makeText(requireContext(), (CharSequence) e, Toast.LENGTH_SHORT).show();
-                }
+                                    } catch (Exception e) {
+                                        // Handle the possibility that parsing fails
+                                        Toast.makeText(requireContext(), (CharSequence) e, Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // User clicked No, do nothing or handle as needed
+                                }
+                            })
+                            .show(); // Display the dialog
+
+
+
+
+
+
             }
             }
         });
