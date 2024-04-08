@@ -173,8 +173,22 @@ public class ImageDownloader
         uriRef.delete();
 
         //set default
-        String defaultPic = "profiles/" + thisUser.getDeviceID();
+        String defaultPic = "defaultProfiles/" + thisUser.getDeviceID();
         thisUser.setProfilePicture(defaultPic);
+
+        FirebaseUtil.updateUser(db, thisUser, new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+
+            }
+        }, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
+
     }
 
 //        FirebaseUtil.getEventBanner(db, thisEvent, new FirebaseUtil.EventBannerCallback()

@@ -568,6 +568,7 @@ public class FirebaseUtil {
         map.put("firstName", user.getFirstName());
         map.put("lastName", user.getLastName());
         map.put("homepage", user.getHomepage());
+        map.put("profilePicture", user.getProfilePicture());
         return map;
     }
 
