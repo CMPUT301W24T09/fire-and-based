@@ -38,11 +38,23 @@
             app:tint="#FFFFFF" />
 
         <TextView
+            android:id="@+id/event_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="30sp"
+            android:layout_marginHorizontal="15dp"
+            android:paddingBottom="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/banner_image" />
+
+        <TextView
             android:id="@+id/dateText"
             android:layout_width="333dp"
             android:layout_height="31dp"
             android:layout_marginLeft="15dp"
-            android:text="Date @ Time"
+            android:text="Date + Time"
             android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/calendar"
             app:layout_constraintTop_toBottomOf="@+id/event_title" />
@@ -60,8 +72,12 @@
 
         <TextView
             android:id="@+id/locationText"
-            android:layout_width="373dp"
-            android:layout_height="27dp"
+            android:layout_width="wrap_content"
+            android:minWidth="310dp"
+            android:maxLines="2"
+            app:flow_wrapMode="aligned"
+            android:breakStrategy="balanced"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:text=""
             android:textSize="20sp"
@@ -80,17 +96,7 @@
             app:layout_constraintTop_toBottomOf="@+id/calendar"
             app:srcCompat="@drawable/baseline_location_pin_24" />
 
-        <TextView
-            android:id="@+id/event_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_bold"
-            android:textSize="30sp"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginBottom="5dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/banner_image" />
+
         <!--        <ImageView-->
         <!--            android:id="@+id/back_arrow"-->
         <!--            android:layout_width="wrap_content"-->
