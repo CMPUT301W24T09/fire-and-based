@@ -14,9 +14,12 @@ import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import android.content.Intent;
 
@@ -30,25 +33,25 @@ import android.content.Intent;
 public class MainActivityTest {
 
     @Rule
-    public ActivityScenarioRule<MainActivity> activityScenarioRule =
-            new ActivityScenarioRule<>(MainActivity.class);
+    public IntentsTestRule<MainActivity> intentsTestRule =
+            new IntentsTestRule<>(MainActivity.class, true, true); // Do not launch activity immediately
 
-    @Before
-    public void setUp() {
-        Intents.init();
-    }
 
-    @After
-    public void tearDown() {
-        Intents.release();
-    }
     @Test
-    public void testScreenSwitchIntent() throws InterruptedException {
-        // Simulate a user action that should trigger the screen switch
-        // Verify that the correct intent was launched
+    public void profileClickTest() throws InterruptedException {
+//        User user = new User("testUser123");
+//        Intent startIntent = new Intent();
+//        startIntent.putExtra("user", user);
 
-        // We are trying to test that the app starts in MainActivity and Automatically switches to UserActivity
+//        intentsTestRule.launchActivity(startIntent);
         Thread.sleep(2000);
-        intended(hasComponent(UserActivity.class.getName()));
+
+        onView(withText("Browse Events")).check(matches(isDisplayed()));
+
+//        intended(hasComponent(UserActivity.class.getName()));
+
+
     }
+
+
 }

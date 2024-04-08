@@ -30,6 +30,8 @@ public class ProfileEditTest {
     @Test
     public void profileClickTest() throws InterruptedException {
         User user = new User("testUser123");
+        user.setProfilePicture("defaultProfiles/testUser123.jpg");
+
         Intent startIntent = new Intent();
         startIntent.putExtra("user", user);
 
@@ -49,6 +51,9 @@ public class ProfileEditTest {
     @Test
     public void editProfileClickTest() throws InterruptedException {
         User user = new User("testUser123");
+        user.setProfilePicture("defaultProfiles/testUser123.jpg");
+
+
         Intent startIntent = new Intent();
         startIntent.putExtra("user", user);
 
@@ -96,6 +101,7 @@ public class ProfileEditTest {
     @Test
     public void profileEditUpdateField() throws InterruptedException {
         User user = new User("testUser123");
+        user.setProfilePicture("defaultProfiles/testUser123.jpg");
         Intent startIntent = new Intent();
         startIntent.putExtra("user", user);
         Thread.sleep(3000);
