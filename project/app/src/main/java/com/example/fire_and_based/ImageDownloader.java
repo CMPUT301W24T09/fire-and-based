@@ -152,6 +152,7 @@ public class ImageDownloader
             }
         });
         return imageMap[0];
+    }
 
     public void deletePic(User thisUser)
     {
