@@ -20,8 +20,8 @@
         android:theme="@style/Theme.Fireandbased"
         tools:targetApi="tiramisu"
         android:largeHeap="true"
-        android:hardwareAccelerated="false">
         android:hardwareAccelerated="true">
+<!--        android:hardwareAccelerated="true">-->
 
         <!-- for image sharing feature-->
         <provider
