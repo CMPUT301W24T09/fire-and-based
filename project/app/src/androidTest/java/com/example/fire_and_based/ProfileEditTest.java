@@ -29,13 +29,14 @@ public class ProfileEditTest {
 
     @Test
     public void profileClickTest() throws InterruptedException {
-        User user = new User("TestUser123");
+        User user = new User("testUser123");
         Intent startIntent = new Intent();
         startIntent.putExtra("user", user);
 
         intentsTestRule.launchActivity(startIntent);
-
+        Thread.sleep(3000);
         onView(withId(R.id.profile_item)).perform(click());
+        Thread.sleep(3000);
         onView(withText("Username")).check(matches(isDisplayed()));
         onView(withText("Email")).check(matches(isDisplayed()));
         onView(withText("Phone")).check(matches(isDisplayed()));
@@ -47,7 +48,7 @@ public class ProfileEditTest {
 
     @Test
     public void editProfileClickTest() throws InterruptedException {
-        User user = new User("123");
+        User user = new User("testUser123");
         Intent startIntent = new Intent();
         startIntent.putExtra("user", user);
 
@@ -94,14 +95,19 @@ public class ProfileEditTest {
 
     @Test
     public void profileEditUpdateField() throws InterruptedException {
-        User user = new User("123");
+        User user = new User("testUser123");
         Intent startIntent = new Intent();
         startIntent.putExtra("user", user);
+        Thread.sleep(3000);
 
         intentsTestRule.launchActivity(startIntent);
+        Thread.sleep(3000);
 
         onView(withId(R.id.profile_item)).perform(click());
+        Thread.sleep(3000);
+
         onView(withId(R.id.edit_profile_button)).perform(click());
+        Thread.sleep(3000);
 
 
 

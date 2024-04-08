@@ -90,7 +90,11 @@ public class CreateEventFragmentTest {
         onView(withId(R.id.create_event_button))
                 .perform(click());
 
+        onView(withText("MAKE EVENT")).perform(click());
+
+
         Thread.sleep(3000);
+
 
         onView(withText("Test Event Name")).check(matches(isDisplayed()));
 
