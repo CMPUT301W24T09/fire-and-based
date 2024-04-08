@@ -2,7 +2,10 @@ package com.example.fire_and_based;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +20,12 @@ import androidx.annotation.Nullable;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Calendar;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -52,22 +60,54 @@ public class AnnouncementArrayAdapter extends ArrayAdapter<Announcement> {
      * @return A View displaying the data at the specified position.
      */
 
+    @SuppressLint("SetTextI18n")
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             View view = convertView;
-
             if (view == null) {
                 view = LayoutInflater.from(context).inflate(R.layout.announcements_content, parent, false);
             }
 
 
+        final Calendar c = Calendar.getInstance();
+
+
+
         Announcement announcement = announcements.get(position);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         String userID = announcement.getSender();
 
+
+
+        // get the XML elements
         TextView username = view.findViewById(R.id.notif_user);
-        ImageView profilePic = view.findViewById(R.id.profile_image);
+        CircleImageView profilePic = view.findViewById(R.id.profile_picture);
+        TextView description = view.findViewById(R.id.notif_description);
+
+        TextView time = view.findViewById(R.id.notif_time);
+
+
+        long startTimeLong = announcement.getTimestamp();
+        startTimeLong = startTimeLong * 1000;  // i think there is inconsitency
+//        String[] DateTime = convertTimestampToCalendarDateAndTime(startTimeLong);
+//        String MonthYearDay = DateTime[0];
+
+        String diffOption = announcement.dateFromLong(startTimeLong);
+        String[] dateTimeConverted = convertTimestampToCalendarDateAndTime(startTimeLong);
+        String announcementDate = dateTimeConverted[0];
+        String announcementTime = dateTimeConverted[1];
+
+
+
+        time.setText(diffOption + " " + announcementTime);
+
+//        time.setText(announcementDate + "\n" + announcementTime);
+
+
+        description.setText(announcement.getContent());
+
 
         ImageDownloader downloadGuy = new ImageDownloader();
 
@@ -78,23 +118,47 @@ public class AnnouncementArrayAdapter extends ArrayAdapter<Announcement> {
                     {
                         userName = "Organizer";
                     }
-
                     username.setText(userName);
-                    downloadGuy.getProfilePicBitmap(user, (CircleImageView) profilePic);
 
 
 
+                    // CARSON SOMEONE GOTTA FIX THIS SHIT BRO
+                    downloadGuy.getProfilePicBitmap(user, profilePic);
+//                    Bitmap imageBitMap = downloadGuy.returnProfileBitmap(user);
+//                    profilePic.setImageBitmap(imageBitMap);
 
                 },
                 e -> {
                     Log.d(TAG, e.toString());
                 });
-        TextView description = view.findViewById(R.id.notif_description);
-        TextView time = view.findViewById(R.id.notif_time);
-        description.setText(announcement.getContent());
-        time.setText(String.valueOf(announcement.getTimestamp()));
 
+        return view;
+    }
 
-            return view;
+    public static String[] convertTimestampToCalendarDateAndTime(Long timestamp) {
+        // Create a Calendar instance and set the time using the given timestamp
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timestamp);
+
+        // Extract the year, month, day, hour, and minute from the calendar
+        int year = calendar.get(Calendar.YEAR);
+        // Add 1 to the month because Calendar.MONTH returns 0 for January
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        String aMpM = "AM";
+        if (hour > 12){
+            hour = hour % 12;
+            aMpM = "PM";
+        }
+        // Format the date string
+        String date = String.format("%02d %02d %d", day, month, year);
+        // Format the time string
+        String time = String.format("%02d:%02d", hour, minute);
+        time = time + " " + aMpM;
+
+        // Return an array with both date and time
+        return new String[]{date, time};
     }
 }

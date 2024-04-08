@@ -969,6 +969,7 @@ public class FirebaseUtil {
         db.collection(USERS_COLLECTION).document(userID).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 User user = documentSnapshot.toObject(User.class);
+                user.setProfilePicture(documentSnapshot.get("profilePicture").toString());
                 if (user != null) {
                     user.setAdmin(documentSnapshot.getBoolean("admin"));
                 }
