@@ -46,6 +46,12 @@ import com.google.firebase.storage.UploadTask;
 import org.checkerframework.checker.units.qual.A;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -81,69 +87,12 @@ public class MainActivity extends AppCompatActivity {
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel);
         }
-
-
         Log.d("MainActivity", "Getting UUID");
         String uuid = sharedPref.getString("uuid_key", "");
         Log.d("MainActivity", "UUID is: " + uuid);
 
         if (TextUtils.isEmpty(uuid)) {
-            Log.d("MainActivity", "No UUID found, generating...");
-            uuid = UUID.randomUUID().toString();
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("uuid_key", uuid);
-
-            // First 5 letters of device id for profile picture
-            String profileImageId = uuid.substring(0, Math.min(uuid.length(), 5));
-
-            // First time users get deterministically (on device id) generated profile picture
-            Bitmap bitmap = generateBitmap(profileImageId, 100, 75);
-
-            uploadProfilePicture(bitmap, uuid);
-
-            Log.d(TAG, "Getting FCM Token");
-            String finalUuid = uuid;
-            FirebaseMessaging.getInstance().getToken()
-                    .addOnCompleteListener(new OnCompleteListener<String>() {
-                        @Override
-                        public void onComplete(@NonNull Task<String> task) {
-                            if (!task.isSuccessful()) {
-                                Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-                                return;
-                            }
-                            String token = task.getResult();
-                            Log.d(TAG, "Token: " + token);
-                            currentUser = new User(finalUuid, "", "", "", "", "", "", "", false, token);
-                            FirebaseUtil.addUserToDB(db, currentUser,
-                                    aVoid -> {
-                                        addFieldstoUser(db, currentUser, new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void unused)
-                                            {
-                                                Log.d(TAG, "Extra Fields Added to User in DB");
-
-                                            }
-                                        }, new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e)
-                                            {
-                                                Log.d(TAG, "Extra fields not added");
-
-                                            }
-                                        });
-
-                                        Log.d(TAG, "User added successfully");
-                                        AnnouncementUtil.subscribeToTopic("system");
-                                        Intent intent = new Intent(MainActivity.this, UserActivity.class);
-                                        intent.putExtra("user", currentUser);  // we can switch activities now that a user has been created
-                                        startActivity(intent);
-                                    },
-                                    e -> {
-                                        Log.d("Failed to add user: ", e.getMessage());
-                                    });
-                            editor.commit();
-                        }
-                    });
+            createNewUser(db, sharedPref);
         }
         else {
             Log.d("MainActivity", "Found UUID, getting user...");
@@ -164,7 +113,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     },
                     e -> {
-                        Log.d(TAG, e.toString());
+                        sharedPref.edit().remove("uuid_key").commit();
+                        createNewUser(db, sharedPref);
                     });
         }
 
@@ -187,6 +137,12 @@ public class MainActivity extends AppCompatActivity {
                 .update("organizerEvents", FieldValue.arrayUnion())
                 .addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);
+
+        // For some reason this isn't being added to the database despite it being an attribute of the user class so I did this
+        db.collection("users").document(user.getDeviceID())
+                .update("profilePicture", user.getProfilePicture())
+                .addOnSuccessListener(successListener)
+                .addOnFailureListener(failureListener);
     }
 
     /**
@@ -198,30 +154,63 @@ public class MainActivity extends AppCompatActivity {
         return currentUser.getDeviceID();
     }
 
-    /**
-     * Generates a bitmap image with specified text, width, and height.
-     * @param text The text to be drawn on the bitmap
-     * @param width The width of the bitmap
-     * @param height The height of the bitmap
-     * @return The generated bitmap
-     */
-    private Bitmap generateBitmap(String text, int width, int height) {
-        // This is all subjective to change, I don't really like how they look currently so open to suggestions
+    private Bitmap generateProfilePic(String text, int size) {
+        String hash = "";
+        int noiseLevel = 50;
+        try {
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            byte[] bytes = digest.digest(text.getBytes());
+            StringBuilder builder = new StringBuilder();
+            for (byte b : bytes) {
+                builder.append(String.format("%02x", b));
+            }
+            hash = builder.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
 
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        // Background colour
-        canvas.drawColor(Color.LTGRAY);
 
-        // First 5 letters drawn onto image
-        Paint paint = new Paint();
-        paint.setColor(Color.WHITE);
-        paint.setTextSize(17);
-        paint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(text, width / 2f, height / 2f, paint);
+        // Set background color based on hash
+        canvas.drawColor(getColorFromHash(hash));
+
+        Random random = new Random();
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        int[] pixels = new int[width * height];
+        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+
+        for (int i = 0; i < pixels.length; i++) {
+            int alpha = Color.alpha(pixels[i]);
+            int red = Color.red(pixels[i]);
+            int green = Color.green(pixels[i]);
+            int blue = Color.blue(pixels[i]);
+
+            int noiseRed = clampColor(red + random.nextInt(noiseLevel * 2) - noiseLevel);
+            int noiseGreen = clampColor(green + random.nextInt(noiseLevel * 2) - noiseLevel);
+            int noiseBlue = clampColor(blue + random.nextInt(noiseLevel * 2) - noiseLevel);
+
+            pixels[i] = Color.argb(alpha, noiseRed, noiseGreen, noiseBlue);
+        }
+
+        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
 
         return bitmap;
     }
+
+
+    private static int clampColor(int color) {
+        return Math.min(255, Math.max(0, color)); // Clamp color value between 0 and 255
+    }
+
+    private static int getColorFromHash(String hash) {
+        // For simplicity, let's just use the first 6 characters of the hash to generate a color
+        String colorHex = hash.substring(0, 6);
+        return Color.parseColor("#" + colorHex);
+    }
+
 
     /**
      * Uploads the user's profile picture to Firebase Storage.
@@ -231,19 +220,31 @@ public class MainActivity extends AppCompatActivity {
      * @param uuid The unique identifier associated with the user.
      *             This identifier is used to reference the profile picture in the storage.
      */
-
     private void uploadProfilePicture(Bitmap bitmap, String uuid) {
         // Converts bitmap to URI
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, uuid, null);
-        Uri profilePicUri = Uri.parse(path);
+        byte[] byteArray = bytes.toByteArray();
+
+        String fileName = "image_" + uuid + ".png";
+
+        File tempFile = new File(getCacheDir(), fileName);
+
+        try {
+            FileOutputStream outputStream = new FileOutputStream(tempFile);
+            outputStream.write(byteArray);
+            outputStream.flush();
+            outputStream.close();
+        }
+        catch (IOException e) {
+            Log.w(TAG, "Error: Didn't make this thing correctly.");
+        }
 
         // Profile pictures referenced by device id
-        String imageUrl = "profiles/" + uuid;
-        StorageReference selectionRef = fireRef.child(imageUrl);
+        String defaultImageUrl = "defaultProfiles/" + uuid;
+        StorageReference selectionRef = fireRef.child(defaultImageUrl);
         // Uploads profile image as URI
-        selectionRef.putFile(profilePicUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        selectionRef.putFile(Uri.fromFile(tempFile)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Log.d(TAG, "superb");
@@ -252,7 +253,62 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.w(TAG, "death");
-           }
+            }
         });
+    }
+
+    private void createNewUser(FirebaseFirestore db, SharedPreferences sharedPref) {
+        Log.d("MainActivity", "No UUID found, generating...");
+        String uuid = UUID.randomUUID().toString();
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("uuid_key", uuid);
+
+        // First time users get deterministically (on device id) generated profile picture
+        Bitmap bitmap = generateProfilePic(uuid, 200);
+        uploadProfilePicture(bitmap, uuid);
+
+        Log.d(TAG, "Getting FCM Token");
+        String finalUuid = uuid;
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+                        String token = task.getResult();
+                        Log.d(TAG, "Token: " + token);
+                        currentUser = new User(finalUuid, "", "defaultProfiles/" + finalUuid, "", "", "", "", "", false, token);
+                        FirebaseUtil.addUserToDB(db, currentUser,
+                                aVoid -> {
+                                    addFieldstoUser(db, currentUser, new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused)
+                                        {
+                                            Log.d(TAG, "Extra Fields Added to User in DB");
+
+                                        }
+                                    }, new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e)
+                                        {
+                                            Log.d(TAG, "Extra fields not added");
+
+                                        }
+                                    });
+
+                                    Log.d(TAG, "User added successfully");
+                                    AnnouncementUtil.subscribeToTopic("system");
+                                    Intent intent = new Intent(MainActivity.this, UserActivity.class);
+                                    intent.putExtra("user", currentUser);  // we can switch activities now that a user has been created
+                                    startActivity(intent);
+                                },
+                                e -> {
+                                    Log.d("Failed to add user: ", e.getMessage());
+                                });
+                        editor.commit();
+                    }
+                });
     }
 }
