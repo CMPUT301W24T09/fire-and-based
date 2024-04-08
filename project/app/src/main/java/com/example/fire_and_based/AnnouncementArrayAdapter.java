@@ -135,6 +135,13 @@ public class AnnouncementArrayAdapter extends ArrayAdapter<Announcement> {
         return view;
     }
 
+
+    /**
+     * Converts a timestamp to calendar date and time strings.
+     *
+     * @param timestamp The timestamp to convert.
+     * @return An array containing date and time strings.
+     */
     public static String[] convertTimestampToCalendarDateAndTime(Long timestamp) {
         // Create a Calendar instance and set the time using the given timestamp
         Calendar calendar = Calendar.getInstance();

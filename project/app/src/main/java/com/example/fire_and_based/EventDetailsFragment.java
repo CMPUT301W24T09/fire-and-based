@@ -118,19 +118,16 @@ public class EventDetailsFragment extends Fragment {
 
         //Button checkedInButton = view.findViewById(R.id.checked_in_button);
         checkedInButton = view.findViewById(R.id.checked_in_button);
-        checkedInButton.setText("Check In");
         Button editDetailsButton = view.findViewById(R.id.edit_details_button);
         Button attendeeListButton = view.findViewById(R.id.attendee_list_button);
 
         if (Objects.equals(mode, "Attending")) {
             editDetailsButton.setVisibility(View.GONE);
             attendeeListButton.setVisibility(View.GONE);
-            FirebaseUtil.getUserCheckedInEvents(db, user.getDeviceID(), eventLongMap -> {
-                for (Map.Entry<Event, Long> entry: eventLongMap.entrySet()) {
-                    if (Objects.equals(entry.getKey().getQRcode(), event.getQRcode())) {
-                        Long numberTimesChecked = entry.getValue();
-                        int numberTimesCheckedAsInt = numberTimesChecked.intValue();
-                        checkedInButton.setText(numberTimesCheckedAsInt % 2 == 1 ? "Check Out" : "Check In");
+            FirebaseUtil.getEventCheckedInUsers(db, user.getDeviceID(), userLongMap -> {
+                for (Map.Entry<User, Long> entry: userLongMap.entrySet()) {
+                    if (Objects.equals(entry.getKey().getDeviceID(), user.getDeviceID())) {
+                        checkedInButton.setText("Checked in");
                     }
                 }
             }, e -> {
@@ -179,53 +176,6 @@ public class EventDetailsFragment extends Fragment {
                 getParentFragmentManager().popBackStack();
             }
         });
-
-        checkedInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                FirebaseUtil.addEventAndCheckedInUser(db, event.getQRcode(), user.getDeviceID(), new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                if (checkedInButton.getText() == "Check Out"){
-                                    checkedInButton.setText("Check In");
-
-                                }  else if (event.isTrackLocation()) {
-
-                                    new AlertDialog.Builder(v.getContext())
-                                            .setTitle("User Location Data") // Set the dialog title
-                                            .setMessage("This event uses location tracking. \nDo you want to share your location where you check in?") // Set the dialog message
-                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    // User clicked Yes, call getLocation()
-                                                    getLocation();
-                                                }
-                                            })
-                                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    // User clicked No, do nothing or handle as needed
-                                                    String checkInStatus = checkedInButton.getText().toString();
-                                                    checkedInButton.setText(checkInStatus.equals("Check In") ? "Check Out" : "Check In");
-                                                }
-                                            })
-                                            .show(); // Display the dialog
-
-                                }
-
-
-                            }
-                        }, new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.e("TAG", "Check in fail");
-                            }
-                        });
-
-            }
-        });
-
 
         viewPager = view.findViewById(R.id.event_details_viewpager);
         adapter = new EventDetailsAdapter(this, event, mode, user);

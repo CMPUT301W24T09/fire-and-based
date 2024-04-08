@@ -21,14 +21,14 @@
 
 
     <TextView
-        android:textColor="@color/white"
-        android:fontFamily="@font/roboto"
         android:id="@+id/view_qr_ok"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/roboto"
         android:text="Back"
-        android:textSize="20dp"
-        android:layout_marginTop="10dp"/>
+        android:textColor="@color/white"
+        android:textSize="20dp" />
 
     <TextView
         android:id="@+id/qr_display_event_name_text"

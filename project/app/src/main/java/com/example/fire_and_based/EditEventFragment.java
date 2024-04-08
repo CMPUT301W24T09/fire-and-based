@@ -53,7 +53,6 @@ public class EditEventFragment extends Fragment {
     private Uri imageUri;
     private Boolean imageChanged = false;
     public long eventMaxAttendeesLong;
-    private ArrayList<User> dataList = null; // for getting attendee amount
     private ImageView previewBanner;
     private String timeString;
     private ActivityResultLauncher<Intent> customActivityResultLauncher;

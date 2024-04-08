@@ -57,6 +57,7 @@ import java.util.Objects;
 import java.util.Random;
 
 /**
+ * This fragment is hosted by UserActivity
  * This class is the activity for creating a new event.
  * It can be accessed by clicking the create event button on UserActivity.
  * @author Tyler, Ilya, Sumayya, Aiden

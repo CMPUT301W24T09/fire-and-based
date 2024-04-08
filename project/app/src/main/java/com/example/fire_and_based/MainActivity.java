@@ -154,6 +154,14 @@ public class MainActivity extends AppCompatActivity {
         return currentUser.getDeviceID();
     }
 
+
+    /**
+     * Generates a profile picture bitmap based on the given text and size.
+     *
+     * @param text The text used to generate the profile picture.
+     * @param size The size of the profile picture (both width and height).
+     * @return The generated profile picture bitmap.
+     */
     private Bitmap generateProfilePic(String text, int size) {
         String hash = "";
         int noiseLevel = 50;
@@ -201,10 +209,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Clamps the given color value between 0 and 255.
+     *
+     * @param color The color value to clamp.
+     * @return The clamped color value.
+     */
     private static int clampColor(int color) {
         return Math.min(255, Math.max(0, color)); // Clamp color value between 0 and 255
     }
 
+    /**
+     * Generates a color based on the given hash string.
+     *
+     * @param hash The hash string used to generate the color.
+     * @return The generated color.
+     */
     private static int getColorFromHash(String hash) {
         // For simplicity, let's just use the first 6 characters of the hash to generate a color
         String colorHex = hash.substring(0, 6);
@@ -257,6 +277,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    /**
+     * Creates a new user in the Firestore database and generates a unique identifier for the user.
+     * If the user is created successfully, the user is added to the database and redirected to the UserActivity.
+     *
+     * @param db        The instance of the Firestore database.
+     * @param sharedPref The SharedPreferences object to store the generated UUID.
+     */
     private void createNewUser(FirebaseFirestore db, SharedPreferences sharedPref) {
         Log.d("MainActivity", "No UUID found, generating...");
         String uuid = UUID.randomUUID().toString();

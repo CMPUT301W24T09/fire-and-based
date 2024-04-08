@@ -15,6 +15,16 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.android.material.textview.MaterialTextView;
 
 public class ImageListFragment extends Fragment {
+
+    /**
+     * Inflates the layout for the image list fragment and sets up ViewPager2 and TabLayout.
+     * ViewPager2 displays different image lists, and TabLayout provides tabs to switch between them.
+     *
+     * @param inflater           The LayoutInflater object for inflating views in the fragment.
+     * @param container          The parent view to which the fragment's UI should be attached.
+     * @param savedInstanceState The saved state of the fragment, if any.
+     * @return The root view of the inflated layout.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

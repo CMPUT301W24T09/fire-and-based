@@ -131,6 +131,28 @@ public class ImageDownloader
         thisEvent.setEventBanner(null);
     }
 
+
+    /**
+     * Retrieves the profile image bitmap for the specified user.
+     *
+     * @param thisUser The user whose profile image bitmap is to be retrieved.
+     * @return The profile image bitmap of the specified user.
+     */
+    public Bitmap returnProfileBitmap(User thisUser) {
+        //Bitmap imageMap;
+        final Bitmap[] imageMap = new Bitmap[1];
+        String profileUrl = "profiles/" + thisUser.getDeviceID();
+        Log.d(TAG, profileUrl);
+        StorageReference uriRef = fireRef.child(profileUrl);
+        uriRef.getBytes(10000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                imageMap[0] = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+            }
+        });
+        return imageMap[0];
+
     public void deletePic(User thisUser)
     {
         //delete old

@@ -178,7 +178,9 @@ public class EventListFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                eventAdapter.getFilter().filter(newText);
+                if (eventAdapter != null) {
+                    eventAdapter.getFilter().filter(newText);
+                }
                 return true;
             }
         });
@@ -221,9 +223,7 @@ public class EventListFragment extends Fragment {
         View rootView = searchView.getRootView();
         rootView.requestFocus();
         searchView.clearFocus();
-        if (eventAdapter != null) {
-            searchView.setQuery("", false);
-        }
+        searchView.setQuery("", false);
     }
 
     /**
@@ -252,6 +252,11 @@ public class EventListFragment extends Fragment {
         }
     }
 
+    /**
+     * Sets up the event list with the provided list of events.
+     *
+     * @param list The list of events to populate the event list with.
+     */
     private void setUp(List<Event> list) {
         dataList.clear();
         dataList.addAll(list);
@@ -300,7 +305,6 @@ public class EventListFragment extends Fragment {
     /**
      * Launches the QR code scanner.
      */
-
     private void launchQRScanner() {
         ScanOptions options = new ScanOptions();
         options.setPrompt("Scan a QR Code");
@@ -314,7 +318,6 @@ public class EventListFragment extends Fragment {
      * Retrieves the device's last known location and sends it to the event database.
      * If location permissions are not granted, requests permission.
      */
-
     private void getLocation() {
         if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestLocationPermission();
@@ -352,7 +355,6 @@ public class EventListFragment extends Fragment {
     /**
      * Requests permission to access the device's location.
      */
-
     private void requestLocationPermission() {
         ActivityCompat.requestPermissions(requireActivity(),
                 new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION},
@@ -362,7 +364,6 @@ public class EventListFragment extends Fragment {
     /**
      * Called when the fragment is visible to the user and actively running.
      */
-
     public ArrayList<String> filterSetup(AutoCompleteTextView listSorter)
     {
         String[] stringArray = getResources().getStringArray(R.array.eventSorting);
@@ -374,6 +375,13 @@ public class EventListFragment extends Fragment {
         return sortList;
     }
 
+    /**
+     * Filters the list of events based on the provided search string and filter criteria.
+     *
+     * @param events       The list of events to filter.
+     * @param searchString The search string used to filter events by event name.
+     * @return The filtered list of events based on the search string and filter criteria.
+     */
     public ArrayList<Event> listAlgorithm(ArrayList<Event> events, String searchString)
     {
 
@@ -422,6 +430,13 @@ public class EventListFragment extends Fragment {
 
     }
 
+    /**
+     * Calculates the distance between two geographical points using their latitude and longitude coordinates.
+     *
+     * @param point1 The latitude and longitude coordinates of the first point.
+     * @param point2 The latitude and longitude coordinates of the second point.
+     * @return The distance between the two points in meters.
+     */
     private double calculateDistance(LatLng point1, LatLng point2) {
         Location location1 = new Location("");
         location1.setLatitude(point1.latitude);
@@ -435,7 +450,10 @@ public class EventListFragment extends Fragment {
     }
 
 
-
+    /**
+     * Retrieves the user's current location if location permissions are granted.
+     * If permissions are not granted, requests the necessary permissions.
+     */
     public void getUserLocation() {
         if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Permissions not granted, request them
@@ -446,7 +464,13 @@ public class EventListFragment extends Fragment {
         }
     }
 
-
+    /**
+     * Handles the result of the permission request for location access.
+     *
+     * @param requestCode  The request code passed in requestPermissions().
+     * @param permissions  The requested permissions. Must be non-null.
+     * @param grantResults The grant results for the corresponding permissions. Must be non-null.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -462,7 +486,11 @@ public class EventListFragment extends Fragment {
     }
 
 
-
+    /**
+     * Fetches the user's last known location using the Fused Location Provider Client.
+     * If permissions are not granted, this method returns without fetching the location.
+     * If permissions are granted but the last known location is unavailable, default coordinates are used.
+     */
     private void fetchLocation() {
 
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
