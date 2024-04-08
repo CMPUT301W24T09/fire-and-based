@@ -149,12 +149,26 @@ public class EditProfileFragment extends Fragment {
                 builder.setMessage("Are you sure you wish to remove your profile picture?")
                         .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                //imageUrl[0] = "defaultProfiles/" + user.getDeviceID();
-                                //user.setProfilePicture(imageUrl[0]);
+                                imageUrl[0] = "defaultProfiles/" + user.getDeviceID();
+                                user.setProfilePicture(imageUrl[0]);
                                 pictureChanged = 2;
                                 removeProfilePicButton.setVisibility(View.GONE);
                                 downloader.deletePic(user);
-                                downloader.getProfilePicBitmap(user, profilePictureView);
+                                //should be default now
+                                FirebaseUtil.updateUser(FirebaseFirestore.getInstance(), user, new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused)
+                                    {
+                                        downloader.getProfilePicBitmap(user, profilePictureView);
+                                    }
+                                }, new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+
+                                    }
+                                });
+
+
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
