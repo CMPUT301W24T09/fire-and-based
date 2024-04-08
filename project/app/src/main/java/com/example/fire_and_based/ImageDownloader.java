@@ -101,6 +101,28 @@ public class ImageDownloader
             });
         }
 
+    /**
+     * Gets the bitmap of the profilepic for a user and displays it to the given ImageView
+     */
+    public void getProfilePicBitmapNotCircle(User thisUser, ImageView profilePreview) {
+        //Bitmap imageMap;
+
+        String profileUrl = "profiles/" + thisUser.getDeviceID();
+        Log.d(TAG, profileUrl);
+        StorageReference uriRef = fireRef.child(profileUrl);
+        uriRef.getBytes(10000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap imageMap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                //since this is the first retrieval, add to memory cache
+                //addBitmapToMemoryCache(bannerUrl,imageMap);
+                //memoryCache.put(bannerUrl, imageMap);
+                profilePreview.setImageBitmap(imageMap);
+            }
+        });
+    }
+
 
     public Bitmap returnProfileBitmap(User thisUser) {
         //Bitmap imageMap;

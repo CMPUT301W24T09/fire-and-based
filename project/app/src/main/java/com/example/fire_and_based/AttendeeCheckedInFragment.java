@@ -14,29 +14,24 @@ import androidx.fragment.app.Fragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Map;
 
-/**
- * This class is a fragment hosted by the AttendeeFragment.
- * It displays the list of attendees for the All Attendees tab and the Checked In tab.
- * @author Sumayya
- * To-do (UI):
- * 1. Set listener on attendee list to show attendee profiles
- */
-public class AttendeeListFragment extends Fragment {
+public class AttendeeCheckedInFragment extends Fragment {
     private Event event;
     private ArrayList<User> dataList;
+    private ArrayList<Long> checkedInList;
     private ListView attendeeList;
-    private AttendeeArrayAdapter attendeeAdapter;
+    private CheckedInAttendeeAdapter attendeeAdapter;
     private FirebaseFirestore db;
 
     /**
-     * Creates a new instance of the AttendeeListFragment with the provided event data.
+     * Creates a new instance of the AttendeeCheckedInFragment with the provided event data.
      *
      * @param event The Event object to be associated with the fragment.
-     * @return A new instance of AttendeeListFragment with the specified event data.
+     * @return A new instance of AttendeeCheckedInFragment with the specified event data.
      */
-    public static AttendeeListFragment newInstance(Event event) {
-        AttendeeListFragment fragment = new AttendeeListFragment();
+    public static AttendeeCheckedInFragment newInstance(Event event) {
+        AttendeeCheckedInFragment fragment = new AttendeeCheckedInFragment();
         Bundle args = new Bundle();
         args.putParcelable("event", event);
         fragment.setArguments(args);
@@ -64,13 +59,14 @@ public class AttendeeListFragment extends Fragment {
         }
 
         dataList = new ArrayList<>();
+        checkedInList = new ArrayList<>();
         attendeeList = view.findViewById(R.id.attendee_list);
 
-        attendeeAdapter = new AttendeeArrayAdapter(requireContext(), dataList);
+        attendeeAdapter = new CheckedInAttendeeAdapter(requireContext(), dataList, checkedInList);
         attendeeList.setAdapter(attendeeAdapter);
 
         db = FirebaseFirestore.getInstance();
-        updateEventList();
+        updateAttendeeList();
 
         return view;
     }
@@ -80,13 +76,17 @@ public class AttendeeListFragment extends Fragment {
      * If checkedIn is true, retrieves and updates the list of checked-in users.
      * If checkedIn is false, retrieves and updates the list of all attendees.
      */
-    public void updateEventList() {
-        FirebaseUtil.getEventAttendees(db, event.getQRcode(), users -> {
+    public void updateAttendeeList() {
+        FirebaseUtil.getEventCheckedInUsers(db, event.getQRcode(), userIntegerMap -> {
             dataList.clear();
-            for (User user : users) {
+            checkedInList.clear();
+            for (Map.Entry<User, Long> entry : userIntegerMap.entrySet()) {
+                User user = entry.getKey();
+                long checkedInValue = entry.getValue();
                 dataList.add(user);
-                attendeeAdapter.notifyDataSetChanged();
+                checkedInList.add(checkedInValue);
             }
+            attendeeAdapter.notifyDataSetChanged();
         }, e -> {
             Log.e("FirebaseError", "Error fetching attendees: " + e.getMessage());
         });

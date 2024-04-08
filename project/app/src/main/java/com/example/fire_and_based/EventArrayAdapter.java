@@ -103,7 +103,11 @@ public class EventArrayAdapter extends ArrayAdapter<Event> implements Filterable
 
             String checkNum = String.valueOf(event.getCurrentAttendees());
             String totalNum = String.valueOf(event.getMaxAttendees());
-            checkCount.setText(checkNum + "/" + totalNum);
+            if (totalNum.equals("-1")) {
+                checkCount.setText(checkNum);
+            } else {
+                checkCount.setText(checkNum + "/" + totalNum);
+            }
 
             //ArrayList<Integer> checkNums = event.getMilestones();
 

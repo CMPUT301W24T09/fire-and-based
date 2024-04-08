@@ -13,7 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 /**
- * This activity hosts the EventListFragment, UserListFragment, AdminEventDetailsFragment, and AdminProfileFragment.
+ * This activity hosts the EventListFragment, UserListFragment, ImageListFragment, AdminEventDetailsFragment, and AdminProfileFragment.
  * Holds the bottom navigation bar for admin view of app.
  * @author Sumayya
  * To-do:
@@ -58,13 +58,22 @@ public class AdminActivity extends AppCompatActivity {
                             .commit();
                 }
 
-                if(item.getItemId() == R.id.users_item) {
+                if (item.getItemId() == R.id.users_item) {
                     UserListFragment fragment = new UserListFragment();
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container_view_admin, fragment)
                             .setReorderingAllowed(true)
                             .commit();
                 }
+
+                if (item.getItemId() == R.id.images_item) {
+                    ImageListFragment fragment = new ImageListFragment();
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container_view_admin, fragment)
+                            .setReorderingAllowed(true)
+                            .commit();
+                }
+
                 return true;
             }
         });
