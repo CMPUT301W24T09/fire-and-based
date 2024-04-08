@@ -43,7 +43,7 @@ public class UserActivity extends AppCompatActivity {
         }
 
 
-        ImageView createEventButton = findViewById(R.id.create_event_button);
+        ImageView createEventButton = findViewById(R.id.floating_action_button);
         createEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

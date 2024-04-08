@@ -19,6 +19,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 import org.junit.Before;
@@ -92,15 +93,20 @@ public class UserActivityTest {
      * Ensures that the Organizing List is properly displayed and selectable in the UserActivity.
      */
     @Test
-    public void testOrganizingListDisplayed() {
+    public void testOrganizingListDisplayed() throws InterruptedException {
         User user = new User("123");
         Intent startIntent = new Intent();
         startIntent.putExtra("user", user);
-
+        Thread.sleep(2000);
         intentsTestRule.launchActivity(startIntent);
+        Thread.sleep(2000);
 
         onView(withId(R.id.organizing_item)).perform(click());
+        Thread.sleep(2000);
+
         onView(withId(R.id.organizing_item)).check(matches(isSelected()));
+        Thread.sleep(2000);
+
         onView(withText("Organizing Events")).check(matches(isDisplayed()));
     }
 
@@ -110,7 +116,7 @@ public class UserActivityTest {
      */
     @Test
     public void testEventCreationButton() {
-        User user = new User("123");
+        User user = new User("testUser123");
         Intent startIntent = new Intent();
         startIntent.putExtra("user", user);
 
@@ -124,7 +130,9 @@ public class UserActivityTest {
      */
     @Test
     public void clickItemInListView() {
-        User user = new User("123");
+
+
+        User user = new User("testUser123");
         Intent startIntent = new Intent();
         startIntent.putExtra("user", user);
 

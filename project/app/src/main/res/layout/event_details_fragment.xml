@@ -167,14 +167,17 @@
         app:tabIndicatorFullWidth="true">
 
         <com.google.android.material.tabs.TabItem
+            android:id="@+id/info_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <com.google.android.material.tabs.TabItem
+            android:id="@+id/notifications_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <com.google.android.material.tabs.TabItem
+            android:id="@+id/map_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </com.google.android.material.tabs.TabLayout>

@@ -178,7 +178,9 @@ public class EventListFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                eventAdapter.getFilter().filter(newText);
+                if (eventAdapter != null) {
+                    eventAdapter.getFilter().filter(newText);
+                }
                 return true;
             }
         });
@@ -221,9 +223,7 @@ public class EventListFragment extends Fragment {
         View rootView = searchView.getRootView();
         rootView.requestFocus();
         searchView.clearFocus();
-        if (eventAdapter != null) {
-            searchView.setQuery("", false);
-        }
+        searchView.setQuery("", false);
     }
 
     /**
