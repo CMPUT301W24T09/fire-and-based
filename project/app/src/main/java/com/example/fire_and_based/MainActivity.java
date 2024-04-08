@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel);
         }
+
         Log.d("MainActivity", "Getting UUID");
         String uuid = sharedPref.getString("uuid_key", "");
         Log.d("MainActivity", "UUID is: " + uuid);
@@ -240,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
      * @param uuid The unique identifier associated with the user.
      *             This identifier is used to reference the profile picture in the storage.
      */
+
     private void uploadProfilePicture(Bitmap bitmap, String uuid) {
         // Converts bitmap to URI
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();

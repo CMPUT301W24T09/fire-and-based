@@ -87,6 +87,7 @@ public class ImageDownloader
             //Bitmap imageMap;
 
             String profileUrl = thisUser.getProfilePicture();
+
             Log.d(TAG, profileUrl);
             StorageReference uriRef = fireRef.child(profileUrl);
             uriRef.getBytes(10000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {

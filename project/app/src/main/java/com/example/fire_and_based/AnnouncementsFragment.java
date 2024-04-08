@@ -44,6 +44,7 @@ public class AnnouncementsFragment extends Fragment {
     private ListView announcementList;
     private AnnouncementArrayAdapter announcementAdapter;
     private FirebaseFirestore db;
+    private CircleImageView profilePic;
 
     /**
      * Creates a new instance of the NotficationsFragment with the provided event data.
@@ -89,11 +90,11 @@ public class AnnouncementsFragment extends Fragment {
         announcementAdapter = new AnnouncementArrayAdapter(requireContext(), dataList);
         announcementList.setAdapter(announcementAdapter);
 
+        profilePic = view.findViewById(R.id.profile_picture_announcements);
 
-        ImageView profilePic = view.findViewById(R.id.profile_picture_announcements);
-        ImageDownloader downloadGuys = new ImageDownloader();
-        downloadGuys.getProfilePicBitmap(user, (CircleImageView) profilePic);
+        ImageDownloader downloader = new ImageDownloader();
 
+        downloader.getProfilePicBitmap(user, profilePic);
 
         db = FirebaseFirestore.getInstance();
         FirebaseUtil.getAnnouncements(db, event.getQRcode(), announcements -> {
