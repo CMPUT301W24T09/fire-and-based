@@ -18,6 +18,15 @@ public class EventPostersFragment extends Fragment {
     protected ListView eventList;
     protected EventPosterAdapter eventAdapter;
     protected ArrayList<Event> dataList;
+
+    /**
+     * Inflates the layout for the event posters fragment and populates it with event data.
+     *
+     * @param inflater           The LayoutInflater object.
+     * @param container          The parent view to attach the fragment's UI.
+     * @param savedInstanceState The saved state of the fragment.
+     * @return The root view of the inflated layout.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

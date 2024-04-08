@@ -124,6 +124,12 @@ public class ImageDownloader
     }
 
 
+    /**
+     * Retrieves the profile image bitmap for the specified user.
+     *
+     * @param thisUser The user whose profile image bitmap is to be retrieved.
+     * @return The profile image bitmap of the specified user.
+     */
     public Bitmap returnProfileBitmap(User thisUser) {
         //Bitmap imageMap;
         final Bitmap[] imageMap = new Bitmap[1];

@@ -376,6 +376,11 @@ public class Event implements Parcelable, Comparable <Event> {
         return false;
     }
 
+    /**
+     * Compares this event's name with another event's name for ordering.
+     * @param o The event to be compared.
+     * @return A value indicating the comparison result.
+     */
     @Override
     public int compareTo(Event o) {
         return this.getEventName().compareTo(o.getEventName());
