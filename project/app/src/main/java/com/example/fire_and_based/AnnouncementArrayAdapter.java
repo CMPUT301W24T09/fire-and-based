@@ -1,6 +1,10 @@
 package com.example.fire_and_based;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.content.Context;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +15,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * An ArrayAdapter for displaying announcements.
@@ -53,16 +61,39 @@ public class AnnouncementArrayAdapter extends ArrayAdapter<Announcement> {
                 view = LayoutInflater.from(context).inflate(R.layout.announcements_content, parent, false);
             }
 
-            Announcement announcement = announcements.get(position);
 
-            TextView username = view.findViewById(R.id.notif_user);
-            username.setText(announcement.getSender());
+        Announcement announcement = announcements.get(position);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String userID = announcement.getSender();
 
-            TextView description = view.findViewById(R.id.notif_description);
-            description.setText(announcement.getContent());
+        TextView username = view.findViewById(R.id.notif_user);
+        ImageView profilePic = view.findViewById(R.id.profile_image);
 
-            TextView time = view.findViewById(R.id.notif_time);
-            time.setText(String.valueOf(announcement.getTimestamp()));
+        ImageDownloader downloadGuy = new ImageDownloader();
+
+        FirebaseUtil.getUserObject(db, userID,
+                user -> {
+                    String userName = user.getUserName();
+                    if(TextUtils.isEmpty(userName))
+                    {
+                        userName = "Organizer";
+                    }
+
+                    username.setText(userName);
+                    downloadGuy.getProfilePicBitmap(user, (CircleImageView) profilePic);
+
+
+
+
+                },
+                e -> {
+                    Log.d(TAG, e.toString());
+                });
+        TextView description = view.findViewById(R.id.notif_description);
+        TextView time = view.findViewById(R.id.notif_time);
+        description.setText(announcement.getContent());
+        time.setText(String.valueOf(announcement.getTimestamp()));
+
 
             return view;
     }

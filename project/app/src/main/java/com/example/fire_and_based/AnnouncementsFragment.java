@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Objects;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * This fragment is hosted by the EventDetailsFragment.
@@ -85,6 +88,12 @@ public class AnnouncementsFragment extends Fragment {
 
         announcementAdapter = new AnnouncementArrayAdapter(requireContext(), dataList);
         announcementList.setAdapter(announcementAdapter);
+
+
+        ImageView profilePic = view.findViewById(R.id.profile_picture_announcements);
+        ImageDownloader downloadGuys = new ImageDownloader();
+        downloadGuys.getProfilePicBitmap(user, (CircleImageView) profilePic);
+
 
         db = FirebaseFirestore.getInstance();
         FirebaseUtil.getAnnouncements(db, event.getQRcode(), announcements -> {
