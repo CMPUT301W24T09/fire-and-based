@@ -56,6 +56,8 @@ public class ImageDownloader
 
     /**
      * Gets the bitmap of the banner for a particular event and displays it to the given ImageView
+     * @param thisEvent The event object containing information about the event.
+     * @param imagePreview The ImageView where the banner bitmap will be displayed.
      */
     public void getBannerBitmap(Event thisEvent, ImageView imagePreview)
     {
@@ -81,7 +83,9 @@ public class ImageDownloader
 
     }
     /**
-     * Gets the bitmap of the profilepic for a user and displays it to the given ImageView
+     * Gets the bitmap of the profile picture for a user and displays it to the given CircleImageView
+     * @param thisUser The user object containing information about the user.
+     * @param profilePreview The CircleImageView where the profile picture bitmap will be displayed.
      */
         public void getProfilePicBitmap(User thisUser, CircleImageView profilePreview) {
             //Bitmap imageMap;
@@ -104,7 +108,9 @@ public class ImageDownloader
         }
 
     /**
-     * Gets the bitmap of the profilepic for a user and displays it to the given ImageView
+     * Gets the bitmap of the profile picture for a user and displays it to the given ImageView
+     * @param thisUser The user object containing information about the user.
+     * @param profilePreview The ImageView where the profile picture bitmap will be displayed.
      */
     public void getProfilePicBitmapNotCircle(User thisUser, ImageView profilePreview) {
         //Bitmap imageMap;
@@ -124,6 +130,10 @@ public class ImageDownloader
             }
         });
     }
+    /**
+     * Deletes the banner associated with the given event.
+     * @param thisEvent The event object containing information about the event.
+     */
     public void deleteBanner(Event thisEvent)
     {
         String bannerUrl = thisEvent.getEventBanner();
@@ -146,8 +156,7 @@ public class ImageDownloader
 
     /**
      * Retrieves the profile image bitmap for the specified user.
-     *
-     * @param thisUser The user whose profile image bitmap is to be retrieved.
+     * @param thisUser The user object containing information about the user.
      * @return The profile image bitmap of the specified user.
      */
     public Bitmap returnProfileBitmap(User thisUser) {
@@ -166,12 +175,17 @@ public class ImageDownloader
         return imageMap[0];
     }
 
+    /**
+     * Sets the profile picture of the user to the default picture.
+     * @param thisUser The user object whose profile picture is to be set to default.
+     */
     public void deletePic(User thisUser)
     {
         //delete old
-        String pictureUrl = thisUser.getProfilePicture();
-        StorageReference uriRef = fireRef.child(pictureUrl);
-        uriRef.delete();
+        //String pictureUrl = thisUser.getProfilePicture();
+        //StorageReference uriRef = fireRef.child(pictureUrl);
+        //uriRef.delete();
+
 
         //set default
         String defaultPic = "defaultProfiles/" + thisUser.getDeviceID();
