@@ -1219,25 +1219,24 @@ public class FirebaseUtil {
     public static void removeUserFromEvent(FirebaseFirestore db, User user, Event event, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
 
         Task<Void> removeEventFromUser = db.collection(USERS_COLLECTION).document(user.getDeviceID())
-
                 .update("attendeeEvents", FieldValue.arrayRemove(event.getQRcode()));
 
         Task<Void> removeUserFromEvent = db.collection(EVENTS_COLLECTION).document(event.getQRcode())
                 .update("attendees", FieldValue.arrayRemove(user.getDeviceID()));
 
+        Task<Void> updateCurrentAttendeeAmount = db.collection(EVENTS_COLLECTION).document(event.getQRcode())
+                .update("currentAttendees", event.getCurrentAttendees() - 1L);
 
-        Map<String, Object> checkedInEventsUpdate = new HashMap<>();
-        checkedInEventsUpdate.put("checkedInEvents." + event.getQRcode(), 0); // Constructs a map with the key and sets its value to 0
+//        Map<String, Object> checkedInEventsUpdate = new HashMap<>();
+//        checkedInEventsUpdate.put("checkedInEvents" + event.getQRcode(), 0); // Constructs a map with the key and sets its value to 0
 
-        Task<Void> updateCheckedInEventValue = db.collection(USERS_COLLECTION).document(user.getDeviceID())
-                .update(checkedInEventsUpdate);
+        Task<Void> updateCheckedInEventValue = db.collection(EVENTS_COLLECTION).document(event.getQRcode())
+                .update("checkedInUsers", FieldValue.arrayRemove(user.getDeviceID()));
 
         // Use Tasks.whenAll() to wait for all updates to complete
-        Task<Void> combinedTask = Tasks.whenAll(removeEventFromUser, removeUserFromEvent, updateCheckedInEventValue);
+        Task<Void> combinedTask = Tasks.whenAll(removeEventFromUser, removeUserFromEvent, updateCheckedInEventValue, updateCurrentAttendeeAmount);
 
         combinedTask.addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);
     }
-
-
 }

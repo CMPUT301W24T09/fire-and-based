@@ -189,6 +189,7 @@ public class EventDetailsFragment extends Fragment {
                             public void onSuccess(Void unused) {
                                 if (checkedInButton.getText() == "Check Out"){
                                     checkedInButton.setText("Check In");
+                                    Toast.makeText(getContext(), "Checked in sucessfully", Toast.LENGTH_SHORT).show();
 
                                 }  else if (event.isTrackLocation()) {
 
@@ -205,16 +206,16 @@ public class EventDetailsFragment extends Fragment {
                                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
-                                                    // User clicked No, do nothing or handle as needed
-                                                    String checkInStatus = checkedInButton.getText().toString();
-                                                    checkedInButton.setText(checkInStatus.equals("Check In") ? "Check Out" : "Check In");
+                                                    Toast.makeText(getContext(), "Successfully Checked In", Toast.LENGTH_SHORT).show();
+                                                    checkedInButton.setText("Check Out");
                                                 }
                                             })
                                             .show(); // Display the dialog
 
+                                } else {
+                                    Toast.makeText(getContext(), "Successfully Checked Out", Toast.LENGTH_SHORT).show();
+                                    checkedInButton.setText("Check Out");
                                 }
-
-
                             }
                         }, new OnFailureListener() {
                             @Override
