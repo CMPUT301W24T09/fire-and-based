@@ -40,7 +40,7 @@
                 android:layout_marginBottom="12dp"
                 android:layout_toEndOf="@+id/profile_picture_admin"
                 android:fontFamily="@font/roboto_bold"
-                android:text="Username"
+                android:text="Username/EventName"
                 android:textSize="24sp" />
 
             <TextView
@@ -60,7 +60,7 @@
                 android:id="@+id/admin_calendar"
                 android:layout_width="wrap_content"
                 android:layout_height="16dp"
-                android:layout_below="@+id/admin_profile"
+                android:layout_below="@+id/user_name"
                 android:layout_alignParentBottom="true"
                 android:layout_marginStart="17dp"
                 android:layout_marginBottom="20dp"

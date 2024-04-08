@@ -37,7 +37,7 @@
             android:layout_marginTop="112dp"
             android:fontFamily="@font/roboto_bold"
             android:gravity="left"
-            android:text="Minecraft Club"
+            android:text="Event Name"
             android:textSize="40sp"
             android:layout_marginLeft="15dp"
             app:layout_constraintStart_toStartOf="parent"
