@@ -65,7 +65,11 @@ public class CheckedInAttendeeAdapter extends ArrayAdapter<User> {
             Long checkedInValue = mLongList.get(position);
 
             TextView username = view.findViewById(R.id.attendee_username);
-            username.setText(user.getUserName());
+            if (username.getText().toString().equals("")) {
+                username.setText("Anonymous attendee");
+            } else {
+                username.setText(user.getUserName());
+            }
 
             TextView checkedInText = view.findViewById(R.id.checked_in_text);
             checkedInText.setText("Checked in " + checkedInValue + " times");
