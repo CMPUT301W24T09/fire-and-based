@@ -338,12 +338,10 @@ public class EventListFragment extends Fragment {
                             FirebaseUtil.sendCoordinatesToEvent(db, scannedEvent, geoPoint, new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    Toast.makeText(getContext(), "It wrote to db u did it kid proud of u ", Toast.LENGTH_SHORT).show();
                                 }
                             }, new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getContext(), "Error sending location to database :( ", Toast.LENGTH_SHORT).show();
                                 }
                             });
 

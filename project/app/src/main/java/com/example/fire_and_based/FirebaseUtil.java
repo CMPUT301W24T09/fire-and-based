@@ -970,9 +970,7 @@ public class FirebaseUtil {
             if (documentSnapshot.exists()) {
                 User user = documentSnapshot.toObject(User.class);
                 user.setProfilePicture(documentSnapshot.get("profilePicture").toString());
-                if (user != null) {
-                    user.setAdmin(documentSnapshot.getBoolean("admin"));
-                }
+                user.setAdmin(documentSnapshot.getBoolean("admin"));
                 Log.d(TAG, String.format("Username: %s First: %s Last: %s Phone: %s Email: %s ID: %s", user.getUserName(), user.getFirstName(), user.getLastName()
                         , user.getPhoneNumber(), user.getEmail(), user.getDeviceID()));
                 successListener.onSuccess(user);

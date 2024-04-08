@@ -124,7 +124,7 @@ public class EventDetailsFragment extends Fragment {
         if (Objects.equals(mode, "Attending")) {
             editDetailsButton.setVisibility(View.GONE);
             attendeeListButton.setVisibility(View.GONE);
-            FirebaseUtil.getEventCheckedInUsers(db, user.getDeviceID(), userLongMap -> {
+            FirebaseUtil.getEventCheckedInUsers(db, event.getQRcode(), userLongMap -> {
                 for (Map.Entry<User, Long> entry: userLongMap.entrySet()) {
                     if (Objects.equals(entry.getKey().getDeviceID(), user.getDeviceID())) {
                         checkedInButton.setText("Checked in");

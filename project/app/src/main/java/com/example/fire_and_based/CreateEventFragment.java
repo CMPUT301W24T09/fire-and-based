@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,11 +62,6 @@ import java.util.Random;
  * This class is the activity for creating a new event.
  * It can be accessed by clicking the create event button on UserActivity.
  * @author Tyler, Ilya, Sumayya, Aiden
- * To-do:
- * 1. AIDEN: run the app and click the blue plus in middle of screen -> you see the white rectangle at the top, its an imageview, i want you to set an onclick for image uploading there
- * 2. ILYA: run the app and see the two QR code buttons, there is zero code for them and no id's either go to create_event_and_edit.xml and connect those buttons to the qr code upload / generate functionality
- * 3. Not attached to activity when you press create event, app crashes
- * 4. Need to allow creation of event without making a poster
  */
 public class CreateEventFragment extends Fragment {
     public User user;
@@ -271,7 +267,7 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
-        Button imageButton = view.findViewById(R.id.add_banner_button);
+        ImageButton imageButton = view.findViewById(R.id.add_banner_button);
         ImageView previewBanner = view.findViewById(R.id.roundedImageView);
 
 

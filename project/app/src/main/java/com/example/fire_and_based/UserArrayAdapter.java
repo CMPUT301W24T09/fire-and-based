@@ -5,12 +5,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * This class is the adapter for the attendee list. It displays each attendee for an event.
@@ -20,6 +23,7 @@ import java.util.ArrayList;
 public class UserArrayAdapter extends ArrayAdapter<User> {
     private ArrayList<User> users;
     private Context context;
+    private ImageDownloader imageDownloader = new ImageDownloader();
 
     /**
      * Constructor for the adapter
@@ -55,11 +59,15 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
 
             TextView username = view.findViewById(R.id.user_name);
 
-            if (username.equals("")) {
-                username.setText("Null");
+            if (username.getText().toString().equals("")) {
+                username.setText("Unknown");
             } else {
                 username.setText(user.getUserName());
             }
+
+            ImageView imagePreview = view.findViewById(R.id.profile_picture_admin);
+            ImageDownloader downloadGuys = new ImageDownloader();
+            downloadGuys.getProfilePicBitmap(user, (CircleImageView) imagePreview);
 
             return view;
         }
