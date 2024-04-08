@@ -53,9 +53,13 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
 
             User user = users.get(position);
 
-            TextView eventName = view.findViewById(R.id.user_name);
+            TextView username = view.findViewById(R.id.user_name);
 
-            eventName.setText(String.format("%s %s", user.getFirstName(), user.getLastName()));
+            if (username.equals("")) {
+                username.setText("Null");
+            } else {
+                username.setText(user.getUserName());
+            }
 
             return view;
         }

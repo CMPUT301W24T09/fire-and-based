@@ -3,6 +3,7 @@ package com.example.fire_and_based;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,7 @@ public class ProfilePicturesFragment extends Fragment {
         FirebaseUtil.getAllNonAdminUsers(db, users -> {
             dataList.clear();
             for (User user : users) {
+                Log.d("HELLO", user.getDeviceID());
                 if (!(user.getProfilePicture().contains("defaultProfiles")))
                 {
                     //Means its using custom pic, add it to the list

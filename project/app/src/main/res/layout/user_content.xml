@@ -43,30 +43,6 @@
                 android:text="Username"
                 android:textSize="24sp" />
 
-            <TextView
-                android:id="@+id/admin_profile_date"
-                android:layout_width="286dp"
-                android:layout_height="38dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="5dp"
-                android:layout_marginBottom="4dp"
-                android:layout_toEndOf="@+id/admin_calendar"
-                android:fontFamily="@font/roboto"
-                android:text="date"
-                android:textColor="#808080"
-                android:textSize="17sp" />
-
-            <ImageView
-                android:id="@+id/admin_calendar"
-                android:layout_width="wrap_content"
-                android:layout_height="16dp"
-                android:layout_below="@+id/admin_profile"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="17dp"
-                android:layout_marginBottom="20dp"
-                android:layout_toEndOf="@+id/profile_picture_admin"
-                app:srcCompat="@drawable/baseline_calendar_month_24" />
-
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_picture_admin"
                 android:layout_width="75dp"

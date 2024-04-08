@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,6 +60,10 @@ public class AdminEventDetailsFragment extends Fragment {
         eventEndDate.setText(endCalendar);
         eventLocation.setText(event.getLocation());
         eventAttendeeAmount.setText(event.getMaxAttendees().toString());
+
+        ImageView eventBannerImage = view.findViewById(R.id.event_image);
+        ImageDownloader ImageDownloader = new ImageDownloader();
+        ImageDownloader.getBannerBitmap(event, eventBannerImage);
 
         TextView cancel = view.findViewById(R.id.admin_cancel_button);
         cancel.setOnClickListener(new View.OnClickListener() {
