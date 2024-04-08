@@ -5,50 +5,86 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/user_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="204dp"
-        android:fontFamily="@font/roboto"
-        android:text="Username"
-        android:textSize="27sp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/black"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingVertical="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="10dp"
+        app:cardCornerRadius="20dp"
+        app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/date_user_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="256dp"
-        android:fontFamily="@font/roboto"
-        android:text="Date"
-        android:textColor="#808080"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_name" />
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/date_user_content"
-        app:layout_constraintTop_toBottomOf="@+id/user_name"
-        app:srcCompat="@drawable/baseline_calendar_month_24" />
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="60dp"
-        app:layout_constraintEnd_toStartOf="@+id/user_name"
-        app:layout_constraintHorizontal_bias="0.125"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/circle_white" />
+        tools:background="@color/black">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false">
+
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/admin_profile_date"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="17dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="12dp"
+                android:layout_toEndOf="@+id/profile_picture_admin"
+                android:fontFamily="@font/roboto_bold"
+                android:text="Username"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/admin_profile_date"
+                android:layout_width="286dp"
+                android:layout_height="38dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginBottom="4dp"
+                android:layout_toEndOf="@+id/admin_calendar"
+                android:fontFamily="@font/roboto"
+                android:text="date"
+                android:textColor="#808080"
+                android:textSize="17sp" />
+
+            <ImageView
+                android:id="@+id/admin_calendar"
+                android:layout_width="wrap_content"
+                android:layout_height="16dp"
+                android:layout_below="@+id/admin_profile"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="17dp"
+                android:layout_marginBottom="20dp"
+                android:layout_toEndOf="@+id/profile_picture_admin"
+                app:srcCompat="@drawable/baseline_calendar_month_24" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_picture_admin"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="21dp"
+                android:layout_marginBottom="20dp"
+                app:civ_border_width="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintVertical_bias="0.272" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
