@@ -49,8 +49,11 @@ public class QRCodeDisplayFragment extends DialogFragment {
     public String PosterQRCode;
     public int veryLightGray = Color.parseColor("#bfbbbb"); // Example of a very light gray, you can adjust the hex value as needed
 
-
-
+    /**
+     * Configures the fragment to use a full-screen dialog style.
+     *
+     * @param savedInstanceState The saved instance state of the fragment.
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,8 +63,13 @@ public class QRCodeDisplayFragment extends DialogFragment {
 
     /**
      * After the view is created, set up the fragment's UI.
+     * Inflates the layout for the QR code display fragment.
+     *
+     * @param inflater           LayoutInflater object for inflating views.
+     * @param container          Parent view to which the fragment's UI should be attached.
+     * @param savedInstanceState Previously saved state, if any.
+     * @return The root view of the inflated layout.
      */
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -69,6 +77,12 @@ public class QRCodeDisplayFragment extends DialogFragment {
         return inflater.inflate(R.layout.qr_code_display_fragment, container, false);
     }
 
+    /**
+     * Initializes the views and handles actions for the QR code display fragment.
+     *
+     * @param view               The root view of the fragment.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -218,7 +232,6 @@ public class QRCodeDisplayFragment extends DialogFragment {
     }
 
 
-
     /**
      * Logs an error encountered by this class.
      *
@@ -231,6 +244,13 @@ public class QRCodeDisplayFragment extends DialogFragment {
     }
 
 
+    /**
+     * Saves a bitmap image with text to the gallery.
+     *
+     * @param context The context used to access the content resolver.
+     * @param bitmap  The bitmap image to be saved.
+     * @param text    The text to be drawn on the bitmap image.
+     */
     private void saveImageToGallery(Context context, Bitmap bitmap, String text) {
         // Create a mutable bitmap to draw text on
         Bitmap mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
