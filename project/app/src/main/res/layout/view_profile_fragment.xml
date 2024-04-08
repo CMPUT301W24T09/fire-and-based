@@ -18,6 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:background="?attr/colorPrimary"
+            android:fontFamily="@font/roboto_bold"
             android:text="Profile"
             android:textColor="@color/white"
             android:textSize="27sp"
@@ -38,7 +39,7 @@
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView4"
-            app:layout_constraintVertical_bias="0.241" />
+            app:layout_constraintVertical_bias="0.272" />
 
         <TextView
             android:id="@+id/firstAndLastText"

@@ -27,6 +27,11 @@ import com.google.android.material.navigation.NavigationBarView;
 public class UserActivity extends AppCompatActivity {
     private User user;
 
+    /**
+     * Initializes the user activity.
+     *
+     * @param savedInstanceState If non-null, this activity is being re-constructed from a previous saved state
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

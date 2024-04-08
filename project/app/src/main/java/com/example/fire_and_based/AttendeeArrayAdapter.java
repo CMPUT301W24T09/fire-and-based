@@ -34,6 +34,15 @@ public class AttendeeArrayAdapter extends ArrayAdapter<User> {
         this.context = context;
     }
 
+    /**
+     * Get a View for displaying data at the specified position.
+     *
+     * @param position    The position of the item in the data set.
+     * @param convertView The old view to reuse, if possible.
+     * @param parent      The parent ViewGroup that this view will eventually be attached to.
+     * @return A View corresponding to the data at the specified position.
+     */
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

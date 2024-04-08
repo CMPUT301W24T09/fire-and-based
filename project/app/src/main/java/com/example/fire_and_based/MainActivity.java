@@ -61,11 +61,17 @@ import java.util.UUID;
 /**
  * This class is the main activity. It displays the loading page for the app
  * while the app fetches the user info. It then sends you to UserActivity.
- * @author Tyler, Carson, Sumayya, Ilya
+ * @author Tyler, Carson, Sumayya, Ilya, Aiden
  */
 public class MainActivity extends AppCompatActivity {
     private static User currentUser;
     StorageReference fireRef = FirebaseStorage.getInstance().getReference();
+
+    /**
+     * Initializes the main activity, checks for existing user UUID,
+     * generates a UUID if none exists, and proceeds to create or fetch user data accordingly.
+     * @param savedInstanceState The saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,10 +119,15 @@ public class MainActivity extends AppCompatActivity {
                     });
         }
 
-
-
     }
 
+    /**
+     * Adds fields to the user document in Firebase, specifically for attendeeEvents and organizerEvents.
+     * @param db The instance of FirebaseFirestore
+     * @param user The user object
+     * @param successListener Listener for successful update
+     * @param failureListener Listener for failed update
+     */
     public static void addFieldstoUser(FirebaseFirestore db, User user, OnSuccessListener<Void> successListener, OnFailureListener failureListener ){
         db.collection("users").document(user.getDeviceID())
                 .update("attendeeEvents", FieldValue.arrayUnion())
@@ -135,6 +146,11 @@ public class MainActivity extends AppCompatActivity {
                 .addOnFailureListener(failureListener);
     }
 
+    /**
+     * Gets the device ID of the current user.
+     *
+     * @return The device ID.
+     */
     protected static String getDeviceID() {
         return currentUser.getDeviceID();
     }
@@ -185,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
         return bitmap;
     }
 
+
     private static int clampColor(int color) {
         return Math.min(255, Math.max(0, color)); // Clamp color value between 0 and 255
     }
@@ -195,7 +212,16 @@ public class MainActivity extends AppCompatActivity {
         return Color.parseColor("#" + colorHex);
     }
 
-    private void uploadProfilePicture(Bitmap bitmap, String uuid) throws FileNotFoundException {
+
+    /**
+     * Uploads the user's profile picture to Firebase Storage.
+     * Converts the provided bitmap image to a URI and inserts it into the MediaStore.
+     * Then, uploads the profile picture to the Firebase Storage using the URI.
+     * @param bitmap The bitmap representation of the profile picture.
+     * @param uuid The unique identifier associated with the user.
+     *             This identifier is used to reference the profile picture in the storage.
+     */
+    private void uploadProfilePicture(Bitmap bitmap, String uuid) {
         // Converts bitmap to URI
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -240,12 +266,7 @@ public class MainActivity extends AppCompatActivity {
 
         // First time users get deterministically (on device id) generated profile picture
         Bitmap bitmap = generateProfilePic(uuid, 200);
-
-        try {
-            uploadProfilePicture(bitmap, uuid);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        uploadProfilePicture(bitmap, uuid);
 
         Log.d(TAG, "Getting FCM Token");
         String finalUuid = uuid;

@@ -13,6 +13,11 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
+/**
+ * An ArrayAdapter for displaying announcements.
+ * @author Sumayya
+ */
+
 public class AnnouncementArrayAdapter extends ArrayAdapter<Announcement> {
     private ArrayList<Announcement> announcements;
     private Context context;
@@ -28,6 +33,16 @@ public class AnnouncementArrayAdapter extends ArrayAdapter<Announcement> {
         this.announcements = announcements;
         this.context = context;
     }
+
+    /**
+     * Retrieves a View to display data for the specified position.
+     * If convertView is null, inflates a new view from the layout.
+     * Binds data from Announcement object to the views.
+     * @param position The position of the item in the data set.
+     * @param convertView The old view to reuse, if possible.
+     * @param parent The parent ViewGroup to which the view will be attached.
+     * @return A View displaying the data at the specified position.
+     */
 
     @NonNull
     @Override

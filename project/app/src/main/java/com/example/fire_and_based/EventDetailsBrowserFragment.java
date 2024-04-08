@@ -33,7 +33,14 @@ public class EventDetailsBrowserFragment extends Fragment {
     private Event event;
     private ImageDownloader imageDownloader = new ImageDownloader();
 
-
+    /**
+     * Creates the view for the event details browser fragment.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState This fragment is being re-constructed from a previous saved state
+     * @return The View for the fragment's UI.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

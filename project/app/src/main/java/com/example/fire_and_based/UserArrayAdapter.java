@@ -33,6 +33,14 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
         this.context = context;
     }
 
+    /**
+     * Returns the view for the item at the specified position in the adapter.
+     *
+     * @param position    The position of the item within the adapter's data set.
+     * @param convertView The old view to reuse, if possible.
+     * @param parent      The parent that this view will eventually be attached to.
+     * @return The view corresponding to the data at the specified position.
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
