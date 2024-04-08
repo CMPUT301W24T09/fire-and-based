@@ -13,14 +13,7 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
-/**
- * This class is the adapter for the attendee list. It displays each attendee for an event.
- * Used by UserListFragment.
- * @author Sumayya
- */
-public class UserArrayAdapter extends ArrayAdapter<User> {
+public class ProfilePictureAdapter extends ArrayAdapter<User> {
     private ArrayList<User> users;
     private Context context;
     private ImageDownloader imageDownloader = new ImageDownloader();
@@ -31,7 +24,7 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
      * @param context The context (usually an Activity) in which the adapter is used
      * @param users  The list of events to be displayed
      */
-    public UserArrayAdapter(Context context, ArrayList<User> users) {
+    public ProfilePictureAdapter(Context context, ArrayList<User> users) {
         super(context, 0, users);
         this.users = users;
         this.context = context;
@@ -52,22 +45,15 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
             View view = convertView;
 
             if(view == null){
-                view = LayoutInflater.from(context).inflate(R.layout.user_content, parent,false);
+                view = LayoutInflater.from(context).inflate(R.layout.profile_picture_content, parent,false);
             }
 
             User user = users.get(position);
 
-            TextView username = view.findViewById(R.id.user_name);
-
-            if (username.getText().toString().equals("")) {
-                username.setText("Unknown");
-            } else {
-                username.setText(user.getUserName());
+            ImageView imagePreview = view.findViewById(R.id.profile_pic);
+            if (user.getProfilePicture() != null) {
+                imageDownloader.getProfilePicBitmapNotCircle(user, imagePreview);
             }
-
-            ImageView imagePreview = view.findViewById(R.id.profile_picture_admin);
-            ImageDownloader downloadGuys = new ImageDownloader();
-            downloadGuys.getProfilePicBitmap(user, (CircleImageView) imagePreview);
 
             return view;
         }

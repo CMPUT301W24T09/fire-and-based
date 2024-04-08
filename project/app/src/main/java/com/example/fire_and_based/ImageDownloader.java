@@ -102,8 +102,69 @@ public class ImageDownloader
             });
         }
 
+    /**
+     * Gets the bitmap of the profilepic for a user and displays it to the given ImageView
+     */
+    public void getProfilePicBitmapNotCircle(User thisUser, ImageView profilePreview) {
+        //Bitmap imageMap;
+
+        String profileUrl = "profiles/" + thisUser.getDeviceID();
+        Log.d(TAG, profileUrl);
+        StorageReference uriRef = fireRef.child(profileUrl);
+        uriRef.getBytes(10000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap imageMap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                //since this is the first retrieval, add to memory cache
+                //addBitmapToMemoryCache(bannerUrl,imageMap);
+                //memoryCache.put(bannerUrl, imageMap);
+                profilePreview.setImageBitmap(imageMap);
+            }
+        });
+    }
+    public void deleteBanner(Event thisEvent)
+    {
+        String bannerUrl = thisEvent.getEventBanner();
+        StorageReference uriRef = fireRef.child(bannerUrl);
+        uriRef.delete();
+        thisEvent.setEventBanner(null);
+    }
 
 
+    /**
+     * Retrieves the profile image bitmap for the specified user.
+     *
+     * @param thisUser The user whose profile image bitmap is to be retrieved.
+     * @return The profile image bitmap of the specified user.
+     */
+    public Bitmap returnProfileBitmap(User thisUser) {
+        //Bitmap imageMap;
+        final Bitmap[] imageMap = new Bitmap[1];
+        String profileUrl = "profiles/" + thisUser.getDeviceID();
+        Log.d(TAG, profileUrl);
+        StorageReference uriRef = fireRef.child(profileUrl);
+        uriRef.getBytes(10000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                imageMap[0] = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+            }
+        });
+        return imageMap[0];
+    }
+
+    public void deletePic(User thisUser)
+    {
+        //delete old
+        String pictureUrl = thisUser.getProfilePicture();
+        StorageReference uriRef = fireRef.child(pictureUrl);
+        uriRef.delete();
+
+        //set default
+        String defaultPic = "profiles/" + thisUser.getDeviceID();
+        thisUser.setProfilePicture(defaultPic);
+    }
 
 //        FirebaseUtil.getEventBanner(db, thisEvent, new FirebaseUtil.EventBannerCallback()
 //        {

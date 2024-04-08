@@ -65,13 +65,10 @@ public class AdminProfileFragment extends Fragment {
         TextView emailEdit = view.findViewById(R.id.email_text);
         TextView phoneEdit = view.findViewById(R.id.phone_text);
         TextView homepageEdit = view.findViewById(R.id.homepage_text);
-        TextView checkedIn = view.findViewById(R.id.checked_in_count);
         Button deleteButton = view.findViewById(R.id.remove_profile_button);
         Button backButton = view.findViewById(R.id.back_button);
         ImageView removeProfilePic = view.findViewById(R.id.delete_profile_image);
         CircleImageView profilePictureView = view.findViewById(R.id.profile_image);
-
-        checkedIn.setVisibility(View.INVISIBLE);
 
         // Retrieves profile picture from db and sets it in view
         ImageDownloader downloader = new ImageDownloader();
@@ -105,9 +102,8 @@ public class AdminProfileFragment extends Fragment {
         removeProfilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HashMap<String, Object> data = new HashMap<>();
-                data.put("profilePicture", "defaultProfiles/" + user.getDeviceID());
-                FirebaseUtil.updateUser(db, user, data, new OnSuccessListener<Void>() {
+                user.setProfilePicture("defaultProfiles/" + user.getDeviceID());
+                FirebaseUtil.updateUser(db, user, new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
                         Log.d("AdminProfileFragment", "Successfully removed user's profile picture and set it to default");

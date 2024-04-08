@@ -7,20 +7,17 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 /**
- * This is the Adapter that allows us to swipe between tab views in the AttendeeFragment.
+ * This is the Adapter that allows us to swipe between tab views in the ImageListFragment.
  * @author Sumayya
  */
-public class AttendeeListAdapter extends FragmentStateAdapter {
-    private Event event;
+public class AdminImagesAdapter extends FragmentStateAdapter {
 
     /**
      * @param fragment if the {@link ViewPager2} lives directly in a {@link Fragment} subclass.
-     * @param event the event we will display details for
      * @see FragmentStateAdapter#FragmentStateAdapter(FragmentActivity)
      */
-    public AttendeeListAdapter(@NonNull Fragment fragment, Event event) {
+    public AdminImagesAdapter(@NonNull Fragment fragment) {
         super(fragment);
-        this.event = event;
     }
 
     /**
@@ -36,9 +33,9 @@ public class AttendeeListAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 1:
-                return AttendeeCheckedInFragment.newInstance(event);
+                return new ProfilePicturesFragment();
             default:
-                return AttendeeListFragment.newInstance(event);
+                return new EventPostersFragment();
         }
     }
 

@@ -199,22 +199,12 @@ public class EditProfileFragment extends Fragment {
 
                     StorageReference selectionRef = fireRef.child(imageUrl[0]);
 
-                    HashMap<String, Object> data = new HashMap<>();
-
-                    data.put("firstName", user.getFirstName());
-                    data.put("lastName", user.getLastName());
-                    data.put("userName", user.getUserName());
-                    data.put("email", user.getEmail());
-                    data.put("phoneNumber", user.getPhoneNumber());
-                    data.put("homepage", user.getHomepage());
-
                     if (pictureChanged == 1 || pictureChanged == 2) {
                         user.setProfilePicture(imageUrl[0]);
-                        data.put("profilePicture", imageUrl[0]);
                     }
 
                     // Updates user info
-                    FirebaseUtil.updateUser(FirebaseFirestore.getInstance(), user, data, new OnSuccessListener<Void>() {
+                    FirebaseUtil.updateUser(FirebaseFirestore.getInstance(), user, new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
                             // For now we exit from edit details page when valid save (probably should change later, not sure)

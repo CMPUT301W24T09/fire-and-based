@@ -550,10 +550,10 @@ public class FirebaseUtil {
      * @param failureListener what to do in case of failure (database error)
      * @see User
      */
-
-    public static void updateUser(FirebaseFirestore db, User user, HashMap<String, Object> data, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
-        db.collection("users").document(user.getDeviceID())
-                .update(data)
+    public static void updateUser(FirebaseFirestore db, User user, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
+        Map<String, Object> userMap = userToMap(user);
+        db.collection(USERS_COLLECTION).document(user.getDeviceID())
+                .update(userMap)
                 .addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);
     }
@@ -971,9 +971,7 @@ public class FirebaseUtil {
             if (documentSnapshot.exists()) {
                 User user = documentSnapshot.toObject(User.class);
                 user.setProfilePicture(documentSnapshot.get("profilePicture").toString());
-                if (user != null) {
-                    user.setAdmin(documentSnapshot.getBoolean("admin"));
-                }
+                user.setAdmin(documentSnapshot.getBoolean("admin"));
                 Log.d(TAG, String.format("Username: %s First: %s Last: %s Phone: %s Email: %s ID: %s", user.getUserName(), user.getFirstName(), user.getLastName()
                         , user.getPhoneNumber(), user.getEmail(), user.getDeviceID()));
                 successListener.onSuccess(user);
@@ -1220,21 +1218,22 @@ public class FirebaseUtil {
     public static void removeUserFromEvent(FirebaseFirestore db, User user, Event event, OnSuccessListener<Void> successListener, OnFailureListener failureListener) {
 
         Task<Void> removeEventFromUser = db.collection(USERS_COLLECTION).document(user.getDeviceID())
-
                 .update("attendeeEvents", FieldValue.arrayRemove(event.getQRcode()));
 
         Task<Void> removeUserFromEvent = db.collection(EVENTS_COLLECTION).document(event.getQRcode())
                 .update("attendees", FieldValue.arrayRemove(user.getDeviceID()));
 
+        Task<Void> updateCurrentAttendeeAmount = db.collection(EVENTS_COLLECTION).document(event.getQRcode())
+                .update("currentAttendees", event.getCurrentAttendees() - 1L);
 
-        Map<String, Object> checkedInEventsUpdate = new HashMap<>();
-        checkedInEventsUpdate.put("checkedInEvents." + event.getQRcode(), 0); // Constructs a map with the key and sets its value to 0
+//        Map<String, Object> checkedInEventsUpdate = new HashMap<>();
+//        checkedInEventsUpdate.put("checkedInEvents" + event.getQRcode(), 0); // Constructs a map with the key and sets its value to 0
 
-        Task<Void> updateCheckedInEventValue = db.collection(USERS_COLLECTION).document(user.getDeviceID())
-                .update(checkedInEventsUpdate);
+        Task<Void> updateCheckedInEventValue = db.collection(EVENTS_COLLECTION).document(event.getQRcode())
+                .update("checkedInUsers." + user.getDeviceID(), FieldValue.delete());
 
         // Use Tasks.whenAll() to wait for all updates to complete
-        Task<Void> combinedTask = Tasks.whenAll(removeEventFromUser, removeUserFromEvent, updateCheckedInEventValue);
+        Task<Void> combinedTask = Tasks.whenAll(removeEventFromUser, removeUserFromEvent, updateCheckedInEventValue, updateCurrentAttendeeAmount);
 
         combinedTask.addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);
