@@ -149,11 +149,12 @@ public class EditProfileFragment extends Fragment {
                 builder.setMessage("Are you sure you wish to remove your profile picture?")
                         .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                imageUrl[0] = "defaultProfiles/" + user.getDeviceID();
-                                user.setProfilePicture(imageUrl[0]);
-                                downloader.getProfilePicBitmap(user, profilePictureView);
+                                //imageUrl[0] = "defaultProfiles/" + user.getDeviceID();
+                                //user.setProfilePicture(imageUrl[0]);
                                 pictureChanged = 2;
                                 removeProfilePicButton.setVisibility(View.GONE);
+                                downloader.deletePic(user);
+                                downloader.getProfilePicBitmap(user, profilePictureView);
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
