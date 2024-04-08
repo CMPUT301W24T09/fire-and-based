@@ -1231,7 +1231,7 @@ public class FirebaseUtil {
 //        checkedInEventsUpdate.put("checkedInEvents" + event.getQRcode(), 0); // Constructs a map with the key and sets its value to 0
 
         Task<Void> updateCheckedInEventValue = db.collection(EVENTS_COLLECTION).document(event.getQRcode())
-                .update("checkedInUsers", FieldValue.arrayRemove(user.getDeviceID()));
+                .update("checkedInUsers." + user.getDeviceID(), FieldValue.delete());
 
         // Use Tasks.whenAll() to wait for all updates to complete
         Task<Void> combinedTask = Tasks.whenAll(removeEventFromUser, removeUserFromEvent, updateCheckedInEventValue, updateCurrentAttendeeAmount);

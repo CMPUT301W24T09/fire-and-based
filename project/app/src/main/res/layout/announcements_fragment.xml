@@ -101,7 +101,7 @@
         android:paddingStart="0dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-
-                                />
+        android:divider="@drawable/divider"
+        android:dividerHeight="5dp"/>
 
 </LinearLayout>

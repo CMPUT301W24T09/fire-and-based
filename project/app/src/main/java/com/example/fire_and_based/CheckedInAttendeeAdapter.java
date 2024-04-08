@@ -11,32 +11,21 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
-/**
- * This class is the adapter for the attendee list. It displays each attendee for an event.
- * Used by AttendeeListFragment.
- * @author Sumayya
- */
-public class AttendeeArrayAdapter extends ArrayAdapter<User> {
-    private ArrayList<User> users;
-    private Context context;
+public class CheckedInAttendeeAdapter extends ArrayAdapter<User> {
+    private Context mContext;
+    private List<User> mDataList;
+    private List<Long> mLongList;
     private ImageDownloader imageDownloader = new ImageDownloader();
 
-    /**
-     * Constructor for the adapter
-     *
-     * @param context The context (usually an Activity) in which the adapter is used
-     * @param users  The list of attendees to be displayed
-     */
-    public AttendeeArrayAdapter(Context context, ArrayList<User> users) {
-        super(context, 0, users);
-        this.users = users;
-        this.context = context;
+    public CheckedInAttendeeAdapter(Context context, List<User> dataList, List<Long> longList) {
+        super(context, 0, dataList);
+        mContext = context;
+        mDataList = dataList;
+        mLongList = longList;
     }
+
 
     /**
      * Get a View for displaying data at the specified position.
@@ -53,21 +42,23 @@ public class AttendeeArrayAdapter extends ArrayAdapter<User> {
         {
             View view = convertView;
 
-            if(view == null){
-                view = LayoutInflater.from(context).inflate(R.layout.attendee_content, parent,false);
+            if (view == null) {
+                view = LayoutInflater.from(mContext).inflate(R.layout.attendee_content, parent, false);
             }
 
-            User user = users.get(position);
+            User user = mDataList.get(position);
+            Long checkedInValue = mLongList.get(position);
 
             TextView username = view.findViewById(R.id.attendee_username);
             username.setText(user.getUserName());
 
             TextView checkedInText = view.findViewById(R.id.checked_in_text);
-            checkedInText.setVisibility(View.GONE);
+            checkedInText.setText("Checked in " + checkedInValue + " times");
 
             ImageView imagePreview = view.findViewById(R.id.profile_picture_attendee);
-            ImageDownloader downloadGuys = new ImageDownloader();
-            downloadGuys.getProfilePicBitmap(user, (CircleImageView) imagePreview);
+            if (user.getProfilePicture() != null) {
+                imageDownloader.getProfilePicBitmapNotCircle(user, imagePreview);
+            }
 
             return view;
         }
