@@ -403,7 +403,7 @@ public class CreateEventFragment extends Fragment {
 
 
 //                    imageUrl = "TESTING IMAGE URL";
-                                        Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, endTimeSince1970, eventLocationString, PosterQRCode, null, maxAttendeeLong, isTracking);
+                                        Event newEvent = new Event(eventNameString, eventDescriptionString, imageUrl, QRCode, timeSince1970, endTimeSince1970, eventLocationString, PosterQRCode, null, maxAttendeeLong, 0L, isTracking);
                                         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
                                         FirebaseUtil.addEventToDB(db, newEvent, new FirebaseUtil.AddEventCallback() {
