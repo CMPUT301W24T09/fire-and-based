@@ -92,6 +92,12 @@ public class Announcement {
     }
 
 
+    /**
+     * Converts a timestamp to a formatted date string.
+     *
+     * @param timeStamp The timestamp to be converted to a date string.
+     * @return The formatted date string in the format "Month Day".
+     */
     public String dateFromLong(long timeStamp)
     {
         Calendar calendar = Calendar.getInstance();
