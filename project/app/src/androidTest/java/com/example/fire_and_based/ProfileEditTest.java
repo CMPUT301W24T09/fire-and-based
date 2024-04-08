@@ -60,7 +60,7 @@ public class ProfileEditTest {
         intentsTestRule.launchActivity(startIntent);
 
         onView(withId(R.id.profile_item)).perform(click());
-        onView(withId(R.id.edit_profile_button)).perform(click());
+        onView(withText("Edit")).perform(click());
 
 
         onView(withId(R.id.editTextFirst))
@@ -104,16 +104,16 @@ public class ProfileEditTest {
         user.setProfilePicture("defaultProfiles/testUser123.jpg");
         Intent startIntent = new Intent();
         startIntent.putExtra("user", user);
-        Thread.sleep(3000);
+        Thread.sleep(2000);
 
         intentsTestRule.launchActivity(startIntent);
-        Thread.sleep(3000);
+        Thread.sleep(2000);
 
         onView(withId(R.id.profile_item)).perform(click());
-        Thread.sleep(3000);
+        Thread.sleep(2000);
 
-        onView(withId(R.id.edit_profile_button)).perform(click());
-        Thread.sleep(3000);
+        onView(withText("Edit")).perform(click());
+        Thread.sleep(2000);
 
 
 

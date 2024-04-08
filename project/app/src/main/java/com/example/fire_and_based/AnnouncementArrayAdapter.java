@@ -64,10 +64,10 @@ public class AnnouncementArrayAdapter extends ArrayAdapter<Announcement> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            View view = convertView;
-            if (view == null) {
-                view = LayoutInflater.from(context).inflate(R.layout.announcements_content, parent, false);
-            }
+        View view = convertView;
+        if (view == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.announcements_content, parent, false);
+        }
 
 
         final Calendar c = Calendar.getInstance();

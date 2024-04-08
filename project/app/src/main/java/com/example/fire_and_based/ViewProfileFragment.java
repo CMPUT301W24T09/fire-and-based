@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -43,7 +42,7 @@ public class ViewProfileFragment extends Fragment {
         TextView emailText = view.findViewById(R.id.email_text);
         TextView phoneText = view.findViewById(R.id.phone_text);
         TextView homepageText = view.findViewById(R.id.homepage_text);
-        TextView editButton = view.findViewById(R.id.edit_profile_button);
+        TextView editButton = view.findViewById(R.id.remove_profile_button);
         CircleImageView profileImageView = view.findViewById(R.id.profile_image);
 
         // If user has no name, no need for TextView to take up space

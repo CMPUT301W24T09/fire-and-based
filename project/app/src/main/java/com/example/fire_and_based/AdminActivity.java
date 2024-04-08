@@ -16,9 +16,6 @@ import com.google.android.material.navigation.NavigationBarView;
  * This activity hosts the EventListFragment, UserListFragment, ImageListFragment, AdminEventDetailsFragment, and AdminProfileFragment.
  * Holds the bottom navigation bar for admin view of app.
  * @author Sumayya
- * To-do:
- * 1. Need function that returns ALL images in the app
- * 2. Need to make the images tab once firebase function done
  */
 public class AdminActivity extends AppCompatActivity {
 

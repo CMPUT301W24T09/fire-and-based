@@ -3,9 +3,11 @@ package com.example.fire_and_based;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,7 +21,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.w3c.dom.Text;
+
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -46,19 +54,21 @@ public class AdminProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.admin_profile_fragment, container, false);
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         if (getArguments() != null) {
             user = getArguments().getParcelable("user");
         }
 
-        EditText firstNameEdit = view.findViewById(R.id.first_name);
-        EditText lastNameEdit = view.findViewById(R.id.last_name);
-        EditText userNameEdit = view.findViewById(R.id.username);
-        EditText emailEdit = view.findViewById(R.id.email);
-        EditText phoneEdit = view.findViewById(R.id.phone);
-        EditText homepageEdit = view.findViewById(R.id.homepage);
-        TextView deleteButton = view.findViewById(R.id.delete_text_view);
-        TextView cancelButton = view.findViewById(R.id.admin_cancel_text_view);
-        CircleImageView profilePictureView = view.findViewById(R.id.admin_edit_profile_image);
+        TextView firstNameEdit = view.findViewById(R.id.firstAndLastText);
+        TextView userNameEdit = view.findViewById(R.id.username_text);
+        TextView emailEdit = view.findViewById(R.id.email_text);
+        TextView phoneEdit = view.findViewById(R.id.phone_text);
+        TextView homepageEdit = view.findViewById(R.id.homepage_text);
+        Button deleteButton = view.findViewById(R.id.remove_profile_button);
+        Button backButton = view.findViewById(R.id.back_button);
+        ImageView removeProfilePic = view.findViewById(R.id.delete_profile_image);
+        CircleImageView profilePictureView = view.findViewById(R.id.profile_image);
 
         // Retrieves profile picture from db and sets it in view
         ImageDownloader downloader = new ImageDownloader();
@@ -67,9 +77,6 @@ public class AdminProfileFragment extends Fragment {
         // Fields may be "" or null, therefore only change text if exists
         if (!TextUtils.isEmpty(user.getFirstName()))
             firstNameEdit.setText(user.getFirstName());
-
-        if (!TextUtils.isEmpty(user.getLastName()))
-            lastNameEdit.setText(user.getLastName());
 
         if (!TextUtils.isEmpty(user.getUserName()))
             userNameEdit.setText(user.getUserName());
@@ -83,10 +90,31 @@ public class AdminProfileFragment extends Fragment {
         if (!TextUtils.isEmpty(user.getHomepage()))
             homepageEdit.setText(user.getHomepage());
 
-        cancelButton.setOnClickListener(new View.OnClickListener() {
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getParentFragmentManager().popBackStack();
+            }
+        });
+
+        if (user.getProfilePicture().startsWith("defaultProfiles/"))
+            removeProfilePic.setVisibility(View.GONE);
+        removeProfilePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                user.setProfilePicture("defaultProfiles/" + user.getDeviceID());
+                FirebaseUtil.updateUser(db, user, new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("AdminProfileFragment", "Successfully removed user's profile picture and set it to default");
+                        removeProfilePic.setVisibility(View.GONE);
+                    }
+                }, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("AdminProfileFragment", e.toString());
+                    }
+                });
             }
         });
 

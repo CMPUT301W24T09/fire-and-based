@@ -130,7 +130,8 @@ public class FirebaseUtil {
             }
             if (querySnapshots != null) {
                 for (QueryDocumentSnapshot doc : querySnapshots) {
-                    if (!doc.getBoolean("admin")) {
+                    Boolean value = doc.getBoolean("admin");
+                    if (value == null || !value) {
                         String deviceID = doc.getString("deviceID");
                         String userName = doc.getString("userName");
                         String profilePicture = doc.getString("profilePicture");
@@ -1238,4 +1239,6 @@ public class FirebaseUtil {
         combinedTask.addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener);
     }
+
+
 }

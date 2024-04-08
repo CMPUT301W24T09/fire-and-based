@@ -6,6 +6,10 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+/**
+ * This is the Adapter that allows us to swipe between tab views in the ImageListFragment.
+ * @author Sumayya
+ */
 public class AdminImagesAdapter extends FragmentStateAdapter {
 
     /**

@@ -47,11 +47,6 @@ import java.util.Objects;
  * Also requires an event to be passed in as an argument as a Parcelable with a key "event"
  * Also requires a mode to be passed in as an argument as a String with a key "mode"
  * Note that mode may be either "Attending" or "Organizing"
- *
- * To-do (UI):
- * 1. Delay in displaying checked in status
- * 2. Make edit details button functional
- *
  * @author Sumayya, Tyler
  */
 public class EventDetailsFragment extends Fragment {
