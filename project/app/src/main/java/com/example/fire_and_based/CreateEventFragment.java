@@ -298,12 +298,12 @@ public class CreateEventFragment extends Fragment {
                         //EVENT BANNERS SHOULD BE 640 x 480 pixels MINIMUM
                         int imageRatio = imageHeight * 4; // Width should be height x 4
 
-//                        if(imageWidth < imageRatio)
-//                        {
-//                            Toast.makeText(requireContext(), "Banners are 4:1. Try another image", Toast.LENGTH_LONG).show();
-//                            imageUri = null;
-//                            //previewBanner.setImageURI(null);
-//                            previewBanner.setImageResource(android.R.color.white);}
+                        if(imageWidth < imageRatio)
+                        {
+                            Toast.makeText(requireContext(), "Banners are 4:1. Try another image", Toast.LENGTH_LONG).show();
+                            imageUri = null;
+                            //previewBanner.setImageURI(null);
+                            previewBanner.setImageResource(android.R.color.white);}
                     }
                 }
                 catch(Exception e)
@@ -407,7 +407,7 @@ public class CreateEventFragment extends Fragment {
                                             @Override
                                             public void onEventAdded() {
                                                 toast("Event successfully added!");
-                                                Log.println(Log.DEBUG, "EventCreation", "New event with id: " + QRCode + " added");
+                                               // Log.println(Log.DEBUG, "EventCreation", "New event with id: " + QRCode + " added");
 
                                                 FirebaseUtil.addEventAndOrganizer(db, newEvent.getQRcode(), user.getDeviceID(), aVoid -> {
                                                     Log.d("Firebase Success", "User is organizer of event now");
@@ -433,13 +433,13 @@ public class CreateEventFragment extends Fragment {
                                             @Override
                                             public void onEventExists() {
                                                 toast("ERROR: Event with the same ID already exists in the database.");
-                                                Log.println(Log.DEBUG, "EventCreation", "Event with id: " + QRCode + " found a duplicate");
+                                               // Log.println(Log.DEBUG, "EventCreation", "Event with id: " + QRCode + " found a duplicate");
                                             }
 
                                             @Override
                                             public void onError(Exception e) {
                                                 toast("An internal error occurred, please try again later");
-                                                Log.println(Log.ERROR, "EventCreation", e.toString());
+                                               // Log.println(Log.ERROR, "EventCreation", e.toString());
                                             }
                                         });
 
