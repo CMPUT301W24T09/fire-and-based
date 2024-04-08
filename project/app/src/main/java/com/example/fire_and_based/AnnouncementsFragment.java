@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +26,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Objects;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * This fragment is hosted by the EventDetailsFragment.
  * It displays the list of notifications for an event.
@@ -41,6 +44,7 @@ public class AnnouncementsFragment extends Fragment {
     private ListView announcementList;
     private AnnouncementArrayAdapter announcementAdapter;
     private FirebaseFirestore db;
+    private CircleImageView profilePic;
 
     /**
      * Creates a new instance of the NotficationsFragment with the provided event data.
@@ -85,6 +89,12 @@ public class AnnouncementsFragment extends Fragment {
 
         announcementAdapter = new AnnouncementArrayAdapter(requireContext(), dataList);
         announcementList.setAdapter(announcementAdapter);
+
+        profilePic = view.findViewById(R.id.profile_picture_announcements);
+
+        ImageDownloader downloader = new ImageDownloader();
+
+        downloader.getProfilePicBitmap(user, profilePic);
 
         db = FirebaseFirestore.getInstance();
         FirebaseUtil.getAnnouncements(db, event.getQRcode(), announcements -> {

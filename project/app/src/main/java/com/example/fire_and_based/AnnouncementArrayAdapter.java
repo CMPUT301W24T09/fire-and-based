@@ -13,6 +13,8 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * An ArrayAdapter for displaying announcements.
  * @author Sumayya
@@ -60,6 +62,9 @@ public class AnnouncementArrayAdapter extends ArrayAdapter<Announcement> {
 
             TextView description = view.findViewById(R.id.notif_description);
             description.setText(announcement.getContent());
+
+            CircleImageView profilePic = view.findViewById(R.id.profile_picture);
+            ImageDownloader downloader = new ImageDownloader();
 
             TextView time = view.findViewById(R.id.notif_time);
             time.setText(String.valueOf(announcement.getTimestamp()));
