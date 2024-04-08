@@ -15,23 +15,6 @@
         app:titleTextColor="@color/white">
 
         <TextView
-            android:id="@+id/count_person"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="#"
-            android:textColor="@color/white"
-            android:layout_gravity="end"
-            android:layout_marginRight="20sp"
-            android:textSize="18dp"/>
-
-        <ImageView
-            android:id="@+id/person"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            app:srcCompat="@drawable/baseline_person_24" />
-
-        <TextView
             android:id="@+id/back_arrow_attendee_fragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
