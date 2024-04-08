@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -47,20 +48,25 @@ import java.util.List;
  */
 
 public class EditEventFragment extends Fragment {
-
     private Event event;
     private User user;
     private Uri imageUri;
     private Boolean imageChanged = false;
     public long eventMaxAttendeesLong;
     private ArrayList<User> dataList = null; // for getting attendee amount
-
     private ImageView previewBanner;
     private String timeString;
     private ActivityResultLauncher<Intent> customActivityResultLauncher;
 
 
-
+    /**
+     * Initializes the UI components and handles user interactions for editing an event.
+     *
+     * @param inflater           The LayoutInflater object.
+     * @param container          The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState The previous saved state of the fragment.
+     * @return The View for the fragment's UI, or null.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -82,6 +88,7 @@ public class EditEventFragment extends Fragment {
         EditText eventAttendeeAmount = view.findViewById(R.id.eventEditAttendeeAmount);
         Button saveButton = view.findViewById(R.id.eventEditSaveButton);
         TextView deleteButton = view.findViewById(R.id.eventEditDeleteButton);
+        com.google.android.material.switchmaterial.SwitchMaterial geoTracking = view.findViewById(R.id.eventEditGeotrackToggle);
 
         // setting all the forms
         eventTitle.setText(event.getEventName());
@@ -92,6 +99,9 @@ public class EditEventFragment extends Fragment {
         String startTime = dateTime[1]; // time
         eventStartDate.setText(startCalendar);
         eventStartTime.setText(startTime);
+        Boolean locationTracking = event.isTrackLocation();
+        geoTracking.setChecked(locationTracking);
+
 
 
         Long eventEndDateLong = event.getEventEnd();
@@ -265,8 +275,10 @@ public class EditEventFragment extends Fragment {
                 String eventEndDateString = eventEndDate.getText().toString();
                 String eventLocationString = eventLocation.getText().toString();
                 String eventMaxAttendeeAmountString = eventAttendeeAmount.getText().toString();
+                Boolean eventTrackLocation = geoTracking.isChecked();
 
-                 if (!checkValidFields(eventDescriptionString, eventStartDateString, eventStartTimeString, eventEndTimeString, eventEndDateString, eventLocationString)) {
+
+                if (!checkValidFields(eventDescriptionString, eventStartDateString, eventStartTimeString, eventEndTimeString, eventEndDateString, eventLocationString)) {
                     Toast.makeText(getContext(), "Fields must all be satisfied", Toast.LENGTH_SHORT).show();
 
                 } else {
@@ -306,6 +318,7 @@ public class EditEventFragment extends Fragment {
                         event.setEventEnd(eventEndLong);
                         event.setLocation(eventLocationString);
                         event.setMaxAttendees(eventMaxAttendeesLong);
+                        event.setTrackLocation(eventTrackLocation);
                         if (imageChanged){
                             String QRCode = event.getQRcode();
                             String imageUrl = "events/" + QRCode;
@@ -385,6 +398,17 @@ public class EditEventFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Checks if the provided event fields are valid.
+     *
+     * @param eventDescriptionString     The event description string.
+     * @param eventStartDateString       The event start date string.
+     * @param eventStartTimeString       The event start time string.
+     * @param eventEndDateString         The event end date string.
+     * @param eventLocationString        The event location string.
+     * @param eventMaxAttendeeAmountString The maximum number of attendees string.
+     * @return True if all fields are valid, otherwise false.
+     */
     // checks for valid fields function
     private boolean checkValidFields(String eventDescriptionString, String eventStartDateString, String eventStartTimeString, String eventEndDateString, String eventLocationString, String eventMaxAttendeeAmountString) {
         if (eventDescriptionString == "" || eventDescriptionString == null) {
@@ -402,7 +426,12 @@ public class EditEventFragment extends Fragment {
         }
     }
 
-
+    /**
+     * Converts a timestamp to a calendar date and time.
+     *
+     * @param timestamp The timestamp to convert.
+     * @return An array containing the formatted date and time strings.
+     */
     public static String[] convertTimestampToCalendarDateAndTime(Long timestamp) {
         // Create a Calendar instance and set the time using the given timestamp
         Calendar calendar = Calendar.getInstance();
@@ -424,7 +453,5 @@ public class EditEventFragment extends Fragment {
         // Return an array with both date and time
         return new String[]{date, time};
     }
-
-
 
 }

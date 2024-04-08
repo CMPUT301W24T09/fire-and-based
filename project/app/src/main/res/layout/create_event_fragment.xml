@@ -108,12 +108,11 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:paddingStart="18dp"
-            android:paddingEnd="18dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/background">
-
+            android:layout_height="543dp"
+            android:background="@drawable/background"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp">
 
 
             <TextView
@@ -181,14 +180,13 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
 
+                android:id="@+id/event_dates_constrain"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:id="@+id/event_dates_constrain"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/event_description_editable">
-
 
 
                 <androidx.constraintlayout.widget.Guideline
@@ -328,8 +326,8 @@
                         android:backgroundTint="@android:color/darker_gray"
                         android:ems="23"
                         android:focusable="false"
-                        android:inputType="none"
                         android:fontFamily="@font/roboto"
+                        android:inputType="none"
                         android:textColor="@color/black"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -441,14 +439,35 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:fontFamily="@font/roboto" />
 
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/event_maximum_attendees_editable">
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/eventEditGeotrackToggleCreate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/figmaBlue"
+                    android:text=" Gather User Check In Location  "
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:thumbTint="@color/figmaBlue" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <!-- Bottom Buttons -> QR CODES AND CREATE EVENT -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/QRCODES_AND_CREATE_EVENT"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/event_maximum_attendees_editable">
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
                 <!-- QR CODE BUTTONS -->
                 <androidx.constraintlayout.widget.ConstraintLayout

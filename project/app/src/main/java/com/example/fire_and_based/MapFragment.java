@@ -36,16 +36,22 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * map
+ * fragment for the map
  * @author Tyler, Sumayya
  */
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap mMap;
-
     Event event;
     String mode;
 
+    /**
+     * Creates a new instance of the MapFragment with the specified event and mode.
+     *
+     * @param event The event to be displayed on the map.
+     * @param mode  The mode indicating the user's role (e.g., Attending, Organizing).
+     * @return A new instance of the MapFragment.
+     */
     public static MapFragment newInstance(Event event, String mode) {
         MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
@@ -54,6 +60,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         fragment.setArguments(args);
         return fragment;
     }
+
+    /**
+     * Inflates the map fragment layout and initializes the map.
+     *
+     * @param inflater           LayoutInflater object for inflating views.
+     * @param container          Parent view to which the fragment's UI should be attached.
+     * @param savedInstanceState If not null, fragment is being reconstructed from a previous saved state.
+     * @return Root view of the inflated layout.
+     */
 
     @Nullable
     @Override
@@ -75,6 +90,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
+    /**
+     * Called when the GoogleMap object is ready to be used.
+     *
+     * @param googleMap The GoogleMap object representing the map instance.
+     */
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
@@ -116,6 +136,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(eventCoords, zoomLevel));
     }
 
+    /**
+     * Geocodes the provided address to obtain its coordinates (latitude and longitude).
+     * If the address is not found or an error occurs, it defaults to Edmonton, Alberta.
+     *
+     * @param address The address to geocode.
+     * @return The LatLng object representing the coordinates of the address.
+     */
     public LatLng geocodeAddress(String address) {
         List<Address> addressList = null;
         String eventLocation = event.getLocation();
@@ -159,6 +186,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             return edmonton;
         }
     }
+
+
+    /**
+     * Creates a BitmapDescriptor from a vector drawable resource.
+     *
+     * @param context                  The context in which the vector drawable will be loaded.
+     * @param vectorDrawableResourceId The resource ID of the vector drawable.
+     * @param width                    The desired width of the bitmap.
+     * @param height                   The desired height of the bitmap.
+     * @return A BitmapDescriptor representing the vector drawable.
+     */
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, @DrawableRes int vectorDrawableResourceId, int width, int height) {
         Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId);
         vectorDrawable.setBounds(0, 0, width, height); // Set the bounds with the new width and height

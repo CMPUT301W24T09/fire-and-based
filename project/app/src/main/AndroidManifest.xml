@@ -21,6 +21,7 @@
         tools:targetApi="tiramisu"
         android:largeHeap="true"
         android:hardwareAccelerated="true">
+<!--        android:hardwareAccelerated="true">-->
 
         <!-- for image sharing feature-->
         <provider
@@ -44,22 +45,16 @@
         </activity>
         <activity
             android:name=".UserActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
         <activity
-            android:name=".CreateEventFragment">
-        </activity>
-
-        <activity
-            android:name=".ViewProfileFragment">
-        </activity>
-
-        <activity
-            android:name=".AdminActivity">
+            android:name=".AdminActivity"
+            android:windowSoftInputMode="adjustPan" >
         </activity>
 
         <meta-data

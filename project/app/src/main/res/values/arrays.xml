@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sort_options">
+        <item></item>
+        <item>Popular</item>
+        <item>Upcoming</item>
+<!--        <item>Nearby</item>-->
+        <item>A-Z</item>
+    </string-array>
+</resources>

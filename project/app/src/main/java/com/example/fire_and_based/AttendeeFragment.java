@@ -14,6 +14,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.android.material.textview.MaterialTextView;
 
 /**
  * This fragment is hosted by UserActivity.
@@ -25,6 +26,15 @@ public class AttendeeFragment extends Fragment {
     private Event event;
     private ViewPager2 viewPager;
     private FragmentStateAdapter adapter;
+
+    /**
+     * Inflates the layout for the AttendeeFragment and initializes its components.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState A Bundle object containing the fragment's previously saved state.
+     * @return The inflated view for the fragment.
+     */
 
     @Nullable
     @Override
@@ -39,8 +49,8 @@ public class AttendeeFragment extends Fragment {
         adapter = new AttendeeListAdapter(this, event);
         viewPager.setAdapter(adapter);
 
-        ImageView backArrow = view.findViewById(R.id.back_arrow_attendee_fragment);
-        backArrow.setOnClickListener(new View.OnClickListener() {
+        MaterialTextView backButton = view.findViewById(R.id.back_arrow_attendee_fragment);
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getParentFragmentManager().popBackStack();

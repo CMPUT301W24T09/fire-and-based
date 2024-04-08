@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,8 +21,12 @@ import androidx.fragment.app.Fragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Objects;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * This fragment is hosted by the EventDetailsFragment.
@@ -58,6 +63,15 @@ public class AnnouncementsFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Initializes UI elements and displays announcements for the event.
+     * Handles posting new announcements based on user permissions.
+     * @param inflater The LayoutInflater object for inflating views.
+     * @param container The parent view to which the fragment's UI should be attached.
+     * @param savedInstanceState Previous saved state of the fragment.
+     * @return The view of the inflated layout for the fragment.
+     */
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -75,11 +89,24 @@ public class AnnouncementsFragment extends Fragment {
         announcementAdapter = new AnnouncementArrayAdapter(requireContext(), dataList);
         announcementList.setAdapter(announcementAdapter);
 
+
+        ImageView profilePic = view.findViewById(R.id.profile_picture_announcements);
+        ImageDownloader downloadGuys = new ImageDownloader();
+        downloadGuys.getProfilePicBitmap(user, (CircleImageView) profilePic);
+
+
         db = FirebaseFirestore.getInstance();
         FirebaseUtil.getAnnouncements(db, event.getQRcode(), announcements -> {
             dataList.clear();
             for (Announcement announcement: announcements) {
                 dataList.add(announcement);
+                Collections.sort(dataList, new Comparator<Announcement>() {
+                    @Override
+                    public int compare(Announcement a1, Announcement a2) {
+                        // Compare timestamps in reverse order to sort by most recent
+                        return Long.compare(a2.getTimestamp(), a1.getTimestamp());
+                    }
+                });
                 announcementAdapter.notifyDataSetChanged();
             }
         }, e -> {
@@ -102,8 +129,21 @@ public class AnnouncementsFragment extends Fragment {
                         AnnouncementUtil.newAnnouncement(db, announcement_content, event, aVoid -> {
                             announcement_textview.setText("");
                             Toast.makeText(AnnouncementsFragment.this.getActivity(), "Announcement issued successfully", Toast.LENGTH_SHORT).show();
+                            dataList.clear();
+                            FirebaseUtil.getAnnouncements(db, event.getQRcode(), announcements -> {
+                                for (Announcement announcement : announcements) {
+                                    dataList.add(announcement);
+                                    Collections.sort(dataList, new Comparator<Announcement>() {
+                                        @Override
+                                        public int compare(Announcement a1, Announcement a2) {
+                                            // Compare timestamps in reverse order to sort by most recent
+                                            return Long.compare(a2.getTimestamp(), a1.getTimestamp());
+                                        }
+                                    });
+                                    announcementAdapter.notifyDataSetChanged();
+                                }
+                            }, e -> {});
                         }, e -> {
-                            Log.e("FirebaseError", "Error creating announcement" + e.getMessage());
                             Toast.makeText(AnnouncementsFragment.this.getActivity(), "An error has occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }, new Handler(Looper.getMainLooper()));
                     }

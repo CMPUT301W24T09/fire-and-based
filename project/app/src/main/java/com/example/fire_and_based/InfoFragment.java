@@ -31,8 +31,6 @@ import java.util.Objects;
  * This fragment is hosted by EventDetailsFragment.
  * It displays the info for an event.
  * @author Sumayya, Tyler
- * To-do (UI):
- * 1. Something wrong with XML
  */
 public class InfoFragment extends Fragment {
     private Event event;
@@ -43,7 +41,8 @@ public class InfoFragment extends Fragment {
      * Creates a new instance of the InfoFragment with the provided event data.
      *
      * @param event The Event object to be associated with the fragment.
-     * @param mode the mode ("Organizing" or "Attending")
+     * @param mode the mode ("Organizing" or "Attending")]
+     * @param user the user of the app
      * @return A new instance of InfoFragment with the specified event data.
      */
     public static InfoFragment newInstance(Event event, String mode, User user) {
@@ -55,6 +54,15 @@ public class InfoFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+    /**
+     * Inflates the layout for the information fragment and initializes its views.
+     *
+     * @param inflater           LayoutInflater object for inflating views in the fragment.
+     * @param container          Parent view to which the fragment's UI should be attached.
+     * @param savedInstanceState If not null, this fragment is being reconstructed from a previous saved state.
+     * @return The root view of the inflated layout.
+     */
 
     @Nullable
     @Override
@@ -124,7 +132,13 @@ public class InfoFragment extends Fragment {
         return view;
     }
 
-
+    /**
+     * Displays the QR code for the event.
+     *
+     * @param QRCode      The QR code associated with the event.
+     * @param PosterQRCode The QR code for the event poster.
+     * @param eventName   The name of the event.
+     */
     public void displayQR(String QRCode, String PosterQRCode, String eventName) {
         QRCodeDisplayFragment fragment = new QRCodeDisplayFragment();
         Bundle bundle = new Bundle();
