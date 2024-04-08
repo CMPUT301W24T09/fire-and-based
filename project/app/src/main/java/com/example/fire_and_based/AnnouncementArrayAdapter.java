@@ -1,6 +1,11 @@
 package com.example.fire_and_based;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.content.Context;
+import android.content.Intent;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +15,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -53,15 +61,36 @@ public class AnnouncementArrayAdapter extends ArrayAdapter<Announcement> {
                 view = LayoutInflater.from(context).inflate(R.layout.announcements_content, parent, false);
             }
 
+
             Announcement announcement = announcements.get(position);
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            String userID = announcement.getSender();
 
             TextView username = view.findViewById(R.id.notif_user);
-            username.setText(announcement.getSender());
 
+            ImageDownloader downloadGuy = new ImageDownloader();
+
+            FirebaseUtil.getUserObject(db, userID,
+                user -> {
+                    String userName = user.getUserName();
+                    if(TextUtils.isEmpty(userName))
+                    {
+                        userName = "Organizer";
+                    }
+
+                    username.setText(userName);
+                    ImageView profilePic = downloadGuy.getProfilePicBitmap(user);
+
+
+
+
+                },
+                e -> {
+                    Log.d(TAG, e.toString());
+                });
             TextView description = view.findViewById(R.id.notif_description);
-            description.setText(announcement.getContent());
-
             TextView time = view.findViewById(R.id.notif_time);
+            description.setText(announcement.getContent());
             time.setText(String.valueOf(announcement.getTimestamp()));
 
             return view;
