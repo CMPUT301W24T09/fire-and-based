@@ -179,13 +179,9 @@ public class EventListFragment extends Fragment {
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Retrieve the selected item
                 String selectedItem = (String) parent.getItemAtPosition(position);
-                if (selectedItem.equals("A-Z")) {
-                    eventAdapter.sortEvents("A-Z", searchView.getQuery());
-                } else if (selectedItem.equals("Sort by Start Time")) {
-                }
-                // Add more conditions for other sorting options as needed
+                Log.e("ITEM", selectedItem);
+                eventAdapter.sortEvents(selectedItem, searchView.getQuery());
             }
         });
 
@@ -201,13 +197,24 @@ public class EventListFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Called when the fragment is visible to the user and actively running.
+     * This is generally tied to the Activity's lifecycle and occurs after onStart() when the activity
+     * is visible, but before the activity is interacted with (before it gains focus).
+     * <p>
+     * This method clears the text in the AutoCompleteTextView and clears focus from the SearchView.
+     * If an eventAdapter is set, it also clears the query text in the SearchView.
+     * </p>
+     */
     @Override
     public void onResume() {
         super.onResume();
         autoCompleteTextView.setText("");
+        View rootView = searchView.getRootView();
+        rootView.requestFocus();
+        searchView.clearFocus();
         if (eventAdapter != null) {
             searchView.setQuery("", false);
-            searchView.clearFocus();
         }
     }
 
@@ -329,6 +336,7 @@ public class EventListFragment extends Fragment {
                 new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION},
                 LOCATION_PERMISSION_REQUEST_CODE);
     }
+
 
     public ArrayList<String> filterSetup(AutoCompleteTextView listSorter)
     {

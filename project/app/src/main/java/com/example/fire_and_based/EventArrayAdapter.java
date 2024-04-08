@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -147,10 +148,14 @@ public class EventArrayAdapter extends ArrayAdapter<Event> implements Filterable
         };
     }
 
-    public void sortEvents(CharSequence sortMethod, CharSequence constraint) {
-        if (sortMethod == "A-Z") {
-            events.sort(Comparator.comparing(Event::getEventName));
-            getFilter().filter(constraint);
+    public void sortEvents(String sortMethod, CharSequence constraint) {
+        if (Objects.equals(sortMethod, "A-Z")) {
+            events.sort(Comparator.comparing(Event::getEventName, String.CASE_INSENSITIVE_ORDER));
+        } else if (Objects.equals(sortMethod, "Upcoming")) {
+            events.sort(Comparator.comparing(Event::getEventStart));
+        } else if (Objects.equals(sortMethod, "Popular")) {
+            events.sort(Comparator.comparing(Event::getCurrentAttendees).reversed());
         }
+        getFilter().filter(constraint);
     }
 }
