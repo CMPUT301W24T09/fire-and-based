@@ -13,6 +13,11 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
+/**
+ * This is the adapter for the array of users; it displays the profile picture for each user.
+ * Used by ProfilePicturesFragment.
+ * @author Sumayya
+ */
 public class ProfilePictureAdapter extends ArrayAdapter<User> {
     private ArrayList<User> users;
     private Context context;

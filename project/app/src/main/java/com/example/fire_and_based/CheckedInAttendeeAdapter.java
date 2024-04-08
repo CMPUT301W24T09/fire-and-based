@@ -15,6 +15,12 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+/**
+ * This class is the adapter for the attendee list.
+ * It displays each attendee for an event, with the amount of times they've checked in.
+ * Used by AttendeeListFragment.
+ * @author Sumayya
+ */
 public class CheckedInAttendeeAdapter extends ArrayAdapter<User> {
     private Context mContext;
     private List<User> mDataList;

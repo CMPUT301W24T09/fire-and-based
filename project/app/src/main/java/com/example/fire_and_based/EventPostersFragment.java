@@ -17,6 +17,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/**
+ * This fragment is hosted by ImagesListFragment.
+ * It displays the all the event banners.
+ * @author Sumayya, Aiden
+ */
 public class EventPostersFragment extends Fragment {
     protected ListView eventList;
     protected EventPosterAdapter eventAdapter;

@@ -60,7 +60,6 @@ import android.location.Location;
  * Also requires a mode to be passed in as an argument as a String with a key "mode"
  * Note that a mode may be "Browse", "Attending", "Organizing", or "Admin"
  * @author Sumayya, Tyler, Aiden, Ilya
- * Issue: if you can a qr code for an event you're not registered in, it takes a long, long time for a failure message to pop up
  */
 
 public class EventListFragment extends Fragment {

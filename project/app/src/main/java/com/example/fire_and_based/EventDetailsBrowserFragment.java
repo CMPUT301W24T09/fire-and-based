@@ -25,8 +25,6 @@ import java.util.Objects;
  * Requires a user to be passed in as an argument as a Parcelable with a key "user"
  * Also requires an event to be passed in as an argument as a Parcelable with a key "event"
  * @author Sumayya
- * To-do (UI):
- * 1. Weird looking event banner ImageView needs to be fixed.
  */
 public class EventDetailsBrowserFragment extends Fragment {
     private User user;

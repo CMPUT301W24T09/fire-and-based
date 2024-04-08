@@ -10,7 +10,6 @@ import java.util.Random;
 
 /**
  * Logic for generating a qr code from an image and saving one to a file
- * Current issues: saving to an image not yet implemented
  * @author   Ilya
  */
 public class QRCodeGenerator {

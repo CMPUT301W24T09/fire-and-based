@@ -20,9 +20,6 @@ import com.google.android.material.navigation.NavigationBarView;
  * Holds the bottom navigation bar for the entire app.
  * Requires a user to be passed in as an argument as a Parcelable with a key "user"
  * @author Sumayya, Tyler
- * To-do (UI):
- * 1. Fix ugly plus button
- * 2. Highlight title in addition to icon when tab is selected in bottom nav.
  */
 public class UserActivity extends AppCompatActivity {
     private User user;

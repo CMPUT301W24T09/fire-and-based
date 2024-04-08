@@ -32,9 +32,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * This fragment is hosted by the EventDetailsFragment.
  * It displays the list of notifications for an event.
  * @author Sumayya
- * To-do (Firebase):
- * 1. Function that returns list of notifications (announcements) for an event.
- * 2. Function that allows us to add a notification.
  */
 public class AnnouncementsFragment extends Fragment {
     private User user;

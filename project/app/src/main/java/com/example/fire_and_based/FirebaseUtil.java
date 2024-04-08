@@ -39,9 +39,6 @@ import java.util.stream.Stream;
  * This class has all the functions for accessing the necessary data from the firebase
  * or storing the necessary data in the firebase.
  * @author Ilya, Sumayya, Tyler
- * To-do:
- * 1. Need a function that gets all images from the database
- * 2. getAllEventsUserNotIn has issues. see below for more details.
  */
 
 public class FirebaseUtil {

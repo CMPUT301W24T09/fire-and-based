@@ -16,6 +16,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * This fragment is hosted by the AttendeeFragment.
+ * It displays the list of attendees for the All Attendees tab and the Checked In tab.
+ * @author Sumayya
+ */
 public class AttendeeCheckedInFragment extends Fragment {
     private Event event;
     private ArrayList<User> dataList;

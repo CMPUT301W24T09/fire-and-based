@@ -16,6 +16,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/**
+ * This is the adapter for the array of events.
+ * It displays the poster for each event.
+ * @author Sumayya
+ */
 public class EventPosterAdapter extends ArrayAdapter<Event> {
     private ArrayList<Event> events;
     private Context context;

@@ -14,6 +14,11 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.android.material.textview.MaterialTextView;
 
+/**
+ * This fragment is hosted by AdminActivity.
+ * It corresponds to the images tab in the admin view of the app.
+ * @author Sumayya
+ */
 public class ImageListFragment extends Fragment {
 
     /**
