@@ -18,7 +18,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+/**
+ * Tests the profile view and edit functionalities within the app, ensuring that users can
+ * view their profile details and successfully update their information through the UI.
+ */
 @RunWith(AndroidJUnit4.class)
 public class ProfileEditTest {
 

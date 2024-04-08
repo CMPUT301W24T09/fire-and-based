@@ -22,7 +22,11 @@ import com.example.fire_and_based.UserActivity;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+/**
+ * This class tests the event joining functionalities in the app.
+ * It includes tests for joining an event, verifying the user's attendance,
+ * and checking the user's organizing capabilities through the app's UI.
+ */
 @RunWith(AndroidJUnit4.class)
 public class JoinSingleEventTest {
 

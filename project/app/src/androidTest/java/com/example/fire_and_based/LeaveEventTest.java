@@ -22,7 +22,10 @@ import com.example.fire_and_based.UserActivity;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+/**
+ * This class is designed to test the functionality of leaving an event through the app's user interface.
+ * It simulates user interactions for joining an event and then leaving it, ensuring the app behaves as expected.
+ */
 @RunWith(AndroidJUnit4.class)
 public class LeaveEventTest {
 

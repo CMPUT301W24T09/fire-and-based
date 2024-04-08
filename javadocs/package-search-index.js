@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"android.util"},{"l":"com.example.fire_and_based"}];updateSearchResults();

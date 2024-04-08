@@ -20,7 +20,10 @@ import com.google.android.material.button.MaterialButton;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+/**
+ * This class tests the check-in functionality of the UserActivity within the app.
+ * It simulates user interactions for joining, checking in, and checking out of an event.
+ */
 @RunWith(AndroidJUnit4.class)
 public class CheckInEventTest {
 
@@ -28,7 +31,13 @@ public class CheckInEventTest {
     public IntentsTestRule<UserActivity> intentsTestRule =
             new IntentsTestRule<>(UserActivity.class, true, false); // Do not launch activity immediately
 
-
+    /**
+     * Tests the complete flow from launching the activity, joining an event,
+     * checking in, and finally checking out and leaving the event.
+     * Verifies that each action is performed as expected by checking the presence
+     * of specific UI elements.
+     * @throws InterruptedException if the thread is interrupted while waiting.
+     */
     @Test
     public void checkInTest() throws InterruptedException {
         User user = new User("testUser123");

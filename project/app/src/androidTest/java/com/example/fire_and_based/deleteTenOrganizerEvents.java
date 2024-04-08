@@ -18,7 +18,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+/**
+ * Test class for deleting ten organizer events, intended to validate the deletion functionality
+ * within the application. This class performs UI tests to ensure that events can be deleted
+ * successfully by an organizer.
+ */
 @RunWith(AndroidJUnit4.class)
 public class deleteTenOrganizerEvents {
 
