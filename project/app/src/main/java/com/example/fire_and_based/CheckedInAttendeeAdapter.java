@@ -13,6 +13,8 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class CheckedInAttendeeAdapter extends ArrayAdapter<User> {
     private Context mContext;
     private List<User> mDataList;
@@ -56,9 +58,8 @@ public class CheckedInAttendeeAdapter extends ArrayAdapter<User> {
             checkedInText.setText("Checked in " + checkedInValue + " times");
 
             ImageView imagePreview = view.findViewById(R.id.profile_picture_attendee);
-            if (user.getProfilePicture() != null) {
-                imageDownloader.getProfilePicBitmapNotCircle(user, imagePreview);
-            }
+            ImageDownloader downloadGuys = new ImageDownloader();
+            downloadGuys.getProfilePicBitmap(user, (CircleImageView) imagePreview);
 
             return view;
         }
