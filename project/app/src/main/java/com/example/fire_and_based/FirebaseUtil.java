@@ -1006,7 +1006,7 @@ public class FirebaseUtil {
                     }
 
                     Long maxAttendees = (Long) eventSnapshot.get("maxAttendees");
-                    if (maxAttendees != null && maxAttendees <= attendees.size()){
+                    if (maxAttendees != null && maxAttendees <= attendees.size() && maxAttendees != -1){
                         throw new IllegalArgumentException("Event reached max capacity");
                     }
 
