@@ -477,7 +477,7 @@ public class FirebaseUtil {
                         }
 
                         if (finalAttendeeEvents.contains(eventID)) {
-                            List<String> attendees = new ArrayList<>((Collection) eventSnapshot.get("attendeeEvents"));
+                            List<String> attendees = new ArrayList<>((Collection) eventSnapshot.get("attendees"));
                             attendees.remove(docID);
                             transaction.update(eventRef, "attendees", attendees);
                         }
