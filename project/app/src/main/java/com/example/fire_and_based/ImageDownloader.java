@@ -86,7 +86,7 @@ public class ImageDownloader
         public void getProfilePicBitmap(User thisUser, CircleImageView profilePreview) {
             //Bitmap imageMap;
 
-            String profileUrl = "profiles/" + thisUser.getDeviceID();
+            String profileUrl = thisUser.getProfilePicture();
             Log.d(TAG, profileUrl);
             StorageReference uriRef = fireRef.child(profileUrl);
             uriRef.getBytes(10000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -124,6 +124,23 @@ public class ImageDownloader
         });
     }
 
+
+    public Bitmap returnProfileBitmap(User thisUser) {
+        //Bitmap imageMap;
+        final Bitmap[] imageMap = new Bitmap[1];
+        String profileUrl = "profiles/" + thisUser.getDeviceID();
+        Log.d(TAG, profileUrl);
+        StorageReference uriRef = fireRef.child(profileUrl);
+        uriRef.getBytes(10000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                imageMap[0] = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+            }
+        });
+        return imageMap[0];
+
+    }
 
 
 
