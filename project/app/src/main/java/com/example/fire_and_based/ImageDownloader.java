@@ -86,7 +86,7 @@ public class ImageDownloader
         public void getProfilePicBitmap(User thisUser, CircleImageView profilePreview) {
             //Bitmap imageMap;
 
-            String profileUrl = "profiles/" + thisUser.getDeviceID();
+            String profileUrl = thisUser.getProfilePicture();
             Log.d(TAG, profileUrl);
             StorageReference uriRef = fireRef.child(profileUrl);
             uriRef.getBytes(10000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -108,7 +108,7 @@ public class ImageDownloader
     public void getProfilePicBitmapNotCircle(User thisUser, ImageView profilePreview) {
         //Bitmap imageMap;
 
-        String profileUrl = "profiles/" + thisUser.getDeviceID();
+        String profileUrl = thisUser.getProfilePicture();
         Log.d(TAG, profileUrl);
         StorageReference uriRef = fireRef.child(profileUrl);
         uriRef.getBytes(10000000).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -129,6 +129,17 @@ public class ImageDownloader
         StorageReference uriRef = fireRef.child(bannerUrl);
         uriRef.delete();
         thisEvent.setEventBanner(null);
+        FirebaseUtil.updateEvent(db, thisEvent, new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+
+            }
+        }, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
     }
 
 
