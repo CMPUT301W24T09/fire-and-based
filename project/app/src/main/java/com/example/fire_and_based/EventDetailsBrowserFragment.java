@@ -25,15 +25,20 @@ import java.util.Objects;
  * Requires a user to be passed in as an argument as a Parcelable with a key "user"
  * Also requires an event to be passed in as an argument as a Parcelable with a key "event"
  * @author Sumayya
- * To-do (UI):
- * 1. Weird looking event banner ImageView needs to be fixed.
  */
 public class EventDetailsBrowserFragment extends Fragment {
     private User user;
     private Event event;
     private ImageDownloader imageDownloader = new ImageDownloader();
 
-
+    /**
+     * Creates the view for the event details browser fragment.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState This fragment is being re-constructed from a previous saved state
+     * @return The View for the fragment's UI.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

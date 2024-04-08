@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class AdminEventDetailsFragment extends Fragment {
     private Event event;
 
+    /**
+     * Inflates the layout for the admin event details fragment and populates it with event information.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     * @return The root view of the inflated layout.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -60,6 +69,10 @@ public class AdminEventDetailsFragment extends Fragment {
         eventLocation.setText(event.getLocation());
         eventAttendeeAmount.setText(event.getMaxAttendees().toString());
 
+        ImageView eventBannerImage = view.findViewById(R.id.event_image);
+        ImageDownloader ImageDownloader = new ImageDownloader();
+        ImageDownloader.getBannerBitmap(event, eventBannerImage);
+
         TextView cancel = view.findViewById(R.id.admin_cancel_button);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,7 +89,7 @@ public class AdminEventDetailsFragment extends Fragment {
                 FragmentManager fragmentManager = getParentFragmentManager();
 
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
-                FirebaseUtil.deleteEvent(db, event, new OnSuccessListener<Void>() {
+                FirebaseUtil.deleteEvent(db, event.getQRcode(), new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
                         Toast.makeText(getContext(), "Event deleted from database :) ", Toast.LENGTH_SHORT).show();

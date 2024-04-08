@@ -6,359 +6,355 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?attr/colorPrimary"
-        android:orientation="vertical">
+        android:layout_height="match_parent" >
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="253dp"
-            android:background="?attr/colorPrimary">
-
-            <TextView
-                android:id="@+id/delete_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14sp"
-                android:layout_marginEnd="20sp"
-                android:fontFamily="@font/roboto"
-                android:text="Delete"
-                android:textColor="@color/white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/admin_cancel_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
-                android:layout_marginTop="14sp"
-                android:fontFamily="@font/roboto"
-                android:text="Cancel"
-                android:textColor="@color/white"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/admin_event_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8sp"
-                android:background="?attr/colorPrimary"
-                android:text="Event Details"
-                android:textColor="@color/white"
-                android:textSize="27sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="110dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:background="@color/white"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                app:cardCornerRadius="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/admin_event_title">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipChildren="false">
-
-                    <ImageView
-                        android:id="@+id/event_image"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:contentDescription="image"
-                        android:scaleType="centerCrop" />
-
-
-                    <Button
-                        android:id="@+id/edit_image_button"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_alignParentTop="true"
-
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginEnd="2dp"
-                        android:background="@color/red" />
-                    <!--                        IDK WHY THE FUCKING BUTTON IS NOT CHANGING -->
-                    <!-- android:layout_marginTop="-15dp"-->
-                    <!-- android:layout_marginEnd="-15dp"-->
-
-
-                </RelativeLayout>
-            </androidx.cardview.widget.CardView>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:paddingStart="18dp"
-            android:paddingEnd="18dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/background">
-
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="22dp"
-                android:backgroundTint="@android:color/darker_gray"
-                android:ems="23"
-                android:fontFamily="@font/roboto"
-                android:inputType="text"
-                android:text=" Event Description"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:fontFamily="@font/roboto" />
-
-            <EditText
-                android:id="@+id/admin_event_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="36dp"
-                android:backgroundTint="@android:color/darker_gray"
-                android:editable="false"
-                android:ems="23"
-                android:fontFamily="@font/roboto"
-                android:hint="Event Description"
-                android:inputType="none"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:fontFamily="@font/roboto" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="142dp"
-                android:backgroundTint="@android:color/darker_gray"
-                android:ems="23"
-                android:fontFamily="@font/roboto"
-                android:inputType="text"
-                android:text=" Time"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:fontFamily="@font/roboto" />
-
-            <EditText
-                android:id="@+id/edit_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="156dp"
-                android:backgroundTint="@android:color/darker_gray"
-                android:editable="false"
-                android:ems="23"
-                android:fontFamily="@font/roboto"
-                android:hint="Time"
-                android:inputType="none"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:fontFamily="@font/roboto" />
-
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/admin_event_description">
+                android:layout_height="253dp"
+                android:background="?attr/colorPrimary">
 
-
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/admin_middle_guideline"
+                <TextView
+                    android:id="@+id/delete_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.5" />
-
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/linearLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toStartOf="@+id/admin_middle_guideline"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:id="@+id/textView3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@android:color/darker_gray"
-                        android:ems="23"
-                        android:fontFamily="@font/roboto"
-                        android:inputType="text"
-                        android:text=" Start Date"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toTopOf="@id/start_date"
-                        tools:fontFamily="@font/roboto" />
-
-                    <EditText
-                        android:id="@+id/start_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@android:color/darker_gray"
-                        android:editable="false"
-                        android:ems="23"
-                        android:focusable="false"
-                        android:fontFamily="@font/roboto"
-                        android:hint="Start Date"
-                        android:inputType="none"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        tools:fontFamily="@font/roboto" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toEndOf="@+id/admin_middle_guideline"
+                    android:layout_marginTop="14sp"
+                    android:layout_marginEnd="20sp"
+                    android:fontFamily="@font/roboto"
+                    android:text="Delete"
+                    android:textColor="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@android:color/darker_gray"
-                        android:ems="23"
-                        android:fontFamily="@font/roboto"
-                        android:inputType="text"
-                        android:text=" End Date"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        tools:fontFamily="@font/roboto"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toTopOf="@id/event_date"/>
+                <TextView
+                    android:id="@+id/admin_cancel_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20sp"
+                    android:layout_marginTop="14sp"
+                    android:fontFamily="@font/roboto"
+                    android:text="Cancel"
+                    android:textColor="@color/white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <EditText
-                        android:id="@+id/event_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@android:color/darker_gray"
-                        android:editable="false"
-                        android:ems="23"
-                        android:focusable="false"
-                        android:fontFamily="@font/roboto"
-                        android:hint="End Date"
-                        android:inputType="none"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        tools:fontFamily="@font/roboto" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/admin_event_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8sp"
+                    android:background="?attr/colorPrimary"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="Event Details"
+                    android:textColor="@color/white"
+                    android:textSize="27sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="110dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@color/white"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    app:cardCornerRadius="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/admin_event_title">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipChildren="false">
+
+                        <ImageView
+                            android:id="@+id/event_image"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="image"
+                            android:scaleType="centerCrop" />
+
+
+                        <Button
+                            android:id="@+id/edit_image_button"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentTop="true"
+
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginEnd="2dp"
+                            android:background="@color/red" />
+                        <!--                        IDK WHY THE FUCKING BUTTON IS NOT CHANGING -->
+                        <!-- android:layout_marginTop="-15dp"-->
+                        <!-- android:layout_marginEnd="-15dp"-->
+
+
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/background"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp">
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="202dp"
-                android:backgroundTint="@android:color/darker_gray"
-                android:ems="23"
-                android:fontFamily="@font/roboto"
-                android:inputType="text"
-                android:text=" Event Location"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:fontFamily="@font/roboto" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="22dp"
+                    android:backgroundTint="@android:color/darker_gray"
+                    android:ems="23"
+                    android:fontFamily="@font/roboto"
+                    android:inputType="text"
+                    android:text=" Event Description"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:fontFamily="@font/roboto" />
 
-            <EditText
-                android:id="@+id/event_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="216dp"
-                android:backgroundTint="@android:color/darker_gray"
-                android:editable="false"
-                android:ems="23"
-                android:fontFamily="@font/roboto"
-                android:hint="Old Location"
-                android:inputType="none"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:fontFamily="@font/roboto" />
+                <EditText
+                    android:id="@+id/admin_event_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="36dp"
+                    android:backgroundTint="@android:color/darker_gray"
+                    android:editable="false"
+                    android:ems="23"
+                    android:fontFamily="@font/roboto"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:fontFamily="@font/roboto" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="142dp"
+                    android:backgroundTint="@android:color/darker_gray"
+                    android:ems="23"
+                    android:fontFamily="@font/roboto"
+                    android:inputType="text"
+                    android:text=" Time"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:fontFamily="@font/roboto" />
+
+                <EditText
+                    android:id="@+id/edit_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="156dp"
+                    android:backgroundTint="@android:color/darker_gray"
+                    android:editable="false"
+                    android:ems="23"
+                    android:fontFamily="@font/roboto"
+                    android:inputType="none"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:fontFamily="@font/roboto" />
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="262dp"
-                android:backgroundTint="@android:color/darker_gray"
-                android:ems="23"
-                android:fontFamily="@font/roboto"
-                android:inputType="text"
-                android:text=" Maximum Event Attendee Amount"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:fontFamily="@font/roboto" />
+                <androidx.constraintlayout.widget.ConstraintLayout
 
-            <EditText
-                android:id="@+id/max_attendees"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="276dp"
-                android:backgroundTint="@android:color/darker_gray"
-                android:editable="false"
-                android:ems="23"
-                android:fontFamily="@font/roboto"
-                android:hint="Max Event Attendee Amount"
-                android:inputType="none"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:fontFamily="@font/roboto" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/admin_event_description">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </LinearLayout>
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/admin_middle_guideline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.5" />
+
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/linearLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toStartOf="@+id/admin_middle_guideline"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/textView3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/darker_gray"
+                            android:ems="23"
+                            android:fontFamily="@font/roboto"
+                            android:inputType="text"
+                            android:text=" Start Date"
+                            android:textColor="@color/black"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toTopOf="@id/start_date"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:fontFamily="@font/roboto" />
+
+                        <EditText
+                            android:id="@+id/start_date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/darker_gray"
+                            android:editable="false"
+                            android:ems="23"
+                            android:focusable="false"
+                            android:fontFamily="@font/roboto"
+                            android:inputType="none"
+                            android:textColor="@color/black"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            tools:fontFamily="@font/roboto" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/admin_middle_guideline"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/darker_gray"
+                            android:ems="23"
+                            android:fontFamily="@font/roboto"
+                            android:inputType="text"
+                            android:text=" End Date"
+                            android:textColor="@color/black"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toTopOf="@id/event_date"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:fontFamily="@font/roboto" />
+
+                        <EditText
+                            android:id="@+id/event_date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/darker_gray"
+                            android:editable="false"
+                            android:ems="23"
+                            android:focusable="false"
+                            android:fontFamily="@font/roboto"
+                            android:inputType="none"
+                            android:textColor="@color/black"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            tools:fontFamily="@font/roboto" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="202dp"
+                    android:backgroundTint="@android:color/darker_gray"
+                    android:ems="23"
+                    android:fontFamily="@font/roboto"
+                    android:inputType="text"
+                    android:text=" Event Location"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:fontFamily="@font/roboto" />
+
+                <EditText
+                    android:id="@+id/event_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="216dp"
+                    android:backgroundTint="@android:color/darker_gray"
+                    android:editable="false"
+                    android:ems="23"
+                    android:fontFamily="@font/roboto"
+                    android:inputType="none"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:fontFamily="@font/roboto" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="262dp"
+                    android:backgroundTint="@android:color/darker_gray"
+                    android:ems="23"
+                    android:fontFamily="@font/roboto"
+                    android:inputType="text"
+                    android:text=" Maximum Event Attendee Amount"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:fontFamily="@font/roboto" />
+
+                <EditText
+                    android:id="@+id/max_attendees"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="276dp"
+                    android:backgroundTint="@android:color/darker_gray"
+                    android:editable="false"
+                    android:ems="23"
+                    android:fontFamily="@font/roboto"
+                    android:inputType="none"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:fontFamily="@font/roboto" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

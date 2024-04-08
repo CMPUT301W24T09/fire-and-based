@@ -28,6 +28,14 @@ public class UserListFragment extends Fragment {
     protected int lastClickedIndex;
     protected FirebaseFirestore db;
 
+    /**
+     * Inflates the layout for the user list fragment and initializes its views.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     * @return The root view of the inflated layout.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

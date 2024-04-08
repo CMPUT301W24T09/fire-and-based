@@ -1,5 +1,7 @@
 package com.example.fire_and_based;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -17,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -43,12 +47,7 @@ import java.util.Objects;
  * Also requires an event to be passed in as an argument as a Parcelable with a key "event"
  * Also requires a mode to be passed in as an argument as a String with a key "mode"
  * Note that mode may be either "Attending" or "Organizing"
- *
- * To-do (UI):
- * 1. Delay in displaying checked in status
- * 2. Make edit details button functional
- *
- * @author Sumayya
+ * @author Sumayya, Tyler
  */
 public class EventDetailsFragment extends Fragment {
     private User user;
@@ -58,11 +57,18 @@ public class EventDetailsFragment extends Fragment {
     private FragmentStateAdapter adapter;
     private ImageDownloader imageDownloader = new ImageDownloader();
 
-
     private FusedLocationProviderClient fusedLocationClient;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1; // Define a request code
     public Button checkedInButton;
 
+    /**
+     * Creates the view for the event details fragment.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState This fragment is being re-constructed from a previous saved state
+     * @return The View for the fragment's UI.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -80,6 +86,9 @@ public class EventDetailsFragment extends Fragment {
         TextView eventTitle = view.findViewById(R.id.event_title);
         eventTitle.setText(event.getEventName());
 
+        TextView eventLocation = view.findViewById(R.id.locationText);
+        eventLocation.setText(event.getLocation());
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         /* we will add this when event banner gets fixed in xml
@@ -89,9 +98,6 @@ public class EventDetailsFragment extends Fragment {
         imageDownloader.getBannerBitmap(clickedEvent, imagePreview);
 
          */
-
-        
-        
 
         ImageView imagePreview = view.findViewById(R.id.banner_image);
         if (event.getBannerQR() != null)
@@ -105,7 +111,6 @@ public class EventDetailsFragment extends Fragment {
         eventDate.setText(startString);
 
 
-
         //Button checkedInButton = view.findViewById(R.id.checked_in_button);
         checkedInButton = view.findViewById(R.id.checked_in_button);
         Button editDetailsButton = view.findViewById(R.id.edit_details_button);
@@ -114,9 +119,9 @@ public class EventDetailsFragment extends Fragment {
         if (Objects.equals(mode, "Attending")) {
             editDetailsButton.setVisibility(View.GONE);
             attendeeListButton.setVisibility(View.GONE);
-            FirebaseUtil.getUserCheckedInEvents(db, user.getDeviceID(), eventLongMap -> {
-                for (Map.Entry<Event, Long> entry: eventLongMap.entrySet()) {
-                    if (Objects.equals(entry.getKey().getQRcode(), event.getQRcode())) {
+            FirebaseUtil.getEventCheckedInUsers(db, event.getQRcode(), userLongMap -> {
+                for (Map.Entry<User, Long> entry: userLongMap.entrySet()) {
+                    if (Objects.equals(entry.getKey().getDeviceID(), user.getDeviceID())) {
                         checkedInButton.setText("Checked in");
                     }
                 }
@@ -167,28 +172,6 @@ public class EventDetailsFragment extends Fragment {
             }
         });
 
-        checkedInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                FirebaseUtil.addEventAndCheckedInUser(db, event.getQRcode(), user.getDeviceID(), new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                getLocation();
-
-                            }
-                        }, new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.e("TAG", "Check in fail");
-                            }
-                        });
-
-            }
-        });
-
-
-
         viewPager = view.findViewById(R.id.event_details_viewpager);
         adapter = new EventDetailsAdapter(this, event, mode, user);
         viewPager.setAdapter(adapter);
@@ -230,15 +213,23 @@ public class EventDetailsFragment extends Fragment {
     }
 
 
-
+    /**
+     * Retrieves the user's location and sends it to the event in the Firebase database upon checking in.
+     * If location permission is not granted, requests permission.
+     */
     private void getLocation() {
+        if (!event.isTrackLocation()){
+            return;
+        }
+
         if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestLocationPermission();
             return;
         }
 
-        if (!checkedInButton.getText().toString().equals("Not checked In")){
-            Toast.makeText(getContext(), "You are already checked in for this event!", Toast.LENGTH_SHORT).show();
+        if (!checkedInButton.getText().toString().equals("Check In")){
+            checkedInButton.setText("Check In");
+//            Toast.makeText(getContext(), "You are already checked in for this event!", Toast.LENGTH_SHORT).show();
         } else {
 
 
@@ -253,25 +244,28 @@ public class EventDetailsFragment extends Fragment {
                             double longitude = location.getLongitude();
                             FirebaseFirestore db = FirebaseFirestore.getInstance();
                             GeoPoint geoPoint = new GeoPoint(latitude, longitude);
+                                FirebaseUtil.sendCoordinatesToEvent(db, event, geoPoint, new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(getContext(), "Successfully Checked In", Toast.LENGTH_SHORT).show();
+                                        checkedInButton.setText("Check Out");
+                                    }
+                                }, new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(getContext(), "Error sending location to database :( ", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
 
-                            FirebaseUtil.sendCoordinatesToEvent(db, event, geoPoint, new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    Toast.makeText(getContext(), "It wrote to db u did it kid proud of u ", Toast.LENGTH_SHORT).show();
-                                    checkedInButton.setText("Checked In");
-                                }
-                            }, new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getContext(), "Error sending location to database :( ", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-
-                        }
                     }
                 });
         }
     }
+
+    /**
+     * Requests the necessary location permissions from the user.
+     */
     private void requestLocationPermission() {
         ActivityCompat.requestPermissions(requireActivity(),
                 new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION},

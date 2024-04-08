@@ -36,9 +36,9 @@ public class AttendeeListAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 1:
-                return AttendeeListFragment.newInstance(event, true);
+                return AttendeeCheckedInFragment.newInstance(event);
             default:
-                return AttendeeListFragment.newInstance(event, false);
+                return AttendeeListFragment.newInstance(event);
         }
     }
 

@@ -2,7 +2,9 @@ package com.example.fire_and_based;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.Image;
 import android.net.Uri;
@@ -13,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +32,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Firebase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -36,19 +40,32 @@ import com.google.firebase.storage.UploadTask;
 
 import org.w3c.dom.Text;
 
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+/**
+ * fragment for editing a profile page
+ * @author Carson
+ */
 
 public class EditProfileFragment extends Fragment {
     private User user;
     private Uri imageUri;
     Context context = getContext();
     StorageReference fireRef = FirebaseStorage.getInstance().getReference();
-    boolean pictureChanged = false;
+    int pictureChanged = 0;
 
+    /**
+     * Initializes the UI components and handles user interactions for editing a profile.
+     *
+     * @param inflater           The LayoutInflater object.
+     * @param container          The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState The previous saved state of the fragment.
+     * @return The View for the fragment's UI, or null.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -64,14 +81,19 @@ public class EditProfileFragment extends Fragment {
         EditText emailEdit = view.findViewById(R.id.editTextEmail);
         EditText phoneEdit = view.findViewById(R.id.editTextPhone);
         EditText homepageEdit = view.findViewById(R.id.editTextHomepage);
-        TextView saveButton = view.findViewById(R.id.save_text_view);
-        TextView cancelButton = view.findViewById(R.id.cancel_text_view);
+
+        Button saveButton = view.findViewById(R.id.save_text_view);
+        Button cancelButton = view.findViewById(R.id.cancel_text_view);
+        ImageView removeProfilePicButton = view.findViewById(R.id.remove_profile_pic);
+
         CircleImageView profilePictureView = view.findViewById(R.id.edit_profile_image);
         ImageView profilePictureEditButton = view.findViewById(R.id.edit_profile_picture_button);
 
         // Retrieves profile picture from db and sets it in view
         ImageDownloader downloader = new ImageDownloader();
         downloader.getProfilePicBitmap(user, profilePictureView);
+
+        final String[] imageUrl = {"profiles/" + user.getDeviceID()};
 
         // Fields may be "" or null, therefore only change text if exists
         if (!TextUtils.isEmpty(user.getFirstName()))
@@ -92,6 +114,9 @@ public class EditProfileFragment extends Fragment {
         if (!TextUtils.isEmpty(user.getHomepage()))
             homepageEdit.setText(user.getHomepage());
 
+        if (user.getProfilePicture().startsWith("defaultProfiles/"))
+            removeProfilePicButton.setVisibility(View.GONE);
+
         // Idrk how this stuff works I copied from Aiden
         // Real
         ActivityResultLauncher<Intent> customActivityResultLauncher =
@@ -108,13 +133,54 @@ public class EditProfileFragment extends Fragment {
                                         //buttonUpload.setEnabled(true);
                                         //Glide.with(context).load(imageUri).into(previewBanner);
                                         profilePictureView.setImageURI(imageUri);
-                                        pictureChanged = true;
+                                        pictureChanged = 1;
+                                        removeProfilePicButton.setVisibility(View.VISIBLE);
                                     }
                                 }
                                 catch(Exception e)
                                 {Toast.makeText(requireContext(), "Please Select An Image", Toast.LENGTH_LONG).show();}
                             }
                         });
+
+        removeProfilePicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setMessage("Are you sure you wish to remove your profile picture?")
+                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                imageUrl[0] = "defaultProfiles/" + user.getDeviceID();
+                                user.setProfilePicture(imageUrl[0]);
+                                pictureChanged = 2;
+                                removeProfilePicButton.setVisibility(View.GONE);
+                                downloader.deletePic(user);
+                                //should be default now
+                                FirebaseUtil.updateUser(FirebaseFirestore.getInstance(), user, new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused)
+                                    {
+                                        downloader.getProfilePicBitmap(user, profilePictureView);
+                                    }
+                                }, new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+
+                                    }
+                                });
+
+
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // Cancel button clicked, do nothing or perform any action as needed
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
 
         // Probably just make the profile picture itself clickable instead
         profilePictureEditButton.setOnClickListener(new View.OnClickListener()
@@ -146,9 +212,11 @@ public class EditProfileFragment extends Fragment {
                     user.setPhoneNumber(newPhone);
                     user.setHomepage(newHomepage);
 
-                    // I believe this is where profile pictures are stored?
-                    String imageUrl = "profiles/" + user.getDeviceID();
-                    StorageReference selectionRef = fireRef.child(imageUrl);
+                    StorageReference selectionRef = fireRef.child(imageUrl[0]);
+
+                    if (pictureChanged == 1 || pictureChanged == 2) {
+                        user.setProfilePicture(imageUrl[0]);
+                    }
 
                     // Updates user info
                     FirebaseUtil.updateUser(FirebaseFirestore.getInstance(), user, new OnSuccessListener<Void>() {
@@ -157,11 +225,12 @@ public class EditProfileFragment extends Fragment {
                             // For now we exit from edit details page when valid save (probably should change later, not sure)
 
                             // Uploads new profile picture, if it was changed
-                            if (pictureChanged) {
+                            if (pictureChanged == 1) {
+                                user.setProfilePicture(imageUrl[0]);
                                 selectionRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                        Toast.makeText(requireContext(), "Image Uploaded To Cloud Successfully", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(requireContext(), "Successfully updated profile details", Toast.LENGTH_LONG).show();
                                         Log.d(TAG, "User profile details successfully updated");
                                         getParentFragmentManager().popBackStack();
                                     }
@@ -175,7 +244,7 @@ public class EditProfileFragment extends Fragment {
                                 });
                             }
                             else {
-                                Toast.makeText(requireContext(), "Image Upload Error", Toast.LENGTH_LONG).show();
+                                Toast.makeText(requireContext(), "Successfully updated profile details", Toast.LENGTH_LONG).show();
                                 Log.d(TAG, "User profile details successfully updated");
                                 getParentFragmentManager().popBackStack();
                             }
@@ -198,6 +267,17 @@ public class EditProfileFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Validates the entries for profile information.
+     *
+     * @param first    The first name.
+     * @param last     The last name.
+     * @param username The username.
+     * @param email    The email address.
+     * @param phone    The phone number.
+     * @param homepage The homepage URL.
+     * @return True if all entries are valid, false otherwise.
+     */
     private boolean validEntries(String first, String last, String username, String email, String phone, String homepage) {
         if (!validName(first))
             Toast.makeText(requireContext(), "Invalid First Name", Toast.LENGTH_SHORT).show();
@@ -215,6 +295,12 @@ public class EditProfileFragment extends Fragment {
         return validName(first) && validName(last) && validEmail(email) && validPhone(phone) && validHomepage(homepage);
     }
 
+    /**
+     * Validates an email address using regex.
+     *
+     * @param email The email address to validate.
+     * @return True if the email address is valid, false otherwise.
+     */
     public static boolean validEmail(String email) {
         if (TextUtils.isEmpty(email))
             return true;
@@ -225,6 +311,12 @@ public class EditProfileFragment extends Fragment {
         return matcher.matches();
     }
 
+    /**
+     * Validates a phone number
+     *
+     * @param phoneNumber The phone number to validate.
+     * @return True if the phone number is valid, false otherwise.
+     */
     public static boolean validPhone(String phoneNumber) {
         if (TextUtils.isEmpty(phoneNumber))
             return true;
@@ -233,6 +325,13 @@ public class EditProfileFragment extends Fragment {
         Matcher matcher = pattern.matcher(phoneNumber);
         return matcher.matches();
     }
+
+    /**
+     * Validates a name
+     *
+     * @param name The name to validate.
+     * @return True if the name is valid, false otherwise.
+     */
     public static boolean validName(String name) {
         if (TextUtils.isEmpty(name))
             return true;
@@ -245,6 +344,12 @@ public class EditProfileFragment extends Fragment {
         return true;
     }
 
+    /**
+     * Validates a user name
+     *
+     * @param username The user name to validate.
+     * @return True if the user name is valid, false otherwise.
+     */
     public boolean validUsername(String username) {
         return username.length() < 20;
     }

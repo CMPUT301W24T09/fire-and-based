@@ -14,9 +14,9 @@ import java.util.Calendar;
 /**
  * Represents an event.
  * This class implements Parcelable to allow event objects to be passed between activities.
- * @author Ilya, Tyler
+ * @author Ilya, Tyler, Carson
  */
-public class Event implements Parcelable {
+public class Event implements Parcelable, Comparable <Event> {
     private String eventName;
     private String eventDescription;
     private String eventBanner;
@@ -27,6 +27,7 @@ public class Event implements Parcelable {
     private String bannerQR;
     private ArrayList<Integer> milestones;
     private Long maxAttendees;
+    private Long currentAttendees;
     private Boolean trackLocation;
 
 
@@ -45,7 +46,7 @@ public class Event implements Parcelable {
      * @param maxAttendees     The maximum number of attendees for the event.
      * @param trackLocation    Whether the event is tracking location.
      */
-    Event(String eventName, String eventDescription, String eventBanner, String QRcode, Long startTimeStamp, Long endTimeStamp, String location, String bannerQR, ArrayList<Integer> milestones, Long maxAttendees, Boolean trackLocation) {
+    Event(String eventName, String eventDescription, String eventBanner, String QRcode, Long startTimeStamp, Long endTimeStamp, String location, String bannerQR, ArrayList<Integer> milestones, Long maxAttendees, Long currentAttendees, Boolean trackLocation) {
         this.eventName = eventName;
         this.eventDescription = eventDescription;
         this.eventBanner = eventBanner;
@@ -56,6 +57,7 @@ public class Event implements Parcelable {
         this.bannerQR = bannerQR;
         this.milestones = milestones;
         this.maxAttendees = maxAttendees;
+        this.currentAttendees = currentAttendees;
         this.trackLocation = trackLocation;
     }
 
@@ -80,6 +82,7 @@ public class Event implements Parcelable {
         bannerQR = in.readString();
         milestones = in.readArrayList(Integer.class.getClassLoader());
         maxAttendees = in.readLong();
+        currentAttendees = in.readLong();
         trackLocation = in.readByte() != 0;  // trackLocation == true if byte != 0
     }
 
@@ -234,6 +237,24 @@ public class Event implements Parcelable {
     }
 
     /**
+     * Returns the current number of attendees at the event.
+     *
+     * @return the current number of attendees at the event.
+     */
+    public Long getCurrentAttendees() {
+        return this.currentAttendees;
+    }
+
+    /**
+     * Sets the current number of attendees for the event.
+     *
+     * @param currentAttendees the current number of attendees
+     */
+    public void setCurrentAttendees(Long currentAttendees) {this.currentAttendees = currentAttendees;}
+
+
+
+    /**
      * Returns whether the event is tracking location.
      *
      * @return true if the event is tracking location, false otherwise.
@@ -341,12 +362,27 @@ public class Event implements Parcelable {
         dest.writeInt(trackLocation ? 1 : 0);  // write boolean as int
     }
 
-
+    /**
+     * checks for matching QRCodes
+     *
+     * @param o The reference object with which to compare.
+     * @return True if the QRcode is the same as the obj QRCode; false otherwise.
+     */
     @Override
     public boolean equals(Object o){
         if (o instanceof Event){
             return (((Event) o).getQRcode().equals(this.getQRcode()));
         }
         return false;
+    }
+
+    /**
+     * Compares this event's name with another event's name for ordering.
+     * @param o The event to be compared.
+     * @return A value indicating the comparison result.
+     */
+    @Override
+    public int compareTo(Event o) {
+        return this.getEventName().compareTo(o.getEventName());
     }
 }

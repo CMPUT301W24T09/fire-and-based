@@ -48,9 +48,15 @@ android {
 }
 
 dependencies {
+
+
+    compileOnly(files("${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"))
     //Firebase
     //Core dependency
     implementation(platform("com.google.firebase:firebase-bom:32.7.3"))
+    implementation("androidx.core:core:1.7.0")
+
+
     //Firestore (NoSQL Database, stores users and events data)
     implementation("com.google.firebase:firebase-firestore")
     //Storage stores image assets
@@ -64,6 +70,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.activity:activity:1.8.2")
     implementation("androidx.fragment:fragment:1.6.2")
+    implementation("androidx.gridlayout:gridlayout:1.0.0")
 
     //Testing
     testImplementation("junit:junit:4.13.2")

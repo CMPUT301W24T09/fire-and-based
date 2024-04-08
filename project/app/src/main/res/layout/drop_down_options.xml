@@ -1,0 +1,12 @@
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dropView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fontFamily="@font/expletus_sans"
+    android:padding="8dp"
+    android:paddingStart="40dp"
+
+    android:text="dropView"
+    android:textColor="@color/black"
+    android:textSize="16sp"
+    android:textStyle="bold" />

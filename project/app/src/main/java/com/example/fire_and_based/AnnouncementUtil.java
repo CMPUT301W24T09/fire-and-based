@@ -23,6 +23,12 @@ import org.jetbrains.annotations.NotNull;
 import android.os.Handler;
 import android.os.Looper;
 
+/**
+ * Utility class for handling announcements and notifications.
+ * Provides methods to send announcements to recipients and subscribe users to topics.
+ * @author Ilya
+ */
+
 public class AnnouncementUtil {
 
     protected static String key = BuildConfig.API_KEY;
@@ -72,7 +78,16 @@ public class AnnouncementUtil {
                 });
     }
 
-
+    /**
+     * Creates and saves a new announcement for the specified event.
+     * Sends the announcement notification to subscribers of the event topic.
+     * @param db The instance of FirebaseFirestore
+     * @param content The content of the announcement
+     * @param event The event associated with the announcement
+     * @param successListener Listener to be invoked upon successful announcement creation
+     * @param failureListener Listener to be invoked upon failure in announcement creation or notification sending
+     * @param handler Handler to post callbacks on the main thread
+     */
 
     public static void newAnnouncement(FirebaseFirestore db, String content, Event event, OnSuccessListener<Void> successListener, OnFailureListener failureListener, Handler handler){
         Announcement announcement = new Announcement(event.getEventName(), content, System.currentTimeMillis()/1000L, MainActivity.getDeviceID(), event.getQRcode());

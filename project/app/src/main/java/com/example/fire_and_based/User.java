@@ -280,7 +280,7 @@ public class User implements Parcelable {
      *
      * @return The profile picture URL or path.
      */
-    String getProfilePicture() {
+    public String getProfilePicture() {
         return this.profilePicture;
     }
 
