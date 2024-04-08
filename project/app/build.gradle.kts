@@ -48,6 +48,9 @@ android {
 }
 
 dependencies {
+
+
+    compileOnly(files("${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"))
     //Firebase
     //Core dependency
     implementation(platform("com.google.firebase:firebase-bom:32.7.3"))
