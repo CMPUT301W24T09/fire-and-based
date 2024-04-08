@@ -46,4 +46,123 @@ public class deleteTenOrganizerEvents {
         onView(withText("Delete")).perform(click());
         onView(withText("Organizing Events")).check(matches(isDisplayed()));
     }
+
+    @Test
+    public void deleteAnEvent2() throws InterruptedException {
+        User user = new User("testUser123");
+        Intent startIntent = new Intent();
+        startIntent.putExtra("user", user);
+        intentsTestRule.launchActivity(startIntent);
+        onView(withId(R.id.organizing_item)).perform(click());
+        onView(withText("Organizing Events")).check(matches(isDisplayed()));
+        onData(anything())
+                .inAdapterView(withId(R.id.event_list))
+                .atPosition(0)
+                .perform(click());
+        onView(withText("Edit Details")).perform(click());
+        onView(withText("Delete")).perform(click());
+        onView(withText("Organizing Events")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void deleteAnEvent3() throws InterruptedException {
+        User user = new User("testUser123");
+        Intent startIntent = new Intent();
+        startIntent.putExtra("user", user);
+        intentsTestRule.launchActivity(startIntent);
+        onView(withId(R.id.organizing_item)).perform(click());
+        onView(withText("Organizing Events")).check(matches(isDisplayed()));
+        onData(anything())
+                .inAdapterView(withId(R.id.event_list))
+                .atPosition(0)
+                .perform(click());
+        onView(withText("Edit Details")).perform(click());
+        onView(withText("Delete")).perform(click());
+        onView(withText("Organizing Events")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void deleteAnEvent4() throws InterruptedException {
+        User user = new User("testUser123");
+        Intent startIntent = new Intent();
+        startIntent.putExtra("user", user);
+        intentsTestRule.launchActivity(startIntent);
+        onView(withId(R.id.organizing_item)).perform(click());
+        onView(withText("Organizing Events")).check(matches(isDisplayed()));
+        onData(anything())
+                .inAdapterView(withId(R.id.event_list))
+                .atPosition(0)
+                .perform(click());
+        onView(withText("Edit Details")).perform(click());
+        onView(withText("Delete")).perform(click());
+        onView(withText("Organizing Events")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void deleteAnEvent5() throws InterruptedException {
+        User user = new User("testUser123");
+        Intent startIntent = new Intent();
+        startIntent.putExtra("user", user);
+        intentsTestRule.launchActivity(startIntent);
+        onView(withId(R.id.organizing_item)).perform(click());
+        onView(withText("Organizing Events")).check(matches(isDisplayed()));
+        onData(anything())
+                .inAdapterView(withId(R.id.event_list))
+                .atPosition(0)
+                .perform(click());
+        onView(withText("Edit Details")).perform(click());
+        onView(withText("Delete")).perform(click());
+        onView(withText("Organizing Events")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void deleteAnEvent6() throws InterruptedException {
+        User user = new User("testUser123");
+        Intent startIntent = new Intent();
+        startIntent.putExtra("user", user);
+        intentsTestRule.launchActivity(startIntent);
+        onView(withId(R.id.organizing_item)).perform(click());
+        onView(withText("Organizing Events")).check(matches(isDisplayed()));
+        onData(anything())
+                .inAdapterView(withId(R.id.event_list))
+                .atPosition(0)
+                .perform(click());
+        onView(withText("Edit Details")).perform(click());
+        onView(withText("Delete")).perform(click());
+        onView(withText("Organizing Events")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void deleteAnEvent7() throws InterruptedException {
+        User user = new User("testUser123");
+        Intent startIntent = new Intent();
+        startIntent.putExtra("user", user);
+        intentsTestRule.launchActivity(startIntent);
+        onView(withId(R.id.organizing_item)).perform(click());
+        onView(withText("Organizing Events")).check(matches(isDisplayed()));
+        onData(anything())
+                .inAdapterView(withId(R.id.event_list))
+                .atPosition(0)
+                .perform(click());
+        onView(withText("Edit Details")).perform(click());
+        onView(withText("Delete")).perform(click());
+        onView(withText("Organizing Events")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void deleteAnEvent8() throws InterruptedException {
+        User user = new User("testUser123");
+        Intent startIntent = new Intent();
+        startIntent.putExtra("user", user);
+        intentsTestRule.launchActivity(startIntent);
+        onView(withId(R.id.organizing_item)).perform(click());
+        onView(withText("Organizing Events")).check(matches(isDisplayed()));
+        onData(anything())
+                .inAdapterView(withId(R.id.event_list))
+                .atPosition(0)
+                .perform(click());
+        onView(withText("Edit Details")).perform(click());
+        onView(withText("Delete")).perform(click());
+        onView(withText("Organizing Events")).check(matches(isDisplayed()));
+    }
 }
