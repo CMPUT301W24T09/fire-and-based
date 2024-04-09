@@ -1,8 +1,10 @@
 package com.example.fire_and_based;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import static androidx.constraintlayout.motion.widget.Debug.getLocation;
 
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -80,6 +82,7 @@ public class EventListFragment extends Fragment {
 
     public SearchView searchView;
     private AutoCompleteTextView autoCompleteTextView;
+    private Context context;
 
 
     private final ActivityResultLauncher<ScanOptions> qrLauncher = registerForActivityResult(
@@ -93,6 +96,24 @@ public class EventListFragment extends Fragment {
                     FirebaseUtil.getEvent(db, QRCode, event -> {
                         scannedEvent = event;
                         FirebaseUtil.addEventAndCheckedInUser(db, event.getQRcode(), user.getDeviceID(), aVoid -> {
+                            if (event.isTrackLocation()) {
+                                new AlertDialog.Builder(context)
+                                        .setTitle("User Location Data") // Set the dialog title
+                                        .setMessage("This event uses location tracking. \nDo you want to share your location where you check in?")
+                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                // User clicked Yes, call getLocation()
+                                                getLocation();
+                                            }
+                                        })
+                                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                            }
+                                        })
+                                        .show(); // Display the dialog
+                            }
                             Toast.makeText(getContext(), "Checked in", Toast.LENGTH_SHORT).show();
                             getLocation();
                             executeFragmentTransaction(event, "Attending");
@@ -129,6 +150,7 @@ public class EventListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.event_list_fragment, container, false);
+        context = getContext();
 
         if (getArguments() != null) {
             user = getArguments().getParcelable("user");
