@@ -102,7 +102,7 @@ public class InfoFragment extends Fragment {
 
 
                         // decrement your thing here aiden
-
+                        event.setCurrentAttendees(event.getCurrentAttendees() - 1L);
 
                         getActivity().getSupportFragmentManager().popBackStack();
 
