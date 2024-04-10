@@ -233,6 +233,7 @@ public class CreateEventFragment extends Fragment {
 
         //TODO The QR Code viewer class got deleted, up to you if/how you want to display it
         Button previewQRImage = view.findViewById(R.id.view_qr_code);
+        previewQRImage.setVisibility(View.GONE);
         previewQRImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
