@@ -92,9 +92,13 @@ public class EventArrayAdapter extends ArrayAdapter<Event> implements Filterable
             String startString = event.dateFromLong(startLong);
             eventDate.setText(startString);
 
+            ImageView fireImage = view.findViewById(R.id.fire_icon);
+            fireImage.setVisibility(View.INVISIBLE);
 
 
-            TextView checkCount = view.findViewById(R.id.checkCount);
+
+
+        TextView checkCount = view.findViewById(R.id.checkCount);
 //
 //            String checkNum = String.valueOf(FirebaseUtil.getEventUserPool(db,event.getQRcode()));
 //            String totalNum = String.valueOf(event.getMaxAttendees());
@@ -103,10 +107,15 @@ public class EventArrayAdapter extends ArrayAdapter<Event> implements Filterable
 
             String checkNum = String.valueOf(event.getCurrentAttendees());
             String totalNum = String.valueOf(event.getMaxAttendees());
+
             if (totalNum.equals("-1")) {
                 checkCount.setText(checkNum);
             } else {
                 checkCount.setText(checkNum + "/" + totalNum);
+                if(event.getCurrentAttendees() > (event.getMaxAttendees()*0.75))
+                {
+                    fireImage.setVisibility(View.VISIBLE);
+                }
             }
 
             //ArrayList<Integer> checkNums = event.getMilestones();

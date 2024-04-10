@@ -135,6 +135,18 @@
                 android:layout_toStartOf="@+id/checkCount"
                 app:srcCompat="@drawable/baseline_people_alt_24" />
 
+            <ImageView
+                android:id="@+id/fire_icon"
+                android:layout_width="39dp"
+                android:layout_height="52dp"
+                android:layout_below="@+id/cardView2"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="36dp"
+                android:layout_marginEnd="-3dp"
+                android:layout_marginBottom="-10dp"
+                android:layout_toStartOf="@+id/imageView5"
+                app:srcCompat="@drawable/fire_icon_free_png" />
+
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
