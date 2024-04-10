@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
+
         android:layout_marginTop="4dp"
         android:clickable="true"
         app:backgroundTint="#808080"
@@ -90,11 +91,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="25dp"
             android:fontFamily="@font/roboto"
             android:text="TextView"
             android:textSize="23sp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/event_location_browser" />
 

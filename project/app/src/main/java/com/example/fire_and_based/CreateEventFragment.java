@@ -298,12 +298,12 @@ public class CreateEventFragment extends Fragment {
                         //EVENT BANNERS SHOULD BE 640 x 480 pixels MINIMUM
                         int imageRatio = imageHeight * 4; // Width should be height x 4
 
-                        if(imageWidth < imageRatio)
-                        {
-                            Toast.makeText(requireContext(), "Banners are 4:1. Try another image", Toast.LENGTH_LONG).show();
-                            imageUri = null;
-                            //previewBanner.setImageURI(null);
-                            previewBanner.setImageResource(android.R.color.white);}
+//                        if(imageWidth < imageRatio)
+//                        {
+//                            Toast.makeText(requireContext(), "Banners are 4:1. Try another image", Toast.LENGTH_LONG).show();
+//                            imageUri = null;
+//                            //previewBanner.setImageURI(null);
+//                            previewBanner.setImageResource(android.R.color.white);}
                     }
                 }
                 catch(Exception e)

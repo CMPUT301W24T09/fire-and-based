@@ -16,6 +16,8 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.w3c.dom.Text;
+
 import java.util.Objects;
 
 /**
@@ -54,6 +56,9 @@ public class EventDetailsBrowserFragment extends Fragment {
 
         TextView eventDescription = view.findViewById(R.id.event_description_browser);
         eventDescription.setText(event.getEventDescription());
+
+        TextView eventLocation = view.findViewById(R.id.event_location_browser);
+        eventLocation.setText(event.getLocation());
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
