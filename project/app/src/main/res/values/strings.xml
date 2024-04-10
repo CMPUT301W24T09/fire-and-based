@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">fire-and-based</string>
+    <string name="app_name">Fire and Based</string>
     <string name="title_activity_scrolling">ScrollingActivity</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
