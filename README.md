@@ -1,11 +1,11 @@
 # fire-and-based: CMPUT 301 term project
 
 # Members
-|Name    |CCID   |
+|Name    |Username   |
 |--------|-------|
-|Aiden Mitchell|aiden2|
-|Ilya Nalivaiko|nalivaik|
-|Tyler Beach|tabeach|
-|Trinity Thai|tcthai|
-|Carson Leahy-Serediak|leahyser|
-|Sumayya Taher|sntaher|
+|Aiden Mitchell|amitch747|
+|Ilya Nalivaiko|Ilya-Nalivaiko|
+|Tyler Beach|TylerBeach|
+|Trinity Thai|trinitythai|
+|Carson Leahy-Serediak|ssskii|
+|Sumayya Taher|sumayyat1|
